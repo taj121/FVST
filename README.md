@@ -1,1 +1,1 @@
-# FVST
+# Formal Verification of Session Types 
