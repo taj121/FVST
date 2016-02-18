@@ -1,0 +1,27 @@
+Text syntax for behaviors 
+b::=
+beVar |
+region |
+b;b |
+ch b b |
+rec beVar b |
+spawn b |
+push stackFrame |
+reg ! T |
+reg ? T |
+reg ! reg |
+reg ! L |
+reg ? options[]
+
+C ::=
+sub T T |
+sub b beVar |
+link reg regVar |
+link chnl sessType |
+link chnl' sessType | //not sure how this should differ from previouse 
+C;C |
+empty 
+
+
+
+
