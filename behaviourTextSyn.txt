@@ -1,17 +1,23 @@
 Text syntax for behaviors 
 b::=
 beVar |
-region |
+tau |
 b;b |
-ch b b |
-rec beVar b |
-spawn b |
-push stackFrame |
-reg ! T |
-reg ? T |
-reg ! reg |
-reg ! L |
-reg ? options[]
+chc(b,b) |
+rec(beVar,b) |
+spn(b) |
+psh(string, string) |
+reg!T |
+reg?T |
+reg!reg |
+reg?L |
+reg!Li |
+reg?optn[]
+
+
+how to distinguish beVar and tau when both strings?
+
+
 
 C ::=
 sub T T |
@@ -21,6 +27,9 @@ link chnl sessType |
 link chnl' sessType | //not sure how this should differ from previouse 
 C;C |
 empty 
+
+
+
 
 
 

@@ -23,7 +23,7 @@ type sesType = EndTag of string
 	| Delegation of del 
 	| Resumption of res 
 	| ChoiceS of choiceS
-	| ExtChoicS of extChoiceS (*not sure how to represent the constraints on the option lists*)
+	| ExtChoicS of extChoiceS 
 	| SVar of sesVar
 and extChoiceS = { opList1 : option list ; opList2 : option list}
 and choiceS = { opList : option list}
@@ -37,10 +37,10 @@ type stackFrame = {label: string ; sessType : sesType} ;;
 
 type snd = Snd ;;
 type reci = Rec ;;
-type chnl = Chnl ;; (* of int? string? other?*)
+type chnl = Chnl ;; 
 
 type b = BVar of beVar
-	| Reg of regVar (*is this right? not sure i read symbol in paper right*)
+	| Tau of string 
 	| Seq of seq 
 	| ChoiceB of choiceB
 	| RecB of recB
@@ -51,7 +51,7 @@ type b = BVar of beVar
 	| SndReg of sndR
 	| RecLab of recL
 	| RecChoice of recC
-and recC = { regC : regVar ; actC : reci ; cList : optionB }
+and recC = { regC : regVar ; actC : reci ; cList : optionB list}
 and optionB = { labelO : string ; beOpt : b }
 and recL = { regL : regVar ; actRL : reci ; label : string}
 and sndR = { reg1 : regVar ; actSR : snd ; reg2 : regVar}
@@ -69,15 +69,13 @@ type con = TCon of tCon
 	| RegRel of regRel
 	| ConRel of conRel
 	| ConRelAlt of conRelAlt
-	| ConSeq of conSeq
+	| ConSeq of con list
 	| Nothing
 and tCon = {smlT : t ; bigT : t}
 and bCon = {smlB : b ; bigB : beVar}
 and regRel = {reg : regVar ; regLab : region}
 and conRel = {chnlA : chnl ; endptA : sesType}
-and conRelAlt = {chnlB : chnl ; endptB : sesType}
-(* endpt A and B to match? *)
-and conSeq = {con1 : con ; con2 : con} ;;
+and conRelAlt = {chnlB : chnl ; endptB : sesType};;
 
 
 
