@@ -1,5 +1,5 @@
 {
-type token =
+(*type token =
   | BEVAR of (string)
   | SESSTYPE of (string)
   | LABLE of (string)
@@ -22,11 +22,26 @@ type token =
   | COMMA
   | OPTION
   | EOF
-  | TYPE of (string)
+  | TYPE of (string)*)
+open Lexing
+open Parser
+
+exception SyntaxError of string
+
+let next_line lexbuf =
+  let pos = lexbuf.lex_curr_p in
+  lexbuf.lex_curr_p <-
+    { pos with pos_bol = lexbuf.lex_curr_pos;
+               pos_lnum = pos.pos_lnum + 1
+    }
 }
 
+let white = [' ' '\t']+
+let newline = '\r' | '\n' | "\r\n"
+
 rule lex = parse
-  | [' ' '\n']      { lex lexbuf }
+  | white    { lex lexbuf }
+  | newline  { next_line lexbuf; lex lexbuf }
   | ";"           	{ COLON }
   | ","           	{ COMMA }
   | "("             { LEFT_BRACE }
@@ -40,10 +55,9 @@ rule lex = parse
   | "!"				{ SND }
   | "?"				{ RECI }
   | "optn"			{ OPTION } 
+  | "tau"			{ TAU }
   | ['B']['0'-'9' 'A'-'Z' 'a'-'z' '_']+ as s { BEVAR (s) }
-  | ['T']['0'-'9' 'A'-'Z' 'a'-'z' '_']+ as s { TAU (s) }
-  | ['L']['0'-'9' 'A'-'Z' 'a'-'z' '_']+ as s { LABLE (s) }
   | ['R']['0'-'9' 'A'-'Z' 'a'-'z' '_']+ as s { REG (s) }
   | ['T']['0'-'9' 'A'-'Z' 'a'-'z' '_']* as s { TYPE (s) }
-  (*| ['A'-'Z' 'a'-'z' '_']['0'-'9' 'A'-'Z' 'a'-'z' '_']* as s { ID (s) }*)
-  | eof             { EOF }
+  | _ { raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
+  | eof      { EOF }
