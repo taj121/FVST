@@ -39,7 +39,7 @@ let next_line lexbuf =
 let white = 	[' ' '\t']+
 let newline = 	'\r' | '\n' | "\r\n"
 
-rule line = parse
+(*rule line = parse
 | ([^'\n']* '\n') as line
     (* Normal case: one line, no eof. *)
     { Some line, true }
@@ -49,10 +49,10 @@ rule line = parse
 | ([^'\n']+ as line) eof
     (* Special case: some data but missing '\n', then eof.
        Consider this as the last line, and add the missing '\n'. *)
-    { Some (line ^ "\n"), false }
+    { Some (line ^ "\n"), false }*)
 
 (*rule lex = parse*)
-and lex = parse
+rule lex = parse
   | white    		{ lex lexbuf }
   | newline  		{ next_line lexbuf; lex lexbuf }
   | ";"           	{ COLON }

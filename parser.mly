@@ -19,6 +19,7 @@
 %token COLON
 %token COMMA
 %token EOF
+%token EOL
 %token <string> TYPE
 
 
@@ -41,11 +42,9 @@ parse_behaviour: b = behaviour EOF {b}
 behaviour :
   | var = BEVAR                           
       {BVar var} 
-  /*| l = LABLE                           
-      {Lab l}*/
   | TAU                                  
       {Tau} 
-  | b1 = behaviour COLON b2 = behaviour    
+  | b1 = behaviour COLON b2 = behaviour   
       {Seq {b1=b1;b2=b2}}
   | CHOICE LEFT_BRACE b1 = behaviour COMMA b2 = behaviour RIGHT_BRACE
       {ChoiceB {opt1=b1;opt2=b2}} 
