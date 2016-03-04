@@ -36,12 +36,25 @@ let next_line lexbuf =
     }
 }
 
-let white = [' ' '\t']+
-let newline = '\r' | '\n' | "\r\n"
+let white = 	[' ' '\t']+
+let newline = 	'\r' | '\n' | "\r\n"
 
-rule lex = parse
-  | white    { lex lexbuf }
-  | newline  { next_line lexbuf; lex lexbuf }
+rule line = parse
+| ([^'\n']* '\n') as line
+    (* Normal case: one line, no eof. *)
+    { Some line, true }
+| eof
+    (* Normal case: no data, eof. *)
+    { None, false }
+| ([^'\n']+ as line) eof
+    (* Special case: some data but missing '\n', then eof.
+       Consider this as the last line, and add the missing '\n'. *)
+    { Some (line ^ "\n"), false }
+
+(*rule lex = parse*)
+and lex = parse
+  | white    		{ lex lexbuf }
+  | newline  		{ next_line lexbuf; lex lexbuf }
   | ";"           	{ COLON }
   | ","           	{ COMMA }
   | "("             { LEFT_BRACE }
@@ -59,5 +72,5 @@ rule lex = parse
   | ['B']['0'-'9' 'A'-'Z' 'a'-'z' '_']+ as s { BEVAR (s) }
   | ['R']['0'-'9' 'A'-'Z' 'a'-'z' '_']+ as s { REG (s) }
   | ['T']['0'-'9' 'A'-'Z' 'a'-'z' '_']* as s { TYPE (s) }
-  | _ { raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
-  | eof      { EOF }
+  | _ 				{ raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
+  | eof      		{ EOF }

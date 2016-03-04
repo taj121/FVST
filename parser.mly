@@ -31,10 +31,11 @@
 
 %%
 
-parse_behaviour:
-  | EOF       { None  }
-  | b = behaviour { Some b}
-  ;
+/*parse_behaviour:
+  | EOF       {  None }
+  | b = behaviour {b}
+  ;*/
+parse_behaviour: b = behaviour EOF {b}
 
 
 behaviour :
@@ -50,7 +51,7 @@ behaviour :
       {ChoiceB {opt1=b1;opt2=b2}} 
   | REC var = BEVAR b = behaviour
       {RecB {behaVar=var;behaviour=b}}
-  | SPAWN b = behaviour
+  | SPAWN LEFT_BRACE b = behaviour RIGHT_BRACE
       {Spawn {spawned=b}}
   | PUSH LEFT_BRACE l = LABLE COMMA s = SESSTYPE RIGHT_BRACE
       {Push {toPush={label=l;sessType=s}}}

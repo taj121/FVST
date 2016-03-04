@@ -1,4 +1,4 @@
-(* type typeVar = TVar of string ;;
+(*type typeVar = TVar of string ;;
 type beVar = BVar of string ;;
 type sesVar = SVar of string ;;
 type regVar = RVar of string ;;
@@ -39,7 +39,8 @@ type snd = Snd ;;
 type reci = Rec ;;
 type chnl = Chnl ;;  
 
-type b = BVar of string
+type b = 
+	| BVar of string
 	| Tau (* of string *) 
 	| Seq of seq 
 	| ChoiceB of choiceB
@@ -53,7 +54,7 @@ type b = BVar of string
 	| SndChc of sndC
 	| RecChoice of recC
 	| None
-	| Some of b
+	(* | Some of b  *)
 and sndC = { regCa : string ; labl : string}
 and recC = { regCb : string ; cList : optionB list}
 (* and sndC = { regC : string ; actC : string ; cList : optionB list} *)
@@ -87,7 +88,8 @@ let rec output_value outc = function
 	| SndReg {reg1=r1;reg2=r2} 					-> printf "Delegate %s %s \n" r1 r2
 	| RecLab {regL=r;label=lab} 				-> printf "Resume %s %s \n" r lab
 	| SndChc {regCa=reg;labl=lab} 				-> printf "Select %s %s \n" reg lab
-	(* | _ 										-> printf "err\n " *)
+	(* | None 										-> printf "\nEOF\n" *)
+	  | _ 										-> printf "err\n "   
 
  and print_seq outc b1 b2 =  
  	output_value outc b1 ;
