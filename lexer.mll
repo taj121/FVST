@@ -38,6 +38,10 @@ let next_line lexbuf =
 
 let white = 	[' ' '\t']+
 let newline = 	'\r' | '\n' | "\r\n"
+let tab   = '\009'
+let lf    = '\010'
+let cr    = '\013'
+let eol   = cr | lf | cr lf
 
 (*rule line = parse
 | ([^'\n']* '\n') as line
@@ -51,10 +55,11 @@ let newline = 	'\r' | '\n' | "\r\n"
        Consider this as the last line, and add the missing '\n'. *)
     { Some (line ^ "\n"), false }*)
 
-(*rule lex = parse*)
 rule lex = parse
+(*and lex = parse*)
   | white    		{ lex lexbuf }
   | newline  		{ next_line lexbuf; lex lexbuf }
+  (*| eol 			{ EOL }*)
   | ";"           	{ COLON }
   | ","           	{ COMMA }
   | "("             { LEFT_BRACE }

@@ -36,7 +36,9 @@
   | EOF       {  None }
   | b = behaviour {b}
   ;*/
-parse_behaviour: b = behaviour EOF {b}
+parse_behaviour: 
+  | b = behaviour EOF {b}
+  /*| EOF {None}*/ ;
 
 
 behaviour :
@@ -63,6 +65,6 @@ behaviour :
   | r = REG RECI l = LABLE
       {RecLab {regL=r;label=l}}
   | r = REG SND l = LABLE
-      {SndChc {regCa=r;labl=l}};
+      {SndChc {regCa=r;labl=l}}
  /* | r = REG RECI OPTION LEFT_BRACE_SQ RIGHT_BRACE_SQ
       {RecChoice (r,(*option list*))}*/ 

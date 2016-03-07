@@ -1,9 +1,18 @@
-(*type typeVar = TVar of string ;;
+
+
+open Core.Std
+
+
+type typeVar = TVar of string ;;
 type beVar = BVar of string ;;
 type sesVar = SVar of string ;;
 type regVar = RVar of string ;;
 
 type region = Label of string | RVar of regVar ;;
+
+type snd = Snd ;;
+type reci = Rec ;;
+type chnl = Chnl ;;
 
 type t = Unit of unit 
 	| Bool of bool 
@@ -17,7 +26,8 @@ type t = Unit of unit
 	and pair = {type1 : t ; type2 : t} ;;
 
 
-type sesType = EndTag of string 
+type sesType = 
+	| EndTag (*of string*) 
 	| InputConfinded of inConT 
 	| OutputConfinded of outConT 
 	| Delegation of del 
@@ -30,14 +40,31 @@ and choiceS = { opList : option list}
 and option = { label : string ; sType : sesType}
 and inConT = { inValue : string ; sTypeIn : sesType}
 and outConT = { outValue : string ; sTypeOut : sesType}
-and del = { delValue : string ; sTypeD : sesType ; sTypeD2 : sesType}
-and res = { resValue : string ; sTypeR : sesType ; sTypeR2 : sesType} ;; *)  
+and del = { delValue : snd ; sTypeD : sesType ; sTypeD2 : sesType}
+and res = { resValue : reci ; sTypeR : sesType ; sTypeR2 : sesType} ;; 
 
-type stackFrame = {label: string ; sessType : string} ;; 
+(* session type to string *)
 
-type snd = Snd ;;
-type reci = Rec ;;
-type chnl = Chnl ;;  
+
+let rec sess_to_string (s: sesType) = 
+	match s with 
+	| EndTag ->  "endSesTyp"
+	| InputConfinded {inValue=a; sTypeIn=b}-> "Recieved: " ^ a ^ (sess_to_string b)
+	| OutputConfinded {outValue=a; sTypeOut=b}-> "Output: " ^ a ^ (sess_to_string b)
+	| Delegation { delValue=a ; sTypeD=b ; sTypeD2=c} -> "Delegate " ^ (sess_to_string b) ^ " over " ^ (sess_to_string c)
+	| Resumption { resValue=a ; sTypeR=b ; sTypeR2=c} -> "Resume " ^ (sess_to_string b) ^ " from " ^ (sess_to_string c)
+	| ChoiceS {opList=a} ->  "Choose: \n " ^ f a ^ "end Choice\n"
+	| ExtChoicS {opList1=a ; opList2=b} -> "Must Accept: \n" ^ f a ^ "May Accept: \n" ^ f b ^ "\n"
+	| SVar var -> "session variable"
+
+and f op = 
+	match op with 
+	| [] -> "";
+	| {label=a;sType=b}::l -> "\t ("^a ^"; "^(sess_to_string (b))^" )\n" ^ f l  
+;;
+
+type stackFrame = {label: string ; sessType : sesType} ;; 
+  
 
 type b = 
 	| BVar of string
@@ -53,7 +80,7 @@ type b =
 	| RecLab of recL
 	| SndChc of sndC
 	| RecChoice of recC
-	| None
+	| None 
 	(* | Some of b  *)
 and sndC = { regCa : string ; labl : string}
 and recC = { regCb : string ; cList : optionB list}
@@ -63,10 +90,10 @@ and recL = { regL : string ; label : string}
 (* and recL = { regL : string ; actRL : reci ; label : string} *)
 and sndR = { reg1 : string ; reg2 : string}
 (* and sndR = { reg1 : string ; actSR : snd ; reg2 : string} *)
-and recT = { regionR : string ; outTypeR : string}
+and recT = { regionR : string ; outTypeR : sesType}
 (* and recT = { regionR : string ; actR : snd ; outTypeR : string} *)
 (* and outT = { regionS : string ; actS : reci ; outTypeS : string} *)
-and outT = { regionS : string ; outTypeS : string}
+and outT = { regionS : string ; outTypeS : sesType}
 and push = { toPush : stackFrame}
 and spawn = { spawned : b}
 and recB = { behaVar : string ; behaviour : b} 
@@ -74,7 +101,8 @@ and choiceB = {opt1 : b ; opt2 : b}
 and seq = {b1 : b ; b2 : b};;
 
 
-open Core.Std
+
+(* print out behaviours *)
 let rec output_value outc = function
 	| BVar s 									-> printf "%s \n" s
  	| Tau  										-> printf "Tau \n" 
@@ -82,9 +110,9 @@ let rec output_value outc = function
  	| ChoiceB {opt1=op1;opt2=op2} 				-> print_choice outc op1 op2
  	| RecB {behaVar=beta;behaviour=b} 			-> print_rec outc beta b
  	| Spawn {spawned=b} 						-> print_spwn outc b
- 	| Push {toPush={label=lab;sessType=sTyp}} 	-> printf "push (%s, %s\n" lab sTyp
- 	| SndType {regionS=reg;outTypeS=typ} 		-> printf "Send %s over region %s\n" typ reg
-	| RecType {regionR=reg;outTypeR=typ} 		-> printf "Recive %s over region %s\n" typ reg
+ 	| Push {toPush={label=lab;sessType=sTyp}} 	-> printf "push (%s, %s\n" lab (sess_to_string sTyp)
+ 	| SndType {regionS=reg;outTypeS=typ} 		-> printf "Send %s over region %s\n" (sess_to_string typ) reg
+	| RecType {regionR=reg;outTypeR=typ} 		-> printf "Recive %s over region %s\n" (sess_to_string typ) reg
 	| SndReg {reg1=r1;reg2=r2} 					-> printf "Delegate %s %s \n" r1 r2
 	| RecLab {regL=r;label=lab} 				-> printf "Resume %s %s \n" r lab
 	| SndChc {regCa=reg;labl=lab} 				-> printf "Select %s %s \n" reg lab
