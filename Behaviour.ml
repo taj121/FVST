@@ -7,13 +7,14 @@ open Core.Std
 type beVar = BVar of string ;;
 type sesVar = SVar of string ;;
 type regVar = RVar of string ;; 
+type snd = Snd ;;
+type reci = Rec ;;
+type chnl = Chnl ;;
 removingt this level since I cant find a way to read in from parser*)
 
 type region = Label of string | RVar of string ;;
 
-type snd = Snd ;;
-type reci = Rec ;;
-type chnl = Chnl ;;
+
 
 type t = Unit (*of unit*) 
 	| Bool (*of bool *)
@@ -158,15 +159,17 @@ let rec output_value outc = function
  	output_string outc "spawn: ";
  	output_value outc b;
 
-type con = TCon of tCon
+type con = 
+	| TCon of tCon
 	| BCon of bCon
 	| RegRel of regRel
 	| ConRel of conRel
 	| ConRelAlt of conRelAlt
-	| ConSeq of con list
+	| ConSeq of conGroup
 	| None
+and conGroup = {con1 : con ; con2 : con}
 and tCon = {smlT : t ; bigT : t}
 and bCon = {smlB : b ; bigB : string}
 and regRel = {reg : string ; regLab : region}
-and conRel = {chnlA : chnl ; endptA : sesType}
-and conRelAlt = {chnlB : chnl ; endptB : sesType};;
+and conRel = {chnlA : string ; endptA : sesType}
+and conRelAlt = {chnlB : string ; endptB : sesType};;

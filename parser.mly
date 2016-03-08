@@ -1,10 +1,9 @@
 
 
 %token <string> BEVAR 
-%token SESSTYPE
 %token <string> LABLE
-%token TAU
 %token <string> REG
+%token TAU
 %token CHOICE
 %token REC
 %token SPAWN
@@ -19,7 +18,6 @@
 %token COLON
 %token COMMA
 %token EOF
-%token EOL
 (*type tokens*)
 %token UNIT
 %token BOOL
@@ -35,12 +33,20 @@
 %token SCHOICE
 %token SECHOICE
 %token <string> SVAR
+(*constraint tokens*)
+%token SUBSET
+%token LINK
+%token <string> CHANNEL
+%token <string> CHANNELEND
 
 %{
   open Behaviour
 %}
 
-%start <Behaviour.b> parse_behaviour 
+/*%start <Behaviour.b> parse_behaviour */
+%start parse_behaviour parse_constraint
+%type <Behaviour.b> parse_behaviour 
+%type <Behaviour.con> parse_constraint 
 
 %%
 
@@ -51,6 +57,10 @@
 parse_behaviour: 
   | b = behaviour EOF {b}
   /*| EOF {None}*/ ;
+
+parse_constraint:
+  | c = constr EOF {c}
+  ;
 
 
 behaviour :
@@ -132,3 +142,25 @@ bType:
     {Ses {rVar=r}}
   | t=TVAR
     {TVar t};
+
+region:
+  | l=LABLE
+    {Label l}
+  | r= REG
+    {RVar r}
+
+constr:
+  | t1=bType SUBSET t2=bType
+    {TCon {smlT=t1; bigT=t2}}
+  | b=behaviour SUBSET beta=BEVAR
+    {BCon {smlB=b;bigB=beta}}
+  | r=REG LINK r1=region
+    {RegRel {reg=r;regLab=r1}}
+  | c=CHANNEL LINK s=sessionType 
+    {ConRel {chnlA=c; endptA=s}}
+  | c=CHANNELEND LINK s=sessionType 
+    {ConRelAlt {chnlB=c; endptB=s}}
+  | c= constr COMMA c2= constr
+    {ConSeq {con1=c;con2=c2}}
+  |
+    {None}

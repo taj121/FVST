@@ -86,7 +86,11 @@ rule lex = parse
   | "end" 			{ SESEND } 
   | "(+)" 			{ SCHOICE }
   | "+"				{ SECHOICE }
-  | ['S']['0'-'9' 'A'-'Z' 'a'-'z' '_']* as s { SVAR (s) }
+  | "<"				{ SUBSET }
+  | "~"				{ LINK }			
+  | ['C']['0'-'9' 'A'-'Z' 'a'-'z' '_']+ as s {CHANNEL (s)}
+  | ['C']['N']['0'-'9' 'A'-'Z' 'a'-'z' '_']+ as s {CHANNELEND (s)}
+  | ['S']['0'-'9' 'A'-'Z' 'a'-'z' '_']+ as s { SVAR (s) }
   | ['B']['0'-'9' 'A'-'Z' 'a'-'z' '_']+ as s { BEVAR (s) }
   | ['R']['0'-'9' 'A'-'Z' 'a'-'z' '_']+ as s { REG (s) }
   | ['T']['0'-'9' 'A'-'Z' 'a'-'z' '_']* as s { TVAR (s) }
