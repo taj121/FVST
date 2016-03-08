@@ -158,28 +158,15 @@ let rec output_value outc = function
  	output_string outc "spawn: ";
  	output_value outc b;
 
-(* 	let rec output_value outc = function
-  | `Assoc obj  -> print_assoc outc obj
-  | `List l     -> print_list outc l
-  | `String s   -> printf "\"%s\"" s
-  | `Int i      -> printf "%d" i
-  | `Float x    -> printf "%f" x
-  | `Bool true  -> output_string outc "true"
-  | `Bool false -> output_string outc "false"
-  | `Null       -> output_string outc "null"
-
-and print_assoc outc obj =
-  output_string outc "{ ";
-  let sep = ref "" in
-  List.iter ~f:(fun (key, value) ->
-      printf "%s\"%s\": %a" !sep key output_value value;
-      sep := ",\n  ") obj;
-  output_string outc " }"
-
-and print_list outc arr =
-  output_string outc "[";
-  List.iteri ~f:(fun i v ->
-      if i > 0 then
-        output_string outc ", ";
-      output_value outc v) arr;
-  output_string outc "]"*)
+type con = TCon of tCon
+	| BCon of bCon
+	| RegRel of regRel
+	| ConRel of conRel
+	| ConRelAlt of conRelAlt
+	| ConSeq of con list
+	| None
+and tCon = {smlT : t ; bigT : t}
+and bCon = {smlB : b ; bigB : string}
+and regRel = {reg : string ; regLab : region}
+and conRel = {chnlA : chnl ; endptA : sesType}
+and conRelAlt = {chnlB : chnl ; endptB : sesType};;
