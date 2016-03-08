@@ -74,7 +74,7 @@ rule lex = parse
   | "?"				{ RECI }
   | "optn"			{ OPTION } 
   | "tau"			{ TAU }
-  | "*"				{ read_label (Buffer.create 17) lexbuf}
+  | "#"				{ read_label (Buffer.create 17) lexbuf}
   | "unit"			{ UNIT }
   | "bool"			{ BOOL }
   | "int"			{ INT }
@@ -93,28 +93,10 @@ rule lex = parse
   | _ 				{ raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
   | eof      		{ EOF }
 
-(*and read_sessType buf = parse 
-  | "end" 			{ SESEND } 
-  | "!"				{ SND }
-  | "?"				{ RECI }
-  | "unit"			{ UNIT }
-  | "bool"			{ BOOL }
-  | "int"			{ INT }
-  | "pair"			{ PAIR }
-  | "funct"			{ FUNCT }
-  | "ses"			{ SES }
-  | "->"			{ ARROW }
-  | "-"				{ DASH }
-  | "(+)" 			{ SCHOICE }
-  | "+"				{ SECHOICE }
-  | "*"				{ read_label (Buffer.create 17) lexbuf}
-  | ['S']['0'-'9' 'A'-'Z' 'a'-'z' '_']* as s { SVAR (s) }
-  | "endSes"		{ SESSTYPE (Buffer.contents buf) }*)
-
 and read_label buf =
   parse
-  | '*'       { LABLE (Buffer.contents buf) }
-  | [^ '*']+
+  | '#'       { LABLE (Buffer.contents buf) }
+  | [^ '#']+
     { Buffer.add_string buf (Lexing.lexeme lexbuf);
       read_label buf lexbuf
     }
