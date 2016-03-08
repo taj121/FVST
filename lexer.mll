@@ -74,7 +74,7 @@ rule lex = parse
   | "?"				{ RECI }
   | "optn"			{ OPTION } 
   | "tau"			{ TAU }
-  | "#"				{ read_label (Buffer.create 17) lexbuf}
+  | "$"				{ read_label (Buffer.create 17) lexbuf }
   | "unit"			{ UNIT }
   | "bool"			{ BOOL }
   | "int"			{ INT }
@@ -95,8 +95,8 @@ rule lex = parse
 
 and read_label buf =
   parse
-  | '#'       { LABLE (Buffer.contents buf) }
-  | [^ '#']+
+  | '$'       { LABLE (Buffer.contents buf) }
+  | [^ '$']+
     { Buffer.add_string buf (Lexing.lexeme lexbuf);
       read_label buf lexbuf
     }

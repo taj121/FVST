@@ -68,7 +68,7 @@ behaviour :
       {Spawn {spawned=b}}
   /*| PUSH LEFT_BRACE l = LABLE COMMA s = session RIGHT_BRACE
       {Push {toPush={label=l;sessType=s}}}*/
-  | PUSH LEFT_BRACE l = LABLE COMMA s=sessionType RIGHT_BRACE
+  | PUSH LEFT_BRACE l=LABLE COMMA s=sessionType RIGHT_BRACE
       {Push {toPush={label=l; sessType=s}}}
   | r = REG SND t = bType
       {SndType {regionS=r;outTypeS=t}}
@@ -80,11 +80,16 @@ behaviour :
       {RecLab {regL=r;label=l}}
   | r = REG SND l = LABLE
       {SndChc {regCa=r;labl=l}}
- /* | r = REG RECI OPTION LEFT_BRACE_SQ RIGHT_BRACE_SQ
-      {RecChoice (r,(*option list*))}*/ 
+  | r = REG RECI OPTION LEFT_BRACE_SQ o=oplist RIGHT_BRACE_SQ
+      {RecChoice {regCb=r;cList=o}};
 
-/*need to parse session types. think the way to do this is
-to have another thing like behaviour... */
+oplist:
+  opt = separated_list(COMMA, opt_field)    
+    { opt } ;
+
+opt_field:
+  LEFT_BRACE l=LABLE COLON b=behaviour RIGHT_BRACE
+    {(l,b)};
 
 sessionType:
   | SESEND
@@ -97,10 +102,22 @@ sessionType:
     {Delegation { sTypeD=s1; sTypeD2=s2}}
   | RECI s1=sessionType s2=sessionType
     {Resumption { sTypeR=s1; sTypeR2=s2} }
+  | SCHOICE LEFT_BRACE_SQ s=sesOpL RIGHT_BRACE_SQ LEFT_BRACE l=LABLE COLON t=sessionType RIGHT_BRACE
+    {ChoiceS {opList=s; sent=(l,t)}}
+  | SECHOICE LEFT_BRACE_SQ s1=sesOpL RIGHT_BRACE_SQ LEFT_BRACE_SQ s2=sesOpL RIGHT_BRACE_SQ
+    {ExtChoicS {opList1=s1;opList2=s2}}
   | s=SVAR
-    {SVar s}
+    {SVar s};
 
-  bType:
+sesOpL:
+  opt = separated_list(COMMA, ses_opt_field)    
+    { opt } ;
+
+ses_opt_field:
+  LEFT_BRACE l=LABLE COLON b=sessionType RIGHT_BRACE
+    {(l,b)};
+
+bType:
   | UNIT
     {Unit }
   | BOOL
@@ -114,4 +131,4 @@ sessionType:
   | SES r=REG
     {Ses {rVar=r}}
   | t=TVAR
-    {TVar t}
+    {TVar t};

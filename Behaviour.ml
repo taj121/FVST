@@ -46,9 +46,9 @@ type sesType =
 	| ChoiceS of choiceS
 	| ExtChoicS of extChoiceS 
 	| SVar of string
-and extChoiceS = { opList1 : option list ; opList2 : option list}
-and choiceS = { opList : option list}
-and option = { label : string ; sType : sesType}
+and extChoiceS = { opList1 : (string * sesType) list ; opList2 : (string * sesType) list}
+and choiceS = { opList : (string * sesType) list ; sent: (string* sesType)}
+(* and option = { label : string ; sType : sesType} *)
 and inConT = { inValue : t ; sTypeIn : sesType}
 and outConT = { outValue : t ; sTypeOut : sesType}
 and del = { sTypeD : sesType ; sTypeD2 : sesType}
@@ -71,7 +71,7 @@ let rec sess_to_string (s: sesType) =
 and f op = 
 	match op with 
 	| [] -> "";
-	| {label=a;sType=b}::l -> "\t ("^a ^"; "^(sess_to_string (b))^" )\n" ^ f l  
+	| (a,b)::l -> "\t ("^a ^"; "^(sess_to_string (b))^" )\n" ^ f l  
 ;;
 
 type stackFrame = {label: string ; sessType : sesType} ;; 
@@ -94,9 +94,10 @@ type b =
 	| None 
 	(* | Some of b  *)
 and sndC = { regCa : string ; labl : string}
-and recC = { regCb : string ; cList : optionB list}
+(* and recC = { regCb : string ; cList : optionB list} *)
+and recC = { regCb : string ; cList : (string * b) list}
 (* and sndC = { regC : string ; actC : string ; cList : optionB list} *)
-and optionB = { labelO : string ; beOpt : b }
+(* and optionB = { labelO : string ; beOpt : b } *)
 and recL = { regL : string ; label : string}
 (* and recL = { regL : string ; actRL : reci ; label : string} *)
 and sndR = { reg1 : string ; reg2 : string}
@@ -115,34 +116,42 @@ and seq = {b1 : b ; b2 : b};;
 
 (* print out behaviours *)
 let rec output_value outc = function
-	| BVar s 									-> printf "string fix \n"
+	| BVar s 									-> printf "Bvar fix \n"
  	| Tau  										-> printf "Tau \n" 
  	| Seq {b1=b_1;b2=b_2} 						-> print_seq outc b_1 b_2
  	| ChoiceB {opt1=op1;opt2=op2} 				-> print_choice outc op1 op2
  	| RecB {behaVar=beta;behaviour=b} 			-> print_rec outc beta b
  	| Spawn {spawned=b} 						-> print_spwn outc b
- 	| Push {toPush={label=lab;sessType=sTyp}} 	-> printf "push (%s, %s\n" lab (sess_to_string sTyp)
+ 	| Push {toPush={label=lab;sessType=sTyp}} 	-> printf "push (%s, %s)\n" lab (sess_to_string sTyp)
  	| SndType {regionS=reg;outTypeS=typ} 		-> printf "Send %s over region tofix\n" (type_to_string typ) 
 	| RecType {regionR=reg;outTypeR=typ} 		-> printf "Recive %s over region tofix\n" (type_to_string typ) 
 	| SndReg {reg1=r1;reg2=r2} 					-> printf "Delegate tofix \n" 
 	| RecLab {regL=r;label=lab} 				-> printf "Resume tofix %s \n"  lab
 	| SndChc {regCa=reg;labl=lab} 				-> printf "Select tofix %s \n" lab
-	(* | None 										-> printf "\nEOF\n" *)
-	  | _ 										-> printf "err\n "   
+	| RecChoice {regCb=reg ; cList= lst}    	-> print_op_list outc reg lst
+	(* | None 									 	-> printf "\nEOF\n" *)
+	| _ 										-> printf "err\n "   
+ 
+ and print_op_list outc reg lst=
+ 	output_string outc "Receive: \n[";
+ 	List.iter ~f:(fun (lable, behav) -> printf "(%s, %a)" lable output_value behav) lst;
+ 	output_string outc " over region ";
+ 	output_string outc reg;
+
 
  and print_seq outc b1 b2 =  
  	output_value outc b1 ;
  	output_value outc b2 ;
 
  and print_choice outc op1 op2 = 
- 	output_string outc "choose: \n";
+ 	output_string outc "choose: \n\t";
  	output_value outc op1 ;
- 	output_string outc " or \n";
+ 	output_string outc "or \n\t";
  	output_value outc op2 ;
- 	output_string outc "end choice";
+ 	output_string outc "end choice\n";
 
  and print_rec outc beta b =
- 	output_string outc "recursive behaviour: %s ";
+ 	output_string outc "recursive behaviour: ";
  	output_value outc b;
 
  and print_spwn outc b =
