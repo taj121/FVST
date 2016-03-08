@@ -3,28 +3,39 @@
 open Core.Std
 
 
-type typeVar = TVar of string ;;
+(* type typeVar = TVar of string ;;
 type beVar = BVar of string ;;
 type sesVar = SVar of string ;;
-type regVar = RVar of string ;;
+type regVar = RVar of string ;; 
+removingt this level since I cant find a way to read in from parser*)
 
-type region = Label of string | RVar of regVar ;;
+type region = Label of string | RVar of string ;;
 
 type snd = Snd ;;
 type reci = Rec ;;
 type chnl = Chnl ;;
 
-type t = Unit of unit 
-	| Bool of bool 
-	| Int of int
+type t = Unit (*of unit*) 
+	| Bool (*of bool *)
+	| Int (*of int*)
 	| Pair of pair 
 	| Funct of func 
 	| Ses of ses
-	| TVar of typeVar 
-	and ses = {rVar : regVar}
-	and func = {inType : t ; outType : t ; behav : beVar}
+	| TVar of string 
+	and ses = {rVar : string}
+	and func = {inType : t ; outType : t ; behav : string}
 	and pair = {type1 : t ; type2 : t} ;;
 
+let rec type_to_string typ = 
+	match typ with 
+	| Unit  -> " unit "
+	| Bool  -> "bool"
+	| Int  -> "int"
+	| Pair {type1=a;type2=b} -> " (" ^ "type1" ^ " X " ^ "type 2" ^ ") " (*fix v*)
+	| Funct {inType=a; outType=b; behav=c} -> " (" ^ "in type" ^ " -" ^ "some behaviour" ^ "->" ^ "out type" ^ ") "
+	| Ses {rVar=a} -> "ses over reg" 
+	| TVar t -> " type var "
+;;
 
 type sesType = 
 	| EndTag (*of string*) 
@@ -34,14 +45,14 @@ type sesType =
 	| Resumption of res 
 	| ChoiceS of choiceS
 	| ExtChoicS of extChoiceS 
-	| SVar of sesVar
+	| SVar of string
 and extChoiceS = { opList1 : option list ; opList2 : option list}
 and choiceS = { opList : option list}
 and option = { label : string ; sType : sesType}
-and inConT = { inValue : string ; sTypeIn : sesType}
-and outConT = { outValue : string ; sTypeOut : sesType}
-and del = { delValue : snd ; sTypeD : sesType ; sTypeD2 : sesType}
-and res = { resValue : reci ; sTypeR : sesType ; sTypeR2 : sesType} ;; 
+and inConT = { inValue : t ; sTypeIn : sesType}
+and outConT = { outValue : t ; sTypeOut : sesType}
+and del = { sTypeD : sesType ; sTypeD2 : sesType}
+and res = { sTypeR : sesType ; sTypeR2 : sesType} ;; 
 
 (* session type to string *)
 
@@ -49,10 +60,10 @@ and res = { resValue : reci ; sTypeR : sesType ; sTypeR2 : sesType} ;;
 let rec sess_to_string (s: sesType) = 
 	match s with 
 	| EndTag ->  "endSesTyp"
-	| InputConfinded {inValue=a; sTypeIn=b}-> "Recieved: " ^ a ^ (sess_to_string b)
-	| OutputConfinded {outValue=a; sTypeOut=b}-> "Output: " ^ a ^ (sess_to_string b)
-	| Delegation { delValue=a ; sTypeD=b ; sTypeD2=c} -> "Delegate " ^ (sess_to_string b) ^ " over " ^ (sess_to_string c)
-	| Resumption { resValue=a ; sTypeR=b ; sTypeR2=c} -> "Resume " ^ (sess_to_string b) ^ " from " ^ (sess_to_string c)
+	| InputConfinded {inValue=a; sTypeIn=b}-> "Recieved: " ^ type_to_string a ^ (sess_to_string b)
+	| OutputConfinded {outValue=a; sTypeOut=b}-> "Output: " ^ type_to_string a ^ (sess_to_string b)
+	| Delegation {sTypeD=b ; sTypeD2=c} -> "Delegate " ^ (sess_to_string b) ^ " over " ^ (sess_to_string c)
+	| Resumption {sTypeR=b ; sTypeR2=c} -> "Resume " ^ (sess_to_string b) ^ " from " ^ (sess_to_string c)
 	| ChoiceS {opList=a} ->  "Choose: \n " ^ f a ^ "end Choice\n"
 	| ExtChoicS {opList1=a ; opList2=b} -> "Must Accept: \n" ^ f a ^ "May Accept: \n" ^ f b ^ "\n"
 	| SVar var -> "session variable"
@@ -90,10 +101,10 @@ and recL = { regL : string ; label : string}
 (* and recL = { regL : string ; actRL : reci ; label : string} *)
 and sndR = { reg1 : string ; reg2 : string}
 (* and sndR = { reg1 : string ; actSR : snd ; reg2 : string} *)
-and recT = { regionR : string ; outTypeR : sesType}
+and recT = { regionR : string ; outTypeR : t}
 (* and recT = { regionR : string ; actR : snd ; outTypeR : string} *)
 (* and outT = { regionS : string ; actS : reci ; outTypeS : string} *)
-and outT = { regionS : string ; outTypeS : sesType}
+and outT = { regionS : string ; outTypeS : t}
 and push = { toPush : stackFrame}
 and spawn = { spawned : b}
 and recB = { behaVar : string ; behaviour : b} 
@@ -104,18 +115,18 @@ and seq = {b1 : b ; b2 : b};;
 
 (* print out behaviours *)
 let rec output_value outc = function
-	| BVar s 									-> printf "%s \n" s
+	| BVar s 									-> printf "string fix \n"
  	| Tau  										-> printf "Tau \n" 
  	| Seq {b1=b_1;b2=b_2} 						-> print_seq outc b_1 b_2
  	| ChoiceB {opt1=op1;opt2=op2} 				-> print_choice outc op1 op2
  	| RecB {behaVar=beta;behaviour=b} 			-> print_rec outc beta b
  	| Spawn {spawned=b} 						-> print_spwn outc b
  	| Push {toPush={label=lab;sessType=sTyp}} 	-> printf "push (%s, %s\n" lab (sess_to_string sTyp)
- 	| SndType {regionS=reg;outTypeS=typ} 		-> printf "Send %s over region %s\n" (sess_to_string typ) reg
-	| RecType {regionR=reg;outTypeR=typ} 		-> printf "Recive %s over region %s\n" (sess_to_string typ) reg
-	| SndReg {reg1=r1;reg2=r2} 					-> printf "Delegate %s %s \n" r1 r2
-	| RecLab {regL=r;label=lab} 				-> printf "Resume %s %s \n" r lab
-	| SndChc {regCa=reg;labl=lab} 				-> printf "Select %s %s \n" reg lab
+ 	| SndType {regionS=reg;outTypeS=typ} 		-> printf "Send %s over region tofix\n" (type_to_string typ) 
+	| RecType {regionR=reg;outTypeR=typ} 		-> printf "Recive %s over region tofix\n" (type_to_string typ) 
+	| SndReg {reg1=r1;reg2=r2} 					-> printf "Delegate tofix \n" 
+	| RecLab {regL=r;label=lab} 				-> printf "Resume tofix %s \n"  lab
+	| SndChc {regCa=reg;labl=lab} 				-> printf "Select tofix %s \n" lab
 	(* | None 										-> printf "\nEOF\n" *)
 	  | _ 										-> printf "err\n "   
 

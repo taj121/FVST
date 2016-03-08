@@ -1,7 +1,7 @@
 
 
 %token <string> BEVAR 
-%token <string> SESSTYPE
+%token SESSTYPE
 %token <string> LABLE
 %token TAU
 %token <string> REG
@@ -20,14 +20,26 @@
 %token COMMA
 %token EOF
 %token EOL
-%token <string> TYPE
-
+(*type tokens*)
+%token UNIT
+%token BOOL
+%token INT
+%token PAIR
+%token FUNCT
+%token SES
+%token <string> TVAR
+%token ARROW
+%token DASH
+(*session type tokens*)
+%token SESEND
+%token SCHOICE
+%token SECHOICE
+%token <string> SVAR
 
 %{
-  (*open Lexer*)
   open Behaviour
 %}
-/*for the moment return string*/
+
 %start <Behaviour.b> parse_behaviour 
 
 %%
@@ -54,11 +66,13 @@ behaviour :
       {RecB {behaVar=var;behaviour=b}}
   | SPAWN LEFT_BRACE b = behaviour RIGHT_BRACE
       {Spawn {spawned=b}}
-  | PUSH LEFT_BRACE l = LABLE COMMA s = SESSTYPE RIGHT_BRACE
-      {Push {toPush={label=l;sessType=s}}}
-  | r = REG SND t = TYPE
+  /*| PUSH LEFT_BRACE l = LABLE COMMA s = session RIGHT_BRACE
+      {Push {toPush={label=l;sessType=s}}}*/
+  | PUSH LEFT_BRACE l = LABLE COMMA s=sessionType RIGHT_BRACE
+      {Push {toPush={label=l; sessType=s}}}
+  | r = REG SND t = bType
       {SndType {regionS=r;outTypeS=t}}
-  | r = REG RECI t = TYPE
+  | r = REG RECI t = bType
       {RecType {regionR=r;outTypeR=t}}
   | r1 = REG SND r2 = REG
       {SndReg {reg1=r1;reg2=r2}}
@@ -68,3 +82,36 @@ behaviour :
       {SndChc {regCa=r;labl=l}}
  /* | r = REG RECI OPTION LEFT_BRACE_SQ RIGHT_BRACE_SQ
       {RecChoice (r,(*option list*))}*/ 
+
+/*need to parse session types. think the way to do this is
+to have another thing like behaviour... */
+
+sessionType:
+  | SESEND
+    { EndTag }
+  | SND t=bType s=sessionType
+    {InputConfinded { inValue=t; sTypeIn=s} }
+  | RECI t=bType s=sessionType
+    {OutputConfinded { outValue=t; sTypeOut=s} }
+  | SND s1=sessionType s2=sessionType
+    {Delegation { sTypeD=s1; sTypeD2=s2}}
+  | RECI s1=sessionType s2=sessionType
+    {Resumption { sTypeR=s1; sTypeR2=s2} }
+  | s=SVAR
+    {SVar s}
+
+  bType:
+  | UNIT
+    {Unit }
+  | BOOL
+    {Bool }
+  | INT
+    {Int }
+  | PAIR LEFT_BRACE t1=bType COLON t2=bType RIGHT_BRACE 
+    {Pair {type1=t1 ; type2=t2 }}
+  | FUNCT t1=bType ARROW t2=bType DASH b=BEVAR
+    {Funct {inType=t1; outType=t2; behav=b}}
+  | SES r=REG
+    {Ses {rVar=r}}
+  | t=TVAR
+    {TVar t}
