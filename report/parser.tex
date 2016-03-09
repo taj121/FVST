@@ -1,0 +1,100 @@
+
+
+\title{Grammars}
+\author{
+        Th\'{e}a Johnson \\
+        12307926
+}
+\date{\today}
+
+\documentclass[12pt]{article}
+
+\usepackage{syntax}
+\usepackage{textcomp}
+
+\begin{document}
+\maketitle
+
+\section {Grammars}
+
+\subsection{Types}
+
+\begin{grammar}
+
+<bType> ::= Unit
+\alt Bool
+\alt Int
+\alt Pair ( <bType> ; <bType> )
+\alt Funct <bType> $\rightarrow$ <bType> - <behaviourVariable>
+\alt Ses <region>
+\alt <TVar>
+
+\end{grammar}
+
+\subsection{Session Types}
+
+\begin{grammar}
+
+<sessionType> ::= End
+\alt Send <bType> <sessionType>
+\alt Reci <bType> <sessionType>
+\alt Send <sessionType> <sessionType>
+\alt Reci <sessionType> <sessionType>
+\alt SChoice [<sesOpL>] (<lable> ; <sessionType>)
+\alt SEChoice [<sesOpL>] [<sesOpL>]
+\alt <SVar>
+
+<sesOpL> ::= seperated_list(',',<ses_opt_field>)
+
+<ses_opt_field> := (<lable> ; <sessionType>)
+
+\end{grammar}
+
+\subsection{Behaviour}
+
+\begin{grammar}
+
+<behaviour> ::= <behaviourVariable>
+\alt Tau
+\alt <behaviour>;<behaviour>
+\alt Choice (<behaviour>,<behaviour>)
+\alt Rec <behaviourVariable> <behaviour>
+\alt Spawn (<behaviour>)
+\alt Push (<lable>,<sessionType>)
+\alt <region> ! <behaviourVariable>
+\alt <region> ? <behaviourVariable>
+\alt <region> ! <region>
+\alt <region> ? <lable>
+\alt <region> ! <lable>
+\alt <region> ? option[<oplist>]
+
+<oplist> ::= seperated_list(',',opt_feild)
+
+<opt_feild> ::= (<lable> ; <behavioiur>)
+
+\end{grammar}
+
+\subsection {Region Variables}
+
+\begin{grammar}
+
+<regionVar> ::= <lable>
+\alt <region>
+
+\end{grammar}
+
+\subsection{Constraints}
+
+\begin{grammar}
+
+<constr> ::= <bType> \textless <bType>
+\alt <behaviour> \textless <behaviour>
+\alt <region> \texttildelow <regionVar>
+\alt <channel> \texttildelow <sessionType>
+\alt <channelEnd> \texttildelow <sessionType>
+\alt <contr> , <constr>
+\alt $\epsilon$
+
+\end{grammar}
+
+\end{document}

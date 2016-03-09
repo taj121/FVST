@@ -76,8 +76,6 @@ behaviour :
       {RecB {behaVar=var;behaviour=b}}
   | SPAWN LEFT_BRACE b = behaviour RIGHT_BRACE
       {Spawn {spawned=b}}
-  /*| PUSH LEFT_BRACE l = LABLE COMMA s = session RIGHT_BRACE
-      {Push {toPush={label=l;sessType=s}}}*/
   | PUSH LEFT_BRACE l=LABLE COMMA s=sessionType RIGHT_BRACE
       {Push {toPush={label=l; sessType=s}}}
   | r = REG SND t = bType
@@ -143,7 +141,7 @@ bType:
   | t=TVAR
     {TVar t};
 
-region:
+regionVar:
   | l=LABLE
     {Label l}
   | r= REG
@@ -154,7 +152,7 @@ constr:
     {TCon {smlT=t1; bigT=t2}}
   | b=behaviour SUBSET beta=BEVAR
     {BCon {smlB=b;bigB=beta}}
-  | r=REG LINK r1=region
+  | r=REG LINK r1=regionVar
     {RegRel {reg=r;regLab=r1}}
   | c=CHANNEL LINK s=sessionType 
     {ConRel {chnlA=c; endptA=s}}
