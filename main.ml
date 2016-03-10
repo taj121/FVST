@@ -20,8 +20,8 @@ let parse_with_error lexbuf =
 (* part 1 *)
 let rec parse_and_print lexbuf =
   match parse_with_error lexbuf with
-  | (*Some*) value ->
-    printf "%a\n" Behaviour.output_value value;
+  | (*Some*) value -> 
+    printf "%a\n" Behaviour.output_b value;
     parse_and_print lexbuf
   | None -> ()
 
@@ -34,7 +34,7 @@ let rec parse_and_print lexbuf =
 
 (* part 2 *)
  let () =
-  Command.basic ~summary:"Parse and display JSON"
+  Command.basic ~summary:"Parse and display behaviours"
     Command.Spec.(empty +> anon ("filename" %: file))
     loop 
   |> Command.run  

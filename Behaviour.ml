@@ -32,10 +32,10 @@ let rec type_to_string typ =
 	| Unit  -> " unit "
 	| Bool  -> "bool"
 	| Int  -> "int"
-	| Pair {type1=a;type2=b} -> " (" ^ "type1" ^ " X " ^ "type 2" ^ ") " (*fix v*)
-	| Funct {inType=a; outType=b; behav=c} -> " (" ^ "in type" ^ " -" ^ "some behaviour" ^ "->" ^ "out type" ^ ") "
-	| Ses {rVar=a} -> "ses over reg" 
-	| TVar t -> " type var "
+	| Pair {type1=a;type2=b} -> "Pair (" ^ type_to_string a ^ "; " ^ type_to_string b ^ ") " 
+	| Funct {inType=a; outType=b; behav=c} -> "Funct " ^ type_to_string a  ^ "->" ^ type_to_string b^ " -" ^  c
+	| Ses {rVar=a} -> "ses " ^ a 
+	| TVar t -> t
 ;;
 
 type sesType = 
@@ -60,19 +60,19 @@ and res = { sTypeR : sesType ; sTypeR2 : sesType} ;;
 
 let rec sess_to_string (s: sesType) = 
 	match s with 
-	| EndTag ->  "endSesTyp"
-	| InputConfinded {inValue=a; sTypeIn=b}-> "Recieved: " ^ type_to_string a ^ (sess_to_string b)
-	| OutputConfinded {outValue=a; sTypeOut=b}-> "Output: " ^ type_to_string a ^ (sess_to_string b)
-	| Delegation {sTypeD=b ; sTypeD2=c} -> "Delegate " ^ (sess_to_string b) ^ " over " ^ (sess_to_string c)
-	| Resumption {sTypeR=b ; sTypeR2=c} -> "Resume " ^ (sess_to_string b) ^ " from " ^ (sess_to_string c)
-	| ChoiceS {opList=a} ->  "Choose: \n " ^ f a ^ "end Choice\n"
-	| ExtChoicS {opList1=a ; opList2=b} -> "Must Accept: \n" ^ f a ^ "May Accept: \n" ^ f b ^ "\n"
-	| SVar var -> "session variable"
+	| EndTag ->  "end"
+	| InputConfinded {inValue=a; sTypeIn=b}-> "! " ^ type_to_string a ^ " "^(sess_to_string b)
+	| OutputConfinded {outValue=a; sTypeOut=b}-> "? " ^ type_to_string a ^  " "^(sess_to_string b)
+	| Delegation {sTypeD=b ; sTypeD2=c} -> "! " ^ (sess_to_string b) ^ " " ^ (sess_to_string c)
+	| Resumption {sTypeR=b ; sTypeR2=c} -> "? " ^ (sess_to_string b) ^ " " ^ (sess_to_string c)
+	| ChoiceS {opList=a; sent=(b,c)} ->  "(+)[" ^ f a ^ "] ("^ b ^"; " ^ sess_to_string c ^ ")"
+	| ExtChoicS {opList1=a ; opList2=b} -> "+[" ^ f a ^ "][ " ^ f b ^ "] "
+	| SVar var -> var
 
 and f op = 
 	match op with 
 	| [] -> "";
-	| (a,b)::l -> "\t ("^a ^"; "^(sess_to_string (b))^" )\n" ^ f l  
+	| (a,b)::l -> " ("^a ^"; "^(sess_to_string (b))^" ) " ^ f l  
 ;;
 
 type stackFrame = {label: string ; sessType : sesType} ;; 
@@ -93,19 +93,11 @@ type b =
 	| SndChc of sndC
 	| RecChoice of recC
 	| None 
-	(* | Some of b  *)
 and sndC = { regCa : string ; labl : string}
-(* and recC = { regCb : string ; cList : optionB list} *)
 and recC = { regCb : string ; cList : (string * b) list}
-(* and sndC = { regC : string ; actC : string ; cList : optionB list} *)
-(* and optionB = { labelO : string ; beOpt : b } *)
 and recL = { regL : string ; label : string}
-(* and recL = { regL : string ; actRL : reci ; label : string} *)
 and sndR = { reg1 : string ; reg2 : string}
-(* and sndR = { reg1 : string ; actSR : snd ; reg2 : string} *)
 and recT = { regionR : string ; outTypeR : t}
-(* and recT = { regionR : string ; actR : snd ; outTypeR : string} *)
-(* and outT = { regionS : string ; actS : reci ; outTypeS : string} *)
 and outT = { regionS : string ; outTypeS : t}
 and push = { toPush : stackFrame}
 and spawn = { spawned : b}
@@ -114,26 +106,30 @@ and choiceB = {opt1 : b ; opt2 : b}
 and seq = {b1 : b ; b2 : b};;
 
 
+let rec behaviour_to_string (b:b) =
+	match b with 
+	| BVar s 									-> s
+ 	| Tau  										-> "Tau" 
+ 	| Seq {b1=b_1;b2=b_2} 						-> behaviour_to_string b_1 ^" ;\n "^ behaviour_to_string b_2 
+ 	| ChoiceB {opt1=op1;opt2=op2} 				-> "chc( " ^ behaviour_to_string op1 ^ ", " ^ behaviour_to_string op2 ^ ")"
+ 	| RecB {behaVar=beta;behaviour=b} 			-> "rec" ^ beta ^" "^ behaviour_to_string b ^" )"
+ 	| Spawn {spawned=b} 						-> "Spn( " ^ behaviour_to_string b 
+ 	| Push {toPush={label=lab;sessType=sTyp}} 	-> "Psh ( " ^ lab ^", "^  sess_to_string sTyp ^ " )" 
+ 	| SndType {regionS=reg;outTypeS=typ} 		-> reg ^ " ! " ^ type_to_string typ 
+	| RecType {regionR=reg;outTypeR=typ} 		-> reg ^ " ? " ^ type_to_string typ   
+	| SndReg {reg1=r1;reg2=r2} 					-> r1 ^ " ! "^ r2
+	| RecLab {regL=r;label=lab} 				-> r ^" ? " ^ lab  
+	| SndChc {regCa=reg;labl=lab} 				-> reg ^" ! "^ lab 
+	| RecChoice {regCb=reg ; cList= lst}    	-> reg ^ " ? optn [" ^ p lst^ "]" 
+	|  _ 										-> "\nerr\n " 
 
-(* print out behaviours *)
-let rec output_value outc = function
-	| BVar s 									-> printf "Bvar fix \n"
- 	| Tau  										-> printf "Tau \n" 
- 	| Seq {b1=b_1;b2=b_2} 						-> print_seq outc b_1 b_2
- 	| ChoiceB {opt1=op1;opt2=op2} 				-> print_choice outc op1 op2
- 	| RecB {behaVar=beta;behaviour=b} 			-> print_rec outc beta b
- 	| Spawn {spawned=b} 						-> print_spwn outc b
- 	| Push {toPush={label=lab;sessType=sTyp}} 	-> printf "push (%s, %s)\n" lab (sess_to_string sTyp)
- 	| SndType {regionS=reg;outTypeS=typ} 		-> printf "Send %s over region tofix\n" (type_to_string typ) 
-	| RecType {regionR=reg;outTypeR=typ} 		-> printf "Recive %s over region tofix\n" (type_to_string typ) 
-	| SndReg {reg1=r1;reg2=r2} 					-> printf "Delegate tofix \n" 
-	| RecLab {regL=r;label=lab} 				-> printf "Resume tofix %s \n"  lab
-	| SndChc {regCa=reg;labl=lab} 				-> printf "Select tofix %s \n" lab
-	| RecChoice {regCb=reg ; cList= lst}    	-> print_op_list outc reg lst
-	(* | None 									 	-> printf "\nEOF\n" *)
-	| _ 										-> printf "err\n "   
+and p a=
+	match a with 
+	| [] -> ""
+	| (a,b)::l -> "("^a^"; "^ behaviour_to_string b ^ ") " ^ p l 
+
  
- and print_op_list outc reg lst=
+ (* and print_op_list outc reg lst=
  	output_string outc "Receive: \n[";
  	List.iter ~f:(fun (lable, behav) -> printf "(%s, %a)" lable output_value behav) lst;
  	output_string outc " over region ";
@@ -157,7 +153,7 @@ let rec output_value outc = function
 
  and print_spwn outc b =
  	output_string outc "spawn: ";
- 	output_value outc b;
+ 	output_value outc b; *)
 
 type con = 
 	| TCon of tCon
@@ -173,3 +169,26 @@ and bCon = {smlB : b ; bigB : string}
 and regRel = {reg : string ; regLab : region}
 and conRel = {chnlA : string ; endptA : sesType}
 and conRelAlt = {chnlB : string ; endptB : sesType};;
+
+let region_to_string r=
+	match r with 
+	| Label l 	-> l 
+	| RVar r  	-> r
+;;
+
+let rec con_to_string c =
+	match c with 
+	| TCon {smlT=a;bigT=b}				-> type_to_string a ^ " < " ^ type_to_string b ^ " "
+	| BCon {smlB=a;bigB=b}				-> behaviour_to_string a ^ " < " ^ b ^ " "
+	| RegRel {reg=a;regLab=b} 			-> a ^ " ~ " ^ region_to_string b ^ " "    
+	| ConRel {chnlA=a ; endptA=b}		-> a ^ " ~ " ^ sess_to_string b ^" "
+	| ConRelAlt {chnlB=a ; endptB=b}	-> a ^ " ~ " ^ sess_to_string b ^" "
+	| ConSeq {con1=a; con2=b}			-> con_to_string a ^"; "^con_to_string b  
+	| None 								-> "empty"
+;;
+
+
+(* print out behaviours *)
+let output_b outc input =  output_string outc (behaviour_to_string input);;
+let output_con outc input =  output_string outc (con_to_string input);;
+

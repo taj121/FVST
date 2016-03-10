@@ -44,23 +44,23 @@
 %}
 
 /*%start <Behaviour.b> parse_behaviour */
-%start parse_behaviour parse_constraint
-%type <Behaviour.b> parse_behaviour 
-%type <Behaviour.con> parse_constraint 
+%start parse_behaviour /*parse_constraint*/
+%type <Behaviour.b > parse_behaviour 
+/*%type <Behaviour.con> parse_constraint */
 
 %%
 
 /*parse_behaviour:
-  | EOF       {  None }
   | b = behaviour {b}
+  | EOF       {  None }
   ;*/
 parse_behaviour: 
-  | b = behaviour EOF {b}
+  | b = behaviour c = constr EOF {b}
   /*| EOF {None}*/ ;
 
-parse_constraint:
+/*parse_constraint:
   | c = constr EOF {c}
-  ;
+  ;*/
 
 
 behaviour :
