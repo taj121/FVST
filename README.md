@@ -1,9 +1,10 @@
 # Formal Verification of Session Types 
 
 ##Running instructions
-
-$ ocamlbuild -use-menhir -tag thread -use-ocamlfind -quiet -pkg core main.native
-
+<pre>
+ ocamlbuild -use-menhir -tag thread -use-ocamlfind -quiet -pkg core main.native
+</pre>
 then
-
-$ ./main.native tests/swapService.ml
+<pre>
+ ./main.native tests/swapService.ml
+ </pre>
