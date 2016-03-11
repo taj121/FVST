@@ -19,4 +19,7 @@ R7 ? T1;
 R8 ? $hi$;
 R9 ! $bye$;
 R666 ? optn [($1$;B12),($2$;B15),($3$;B13)]
-	
+
+unit <  int,
+C1~end,
+CN1~end

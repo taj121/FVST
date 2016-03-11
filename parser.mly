@@ -43,20 +43,19 @@
   open Behaviour
 %}
 
-/*%start <Behaviour.b> parse_behaviour */
 %start parse_behaviour /*parse_constraint*/
-%type <Behaviour.b > parse_behaviour 
+/*%type <Behaviour.b * Behaviour.con> parse_behaviour*/  /*best attempt so far at printing both the behaviours and the constraints from file*/
+%type <Behaviour.b> parse_behaviour  /*working version of above with only behaviours printed*/
 /*%type <Behaviour.con> parse_constraint */
 
 %%
 
-/*parse_behaviour:
-  | b = behaviour {b}
-  | EOF       {  None }
-  ;*/
+
 parse_behaviour: 
-  | b = behaviour c = constr EOF {b}
-  /*| EOF {None}*/ ;
+  /*| EOF {(None,None)}*/
+ /* | b = behaviour c = constr EOF {(b,c)}*/ /*best attempt so far at printing both the behaviours and the constraints from file*/
+  | b = behaviour c = constr EOF {(b)} /*working version with only behaviours printed*/
+  ;
 
 /*parse_constraint:
   | c = constr EOF {c}
