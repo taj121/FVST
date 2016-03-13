@@ -39,6 +39,9 @@
 %token <string> CHANNEL
 %token <string> CHANNELEND
 
+%right COLON
+%right COMMA
+
 %{
   open Behaviour
 %}
@@ -103,7 +106,7 @@ sessionType:
     { EndTag }
   | SND t=bType s=sessionType
     {InputConfinded { inValue=t; sTypeIn=s} }
-  | RECI t=bType s=sessionType
+  | RECI t=bType LEFT_BRACE s=sessionType RIGHT_BRACE
     {OutputConfinded { outValue=t; sTypeOut=s} }
   | SND s1=sessionType s2=sessionType
     {Delegation { sTypeD=s1; sTypeD2=s2}}

@@ -102,6 +102,11 @@ and recB = { behaVar : string ; behaviour : b}
 and choiceB = {opt1 : b ; opt2 : b}
 and seq = {b1 : b ; b2 : b};;
 
+(* function for checking behaviours  *)
+(* let rec check_behav b s=
+match b with 
+|  *)
+
 (* behaviour to string *)
 let rec behaviour_to_string (b:b) =
 	match b with 
@@ -141,6 +146,20 @@ and bCon = {smlB : b ; bigB : string}
 and regRel = {reg : string ; regLab : region}
 and conRel = {chnlA : string ; endptA : sesType}
 and conRelAlt = {chnlB : string ; endptB : sesType};;
+
+(*
+idea for storing constraints for checking
+
+hash table.
+
+key is string version of first part
+
+problems: two types of constrainst
+first part could be really long
+second parts can be different
+
+idea: key is string of second part? less likely to be really long... still could be though
+*)
 
 (* constraints to string *)
 let rec con_to_string c =

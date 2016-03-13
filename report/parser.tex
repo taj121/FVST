@@ -1,6 +1,6 @@
 
 
-\title{Grammars}
+\title{Parser}
 \author{
         Th\'{e}a Johnson \\
         12307926
@@ -11,9 +11,32 @@
 
 \usepackage{syntax}
 \usepackage{textcomp}
+\usepackage{amsmath}
 
 \begin{document}
 \maketitle
+
+\section {Designing the Parser}
+
+The parser in this project is written using ocamllex (for the lexer) and menhir (for the parser). The first stage in building this was to design an text based version of the behaviours and constraints. This involved replacing all non standard keyboard characters with ones that can be typed easily. The lexer was then written to transform this syntax into a stream of tokens. This was then parsed by the parser file and, initially, output to the console to see that it was in fact parsing correctly. 
+
+\subsection{Text Syntax}
+
+The syntax given in the paper can be seen in (put figure in here). The text based syntax substitutions can be seen in (other figure). 
+
+\begin{tabular}{l c }
+Mathmatical Syntax & Text Based Syntax \\
+\hline
+$\alpha$ & [T][A-Z a-z 1-9]+ \\
+$\beta$ & [B][A-Z a-z 1-9]+ \\
+$\psi$ & [S][A-Z a-z 1-9]+ \\
+$\rho$ & [R][A-Z a-z 1-9]+ \\
+$T x T$ & pair (T;T) \\
+$ T\overset{\beta}{\rightarrow}T $ & funct T -$>$ T -[B][A-Z a-z 1-9]+ \\
+$Ses^\rho$ & ses [R][A-Z a-z 1-9]+ \\
+
+
+\end{tabular}
 
 \section {Grammars}
 
