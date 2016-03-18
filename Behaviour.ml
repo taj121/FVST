@@ -1,16 +1,9 @@
-
-
 open Core.Std
+
+(* TYPES *)
 
 (*region type*)
 type region = Label of string | RVar of string ;;
-
-(* region type to string *)
-let region_to_string r=
-	match r with 
-	| Label l 	-> l 
-	| RVar r  	-> r
-;;
 
 (*type for types*)
 type t = Unit 
@@ -23,17 +16,6 @@ type t = Unit
 	and func = {inType : t ; outType : t ; behav : string}
 	and pair = {type1 : t ; type2 : t} ;;
 
-(* type to string *)
-let rec type_to_string typ = 
-	match typ with 
-	| Unit  -> " unit "
-	| Bool  -> "bool"
-	| Int  -> "int"
-	| Pair {type1=a;type2=b} -> "Pair (" ^ type_to_string a ^ "; " ^ type_to_string b ^ ") " 
-	| Funct {inType=a; outType=b; behav=c} -> "Funct " ^ type_to_string a  ^ "->" ^ type_to_string b^ " -" ^  c
-	| Ses a -> "ses " ^ a 
-	| TVar t -> t
-;;
 
 (* session types *)
 type sesType = 
@@ -51,24 +33,6 @@ and inConT = { inValue : t ; sTypeIn : sesType}
 and outConT = { outValue : t ; sTypeOut : sesType}
 and del = { sTypeD : sesType ; sTypeD2 : sesType}
 and res = { sTypeR : sesType ; sTypeR2 : sesType} ;; 
-
-(* session type to string *)
-let rec sess_to_string (s: sesType) = 
-	match s with 
-	| EndTag ->  "end"
-	| InputConfinded {inValue=a; sTypeIn=b}-> "! " ^ type_to_string a ^ " "^(sess_to_string b)
-	| OutputConfinded {outValue=a; sTypeOut=b}-> "? " ^ type_to_string a ^  " "^(sess_to_string b)
-	| Delegation {sTypeD=b ; sTypeD2=c} -> "! " ^ (sess_to_string b) ^ " " ^ (sess_to_string c)
-	| Resumption {sTypeR=b ; sTypeR2=c} -> "? " ^ (sess_to_string b) ^ " " ^ (sess_to_string c)
-	| ChoiceS {opList=a; sent=(b,c)} ->  "(+)[" ^ f a ^ "] ("^ b ^"; " ^ sess_to_string c ^ ")"
-	| ExtChoicS {opList1=a ; opList2=b} -> "+[" ^ f a ^ "][ " ^ f b ^ "] "
-	| SVar var -> var
-(* option list to string *)
-and f op = 
-	match op with 
-	| [] -> "";
-	| (a,b)::l -> " ("^a ^"; "^(sess_to_string (b))^" ) " ^ f l  
-;;
 
 (* stack frame *)
 type stackFrame = {label: string ; sessType : sesType} ;; 
@@ -101,8 +65,60 @@ and recB = { behaVar : string ; behaviour : b}
 and choiceB = {opt1 : b ; opt2 : b}
 and seq = {b1 : b ; b2 : b};;
 
+(* constraints type *)
+type con = 
+	| TCon of tCon
+	| BCon of bCon
+	| RegRel of regRel
+	| ConRel of conRel
+	| ConRelAlt of conRelAlt
+	| ConSeq of conGroup
+	| None
+and conGroup = {con1 : con ; con2 : con}
+and tCon = {smlT : t ; bigT : t}
+and bCon = {smlB : b ; bigB : string}
+and regRel = {reg : string ; regLab : region}
+and conRel = {chnlA : string ; endptA : sesType}
+and conRelAlt = {chnlB : string ; endptB : sesType};;
 
+(* TO STRING FUNCTIONS *)
 
+(* region type to string *)
+let region_to_string r=
+	match r with 
+	| Label l 	-> l 
+	| RVar r  	-> r
+;;
+
+(* type to string *)
+let rec type_to_string typ = 
+	match typ with 
+	| Unit  -> " unit "
+	| Bool  -> "bool"
+	| Int  -> "int"
+	| Pair {type1=a;type2=b} -> "Pair (" ^ type_to_string a ^ "; " ^ type_to_string b ^ ") " 
+	| Funct {inType=a; outType=b; behav=c} -> "Funct " ^ type_to_string a  ^ "->" ^ type_to_string b^ " -" ^  c
+	| Ses a -> "ses " ^ a 
+	| TVar t -> t
+;;
+
+(* session type to string *)
+let rec sess_to_string (s: sesType) = 
+	match s with 
+	| EndTag ->  "end"
+	| InputConfinded {inValue=a; sTypeIn=b}-> "! " ^ type_to_string a ^ " "^(sess_to_string b)
+	| OutputConfinded {outValue=a; sTypeOut=b}-> "? " ^ type_to_string a ^  " "^(sess_to_string b)
+	| Delegation {sTypeD=b ; sTypeD2=c} -> "! " ^ (sess_to_string b) ^ " " ^ (sess_to_string c)
+	| Resumption {sTypeR=b ; sTypeR2=c} -> "? " ^ (sess_to_string b) ^ " " ^ (sess_to_string c)
+	| ChoiceS {opList=a; sent=(b,c)} ->  "(+)[" ^ f a ^ "] ("^ b ^"; " ^ sess_to_string c ^ ")"
+	| ExtChoicS {opList1=a ; opList2=b} -> "+[" ^ f a ^ "][ " ^ f b ^ "] "
+	| SVar var -> var
+(* option list to string *)
+and f op = 
+	match op with 
+	| [] -> "";
+	| (a,b)::l -> " ("^a ^"; "^(sess_to_string (b))^" ) " ^ f l  
+;;
 
 (* behaviour to string *)
 
@@ -129,21 +145,19 @@ and p a=
 	| [] -> ""
 	| (a,b)::l -> "("^a^"; "^ behaviour_to_string b ^ ") " ^ p l 
 
-(* constraints type *)
-type con = 
-	| TCon of tCon
-	| BCon of bCon
-	| RegRel of regRel
-	| ConRel of conRel
-	| ConRelAlt of conRelAlt
-	| ConSeq of conGroup
-	| None
-and conGroup = {con1 : con ; con2 : con}
-and tCon = {smlT : t ; bigT : t}
-and bCon = {smlB : b ; bigB : string}
-and regRel = {reg : string ; regLab : region}
-and conRel = {chnlA : string ; endptA : sesType}
-and conRelAlt = {chnlB : string ; endptB : sesType};;
+(* constraints to string *)
+let rec con_to_string c =
+	match c with 
+	| TCon {smlT=a;bigT=b}				-> type_to_string a ^ " < " ^ type_to_string b ^ " "
+	| BCon {smlB=a;bigB=b}				-> behaviour_to_string a ^ " < " ^ b ^ " "
+	| RegRel {reg=a;regLab=b} 			-> a ^ " ~ " ^ region_to_string b ^ " "    
+	| ConRel {chnlA=a ; endptA=b}		-> a ^ " ~ " ^ sess_to_string b ^" "
+	| ConRelAlt {chnlB=a ; endptB=b}	-> a ^ " ~ " ^ sess_to_string b ^" "
+	| ConSeq {con1=a; con2=b}			-> con_to_string a ^"; "^con_to_string b  
+	| None 								-> "empty"
+;;
+
+(* TYPE CHECKING *)
 
 (*
 idea for storing constraints for checking
@@ -164,17 +178,7 @@ storing as string in hash table for constraints since constant.
 
 *)
 
-(* constraints to string *)
-let rec con_to_string c =
-	match c with 
-	| TCon {smlT=a;bigT=b}				-> type_to_string a ^ " < " ^ type_to_string b ^ " "
-	| BCon {smlB=a;bigB=b}				-> behaviour_to_string a ^ " < " ^ b ^ " "
-	| RegRel {reg=a;regLab=b} 			-> a ^ " ~ " ^ region_to_string b ^ " "    
-	| ConRel {chnlA=a ; endptA=b}		-> a ^ " ~ " ^ sess_to_string b ^" "
-	| ConRelAlt {chnlB=a ; endptB=b}	-> a ^ " ~ " ^ sess_to_string b ^" "
-	| ConSeq {con1=a; con2=b}			-> con_to_string a ^"; "^con_to_string b  
-	| None 								-> "empty"
-;;
+
 
 (* add constraints to the hashtable. 
 Key = id^stringOf L.H.S *
@@ -224,7 +228,7 @@ let rec check_behav behaviour stack hash=
 	(* in *)
 	| RecType {regionR=reg;outTypeR=typ} 		-> (const_check_t_in typ reg stack hash)
 	(* del *) 
-	| SndReg {reg1=r1;reg2=r2} 					->
+	| SndReg {reg1=r1;reg2=r2} 					-> del_check (Stack.pop stack) (Stack.pop stack) r1 r2
 	(* res *)
 	(* ICh *) 
 	(* ECh *)
@@ -242,11 +246,37 @@ let rec check_behav behaviour stack hash=
 	| SndReg {reg1=r1;reg2=r2} 					-> 
 	| RecLab {regL=r;label=lab} 				->   
 	| SndChc {regCa=reg;labl=lab} 				->  
-	| RecChoice {regCb=reg ; cList= lst}    	->  
+	| RecChoice {regCb=reg ; cList= lst}     	->  
 	|  _ 										->   *)
 
+and del_check {label=lab_top;sessType=sess_top} {label=lab_2;sessType=sess_2} r1 r2 stack hash= 
+	(*  *)
+	let allowed = (check_const ("R"^r1) lab_top hash) && (check_const ("R"^r2) lab_2 hash) in
+	match allowed with 
+	| true 	-> 
+		(
+		match sess_top with 
+		| Delegation {sTypeD=n1;sTypeD2=n2} -> 
+			(
+			match check_sess_rel sess_2 n1 with 
+			| true 	-> Stack.push stack {label=lab_top;sessType=n2}; true
+			| _ 	-> false
+			)
+		| _ 								-> false
+		)
+	| _ 	-> false 
+
+(* check constraints in hash table  *)
+(* TODO only checking first binding *)
+and check_const lhs rhs hash =
+	match Hashtbl.find hash lhs with 
+	| Some rhs 	-> true
+	| _			-> false
+
+(* ses1 <: ses2 *)
+and check_sess_rel ses1 ses2 = true
+
 (* check if constraints allow region to label and T1 < T2 *)
-(* TODO currently only checks first binding of region in hash table*)
  and const_check_t_out typ reg stack hash =
 	let frame = Stack.top stack in
 	match frame with 
@@ -255,8 +285,8 @@ let rec check_behav behaviour stack hash=
 		match sess with 
 		| OutputConfinded {outValue=typ';sTypeOut=styp}	-> 
 			(
-			match Hashtbl.find hash ("R"^reg) with 
-			| Some (RegRel {reg=a;regLab=b} ) 	-> 
+			match check_const ("R"^reg) (RegRel {reg=a;regLab=b} ) hash with 
+			| true 	-> 
 				(
 				match b with 
 				| Label l 	-> 
@@ -278,7 +308,6 @@ let rec check_behav behaviour stack hash=
 	| None 		-> false
 
 (* check if constraints allow region to label and T1 < T2 *)
-(* TODO currently only checks first binding of region in hash table*)
  and const_check_t_in typ reg stack hash =
 	let frame = Stack.top stack in
 	match frame with 
@@ -287,8 +316,8 @@ let rec check_behav behaviour stack hash=
 		match sess with 
 		| InputConfinded {inValue=typ';sTypeIn=styp}	-> 
 			(
-			match Hashtbl.find hash ("R"^reg) with 
-			| Some (RegRel {reg=a;regLab=b} ) 	-> 
+			match check_const ("R"^reg) (RegRel {reg=a;regLab=b} ) hash with 
+			| true 	-> 
 				(
 				match b with 
 				| Label l 	-> 
