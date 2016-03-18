@@ -234,7 +234,7 @@ let update_stack stack newSess lab =
 let check_type_rel t1 t2 = true
 ;;
 
-(* let get_list tbl key = Hashtbl.find_all tbl key   ;; *)
+let get_list tbl key = Hashtbl.find_all tbl key   ;;
 
 
 (* see if labels match in stack frames *)
