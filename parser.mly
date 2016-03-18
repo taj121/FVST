@@ -139,7 +139,7 @@ bType:
   | FUNCT t1=bType ARROW t2=bType DASH b=BEVAR
     {Funct {inType=t1; outType=t2; behav=b}}
   | SES r=REG
-    {Ses {rVar=r}}
+    {Ses r}
   | t=TVAR
     {TVar t};
 
