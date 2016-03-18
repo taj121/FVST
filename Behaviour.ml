@@ -213,31 +213,228 @@ and add_seq con_a con_b hshtbl =
 	con_add con_b hshtbl;
 ;;
 
+(* compare two strings true if same false if not *)
+let comp_string s1 s2 = 
+	match (compare s1 s2) with 
+	| 0 	-> true
+	| _ 	-> false
+;;
+
+(* ses1 <: ses2 *)
+let check_sess_rel ses1 ses2 = true
+;;
+
+let update_stack stack newSess lab =
+	Stack.pop stack;
+	Stack.push stack {label=lab;sessType=newSess};
+	true
+;;
+
+(* check if t1 <: t2  *)
+let check_type_rel t1 t2 = true
+;;
+
+(* let get_list tbl key = Hashtbl.find_all tbl key   ;; *)
+
+
+(* see if labels match in stack frames *)
+let match_label {label=a1;sessType=b1} {label=a2;sessType=b2}=
+	let check = compare a1 a2 in
+	match check with 
+	| 0 -> true
+	| _ -> false
+;;
+
+(* itterate through the stack checking each frame for the label of this frame if not found push & teturn true, if found dont & return false*)
+let push_stack_frame stack frame =
+	match (Stack.exists stack (match_label frame)) with 
+	| false 	-> Stack.push stack frame; true
+	| _			-> false
+;;
+
+(* check b < Beta	 *)
+let const_check_b beta = 
+	match beta with 
+	|_ -> true
+;;
+
+(* check constraints in hash table  *)
+(* TODO only checking first binding *)
+let check_reg_const lhs {reg=a1;regLab=b1} hash =
+	match Hashtbl.find hash lhs with 
+	| Some RegRel {reg=a;regLab=b} 			->  
+		(match b with 
+		| Label l 	-> 
+			(match b1 with 
+			| Label l1 ->
+				(match compare l l1 with 
+				| 0 -> true
+				| _ -> false)
+			| _ 	-> false
+			)
+		| _ -> false
+		)
+	| _										-> false
+;;
+
+(* check if constraints allow region to label and T1 < T2 *)
+let const_check_t_out typ reg stack hash =
+	let frame = Stack.top stack in
+	match frame with 
+	| Some {label=lab;sessType=sess} 	-> 
+		(
+		match sess with 
+		| OutputConfinded {outValue=typ';sTypeOut=styp}	-> 
+			(
+			match check_reg_const ("R"^reg) {reg=reg;regLab=(Label lab)} hash with 
+			| true 	-> 	
+				(
+				match check_type_rel typ typ' with
+				| true		-> update_stack stack styp lab
+				| _ 		-> false
+				)
+			| _        -> false
+			)
+		| _ 		-> false
+		)
+	| None 		-> false
+;;
+
+(* check if constraints allow region to label and T1 < T2 *)
+let const_check_t_in typ reg stack hash =
+	let frame = Stack.top stack in
+	match frame with 
+	| Some {label=lab;sessType=sess} 	-> 
+		(
+		match sess with 
+		| InputConfinded {inValue=typ';sTypeIn=styp}	-> 
+			(
+			match check_reg_const ("R"^reg) {reg=reg;regLab=(Label lab)} hash with 
+			| true 	-> 	
+				(
+				match check_type_rel typ' typ with
+				| true		-> update_stack stack styp lab
+				| _ 		-> false
+				)
+			| _        -> false
+			)
+		| _ 		-> false
+		)
+	| None 		-> false
+;;
+
+let res_check reg regLab stack hash =
+	let frame = Stack.pop stack in 
+	match frame with 
+	| Some {label=l;sessType=n} ->
+		(match n with 
+		| Resumption {sTypeR=n1;sTypeR2=n2} -> 
+			(match not((comp_string l regLab) && (check_reg_const ("R"^reg) {reg=reg;regLab=(Label l)} hash)) with 
+			| true 	-> Stack.push stack {label=regLab;sessType=n1}; Stack.push stack {label=l;sessType=n2}; true
+			| _ 	-> false)
+		| _ -> false )
+	| _ 	-> false
+;;
+
+
+(* check that regions and labels link, also that session types have correct relationship	 *)
+let del_check r1 r2 stack hash= 
+	let top_frame = Stack.pop stack in 
+	match top_frame with 
+	| Some {label=lab_top;sessType=sess_top} ->
+		(let frame_2 = Stack.pop stack in 
+		match frame_2 with 
+		| Some {label=lab_2;sessType=sess_2} ->
+			(let allowed = (check_reg_const ("R"^r1) {reg=r1;regLab=(Label lab_top)} hash) && (check_reg_const ("R"^r2) {reg=r2;regLab=(Label lab_2)} hash) in
+				match allowed with 
+				| true 	-> 
+					(
+					match sess_top with 
+					| Delegation {sTypeD=n1;sTypeD2=n2} -> 
+						(
+						match check_sess_rel sess_2 n1 with 
+						| true 	-> Stack.push stack {label=lab_top;sessType=n2}; true
+						| _ 	-> false
+						)
+					| _ 								-> false
+					)
+				| _ 	-> false )
+		| _ 	-> false
+		)
+	| _ 	-> false
+;;
+
+(* http://stackoverflow.com/questions/4473163/match-one-item-in-list-of-tuples *)
+let rec find_tuple label tuples_list =
+       match tuples_list with
+            [] -> raise Not_found
+            |(s, i)::tl -> if s = label then (s, i) 
+                                  else find_tuple label tl
+
+let ich_check sReg sLab stack hash =
+	let top_frame = Stack.pop stack in 
+	match top_frame with 
+	| Some {label=lab_top;sessType=chctype} -> 
+		(match chctype with 
+		| ChoiceS {opList=iList; sent=isel} -> 
+			(match find_tuple sLab iList with 
+			| (lab,ses) -> 
+				(match (check_reg_const ("R"^sReg) {reg=sReg;regLab=(Label sLab)} hash) with 
+				|true 	-> (Stack.push stack {label=lab_top;sessType=ses}); true
+				| _ 	-> false
+				)
+			| _ 		-> false
+			)
+		| _ 	-> false)
+	| _ 	-> false
+;;
+
+(* ExtChoicS { opList1 : (string * sesType) list ; opList2 : (string * sesType) list} *)
+
+(* let ech_check reg lst stack hash =
+	let top_frame = Stack.pop stack in 
+	match top_frame with 
+	| Some {label=lab_top;sessType=chctype} -> 
+		(match chctype with 
+		| ExtChoicS { opList1=list1; opList2=list2} -> 
+			
+		| _ 	-> false)
+	| _ 	-> false
+;; *)
+
 (* function for checking behaviours  *)
 let rec check_behav behaviour stack hash=
-	match behaviour with 
 	(* end *)
-	(* Beta *)
-	| BVar s 									-> const_check_b s  
-	(* plus *)
- 	| ChoiceB {opt1=op1;opt2=op2} 				-> (check_choice op1 stack hash) && (check_choice op2 stack hash)
-	(* push *)
- 	| Push {toPush=a} 							-> push_stack_frame stack a
-	(* out *)
-	| SndType {regionS=reg;outTypeS=typ} 		-> (const_check_t_out typ reg stack hash)
-	(* in *)
-	| RecType {regionR=reg;outTypeR=typ} 		-> (const_check_t_in typ reg stack hash)
-	(* del *) 
-	| SndReg {reg1=r1;reg2=r2} 					-> del_check (Stack.pop stack) (Stack.pop stack) r1 r2
-	(* res *)
-	(* ICh *) 
-	(* ECh *)
-	(* rec *)
-	(* spn *)
-	(* seq *)
- 	| Seq {b1=b_1;b2=b_2} 						-> (check_behav b_1 stack hash) && (check_behav b_2 stack hash) 
-	(* tau *)
-
+	let stack_top = Stack.top stack in 
+	match stack_top with 
+	| Some {label=lab_top;sessType=EndTag} -> Stack.pop stack;( check_behav behaviour stack hash)
+	| _ 	-> 
+	(match behaviour with 
+			(* Beta *)
+			| BVar s 									-> const_check_b s  (* TODO need to fix this since will not call again on b*)
+			(* plus *)
+		 	| ChoiceB {opt1=op1;opt2=op2} 				-> (check_choice op1 stack hash) && (check_choice op2 stack hash)
+			(* push *)
+		 	| Push {toPush=a} 							-> push_stack_frame stack a
+			(* out *)
+			| SndType {regionS=reg;outTypeS=typ} 		-> (const_check_t_out typ reg stack hash)
+			(* in *)
+			| RecType {regionR=reg;outTypeR=typ} 		-> (const_check_t_in typ reg stack hash)
+			(* del *) 
+			| SndReg {reg1=r1;reg2=r2} 					-> del_check r1 r2 stack hash
+			(* res *)
+			| RecLab {regL=r;label=lab} 				-> res_check r lab stack hash
+			(* ICh *) 
+			| SndChc {regCa=reg;labl=lab} 				-> ich_check reg lab stack hash
+			(* ECh *)
+			(* | RecChoice {regCb=reg ; cList= lst}     	-> ech_check reg lst stack hash *)
+			(* rec *)
+			(* spn *)
+			(* seq *)
+		 	| Seq {b1=b_1;b2=b_2} 						-> (check_behav b_1 stack hash) && (check_behav b_2 stack hash) 
+			(* tau *)
+			| Tau  										-> true; (*TODO is this right? will move it forward in seq*)
+	)
 	(* | Tau  										->  *)
  	(* | RecB {behaVar=beta;behaviour=b} 			->   *)
  	(* | Spawn {spawned=b} 						->   *)
@@ -249,134 +446,10 @@ let rec check_behav behaviour stack hash=
 	| RecChoice {regCb=reg ; cList= lst}     	->  
 	|  _ 										->   *)
 
-and del_check {label=lab_top;sessType=sess_top} {label=lab_2;sessType=sess_2} r1 r2 stack hash= 
-	(*  *)
-	let allowed = (check_const ("R"^r1) lab_top hash) && (check_const ("R"^r2) lab_2 hash) in
-	match allowed with 
-	| true 	-> 
-		(
-		match sess_top with 
-		| Delegation {sTypeD=n1;sTypeD2=n2} -> 
-			(
-			match check_sess_rel sess_2 n1 with 
-			| true 	-> Stack.push stack {label=lab_top;sessType=n2}; true
-			| _ 	-> false
-			)
-		| _ 								-> false
-		)
-	| _ 	-> false 
-
-(* check constraints in hash table  *)
-(* TODO only checking first binding *)
-and check_const lhs rhs hash =
-	match Hashtbl.find hash lhs with 
-	| Some rhs 	-> true
-	| _			-> false
-
-(* ses1 <: ses2 *)
-and check_sess_rel ses1 ses2 = true
-
-(* check if constraints allow region to label and T1 < T2 *)
- and const_check_t_out typ reg stack hash =
-	let frame = Stack.top stack in
-	match frame with 
-	| Some {label=lab;sessType=sess} 	-> 
-		(
-		match sess with 
-		| OutputConfinded {outValue=typ';sTypeOut=styp}	-> 
-			(
-			match check_const ("R"^reg) (RegRel {reg=a;regLab=b} ) hash with 
-			| true 	-> 
-				(
-				match b with 
-				| Label l 	-> 
-					(match compare l lab with 
-					| 0 	-> 
-						(
-						match check_type_rel typ typ' with
-						| true		-> update_stack stack styp lab
-						| _ 		-> false
-						)
-					| _ 	-> false
-					)
-				| _		 -> false
-				)
-			| _        -> false
-			)
-		| _ 		-> false
-		)
-	| None 		-> false
-
-(* check if constraints allow region to label and T1 < T2 *)
- and const_check_t_in typ reg stack hash =
-	let frame = Stack.top stack in
-	match frame with 
-	| Some {label=lab;sessType=sess} 	-> 
-		(
-		match sess with 
-		| InputConfinded {inValue=typ';sTypeIn=styp}	-> 
-			(
-			match check_const ("R"^reg) (RegRel {reg=a;regLab=b} ) hash with 
-			| true 	-> 
-				(
-				match b with 
-				| Label l 	-> 
-					(
-					match compare l lab with 
-					| 0 	-> 
-						(
-						match check_type_rel typ' typ with
-						| true	-> update_stack stack styp lab
-						| _ 	-> false
-						)
-					| _ 	-> false
-					)
-				| _		 -> false
-				)
-			| _        -> false
-			)
-		| _ 		-> false
-		)
-	| None 		-> false
-
-and update_stack stack newSess lab =
-	Stack.pop stack;
-	Stack.push stack {label=lab;sessType=newSess};
-	true
-
-(* check if t1 <: t2  *)
-and check_type_rel t1 t2 = true;
-
-(* and get_list tbl key = Hashtbl.find_all tbl key    *)
-
-(* compare two strings true if same false if not *)
-and comp_string s1 s2 = 
-	match (compare s1 s2) with 
-	| 0 	-> true
-	| _ 	-> false
-
-(* itterate through the stack checking each frame for the label of this frame if not found push & teturn true, if found dont & return false*)
-and push_stack_frame stack frame =
-	match (Stack.exists stack (match_label frame)) with 
-	| false 	-> Stack.push stack frame; true
-	| _			-> false
-
-(* see if labels match in stack frames *)
-and match_label {label=a1;sessType=b1} {label=a2;sessType=b2}=
-	let check = compare a1 a2 in
-	match check with 
-	| 0 -> true
-	| _ -> false
-
 (* call main function with a copy of stack *)
 and check_choice op1 stack hash = 
 	let s1 = Stack.copy stack in
 	check_behav op1 s1 hash
-
-(* check b < Beta	 *)
-and const_check_b beta = 
-	match beta with 
-	|_ -> true
 ;;
 
 (* print out behaviours *)
