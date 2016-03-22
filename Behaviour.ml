@@ -52,9 +52,10 @@ type b =
 	| RecLab of recL
 	| SndChc of sndC
 	| RecChoice of recC
-	| None  (*None included due to requirements to run main file*)
+	(* None included due to requirements to run main file *)
+	| None  
 and sndC = { regCa : string ; labl : string}
-and recC = { regCb : string ; cList : (string * b) list}
+and recC = { regCb : string ; cList : (string * b) list ; selected : string} (*TODO document this change*)
 and recL = { regL : string ; label : string}
 and sndR = { reg1 : string ; reg2 : string}
 and recT = { regionR : string ; outTypeR : t}
@@ -124,20 +125,20 @@ and f op =
 
 let rec behaviour_to_string (b:b) =
 	match b with 
-	| BVar s 									-> s
- 	| Tau  										-> "Tau" 
- 	| Seq {b1=b_1;b2=b_2} 						-> behaviour_to_string b_1 ^" ;\n "^ behaviour_to_string b_2 
- 	| ChoiceB {opt1=op1;opt2=op2} 				-> "chc( " ^ behaviour_to_string op1 ^ ", " ^ behaviour_to_string op2 ^ ")"
- 	| RecB {behaVar=beta;behaviour=b} 			-> "rec " ^ beta ^" "^ behaviour_to_string b 
- 	| Spawn {spawned=b} 						-> "Spn( " ^ behaviour_to_string b ^" )"
- 	| Push {toPush={label=lab;sessType=sTyp}} 	-> "Psh ( " ^ lab ^", "^  sess_to_string sTyp ^ " )" 
- 	| SndType {regionS=reg;outTypeS=typ} 		-> reg ^ " ! " ^ type_to_string typ 
-	| RecType {regionR=reg;outTypeR=typ} 		-> reg ^ " ? " ^ type_to_string typ   
-	| SndReg {reg1=r1;reg2=r2} 					-> r1 ^ " ! "^ r2
-	| RecLab {regL=r;label=lab} 				-> r ^" ? " ^ lab  
-	| SndChc {regCa=reg;labl=lab} 				-> reg ^" ! "^ lab 
-	| RecChoice {regCb=reg ; cList= lst}    	-> reg ^ " ? optn [" ^ p lst^ "]" 
-	|  _ 										-> "\nerr\n " 
+	| BVar s 											-> s
+ 	| Tau  												-> "Tau" 
+ 	| Seq {b1=b_1;b2=b_2} 								-> behaviour_to_string b_1 ^" ;\n "^ behaviour_to_string b_2 
+ 	| ChoiceB {opt1=op1;opt2=op2} 						-> "chc( " ^ behaviour_to_string op1 ^ ", " ^ behaviour_to_string op2 ^ ")"
+ 	| RecB {behaVar=beta;behaviour=b} 					-> "rec " ^ beta ^" "^ behaviour_to_string b 
+ 	| Spawn {spawned=b} 								-> "Spn( " ^ behaviour_to_string b ^" )"
+ 	| Push {toPush={label=lab;sessType=sTyp}} 			-> "Psh ( " ^ lab ^", "^  sess_to_string sTyp ^ " )" 
+ 	| SndType {regionS=reg;outTypeS=typ} 				-> reg ^ " ! " ^ type_to_string typ 
+	| RecType {regionR=reg;outTypeR=typ} 				-> reg ^ " ? " ^ type_to_string typ   
+	| SndReg {reg1=r1;reg2=r2} 							-> r1 ^ " ! "^ r2
+	| RecLab {regL=r;label=lab} 						-> r ^" ? " ^ lab  
+	| SndChc {regCa=reg;labl=lab} 						-> reg ^" ! "^ lab 
+	| RecChoice {regCb=reg ; cList= lst; selected=i}    -> reg ^ " ? optn [" ^ p lst^ "]" ^ " selected: "^( i)
+	|  _ 												-> "\nerr\n " 
 
 (* choice list to string *)
 and p a=
@@ -198,7 +199,7 @@ let rec con_add con (hshtbl) =
 	| RegRel {reg=a;regLab=b} 			-> Hashtbl.add hshtbl ("R"^a) (RegRel {reg=a;regLab=b})   
 	| ConRel {chnlA=a ; endptA=b}		-> Hashtbl.add hshtbl ("C"^a) (ConRel {chnlA=a ; endptA=b}) 
 	| ConRelAlt {chnlB=a ; endptB=b}	-> Hashtbl.add hshtbl ("C'"^a) (ConRelAlt {chnlB=a ; endptB=b}) 
-	| ConSeq {con1=a; con2=b}			-> add_seq a b hshtbl
+	| ConSeq {con1=a; con2=b}			-> con_add a hshtbl; con_add b hshtbl;
 	| None 								-> Hashtbl.add hshtbl "none" (None)
 (* 	| TCon {smlT=a;bigT=b} 				-> Hashtbl.add hshtbl ("T"^(type_to_string a)) (type_to_string b)
 	| BCon {smlB=a;bigB=b}				-> Hashtbl.add hshtbl ("B"^b) (behaviour_to_string a) 
@@ -207,10 +208,6 @@ let rec con_add con (hshtbl) =
 	| ConRelAlt {chnlB=a ; endptB=b}	-> Hashtbl.add hshtbl ("C'"^a) (sess_to_string b) 
 	| ConSeq {con1=a; con2=b}			-> add_seq a b hshtbl
 	| None 								-> Hashtbl.add hshtbl "none" "" *)
-
-and add_seq con_a con_b hshtbl = 
-	con_add con_a hshtbl;
-	con_add con_b hshtbl;
 ;;
 
 (* compare two strings true if same false if not *)
@@ -221,20 +218,22 @@ let comp_string s1 s2 =
 ;;
 
 (* ses1 <: ses2 *)
+(* TODO *)
 let check_sess_rel ses1 ses2 = true
 ;;
 
-let update_stack stack newSess lab =
+(* let update_stack stack newSess lab =
 	Stack.pop stack;
 	Stack.push stack {label=lab;sessType=newSess};
 	true
-;;
+;; *)
 
 (* check if t1 <: t2  *)
+(* TODO *)
 let check_type_rel t1 t2 = true
 ;;
 
-let get_list tbl key = Hashtbl.find_all tbl key   ;;
+(* let get_list tbl key = Hashtbl.find_all tbl key   ;; *)
 
 
 (* see if labels match in stack frames *)
@@ -253,6 +252,7 @@ let push_stack_frame stack frame =
 ;;
 
 (* check b < Beta	 *)
+(* TODO *)
 let const_check_b beta = 
 	match beta with 
 	|_ -> true
@@ -261,6 +261,7 @@ let const_check_b beta =
 (* check constraints in hash table  *)
 (* TODO only checking first binding *)
 let check_reg_const lhs {reg=a1;regLab=b1} hash =
+	(* Hashtbl.existsi hash ~key:lhs ~data:({reg=a1;regLab=b1}) *)
 	match Hashtbl.find hash lhs with 
 	| Some RegRel {reg=a;regLab=b} 			->  
 		(match b with 
@@ -279,7 +280,7 @@ let check_reg_const lhs {reg=a1;regLab=b1} hash =
 
 (* check if constraints allow region to label and T1 < T2 *)
 let const_check_t_out typ reg stack hash =
-	let frame = Stack.top stack in
+	let frame = Stack.pop stack in
 	match frame with 
 	| Some {label=lab;sessType=sess} 	-> 
 		(
@@ -290,7 +291,7 @@ let const_check_t_out typ reg stack hash =
 			| true 	-> 	
 				(
 				match check_type_rel typ typ' with
-				| true		-> update_stack stack styp lab
+				| true		-> Stack.push stack {label=lab;sessType=styp}; true
 				| _ 		-> false
 				)
 			| _        -> false
@@ -302,7 +303,7 @@ let const_check_t_out typ reg stack hash =
 
 (* check if constraints allow region to label and T1 < T2 *)
 let const_check_t_in typ reg stack hash =
-	let frame = Stack.top stack in
+	let frame = Stack.pop stack in
 	match frame with 
 	| Some {label=lab;sessType=sess} 	-> 
 		(
@@ -313,7 +314,7 @@ let const_check_t_in typ reg stack hash =
 			| true 	-> 	
 				(
 				match check_type_rel typ' typ with
-				| true		-> update_stack stack styp lab
+				| true		-> Stack.push stack {label=lab;sessType=styp}; true
 				| _ 		-> false
 				)
 			| _        -> false
@@ -383,31 +384,20 @@ let ich_check sReg sLab stack hash =
 				|true 	-> (Stack.push stack {label=lab_top;sessType=ses}); true
 				| _ 	-> false
 				)
-			| _ 		-> false
+			| _ 		-> false (* TODO warning says this is unused but how come since something other than a tuple could be returned*)
 			)
 		| _ 	-> false)
 	| _ 	-> false
 ;;
 
-(* ExtChoicS { opList1 : (string * sesType) list ; opList2 : (string * sesType) list} *)
 
-(* let ech_check reg lst stack hash =
-	let top_frame = Stack.pop stack in 
-	match top_frame with 
-	| Some {label=lab_top;sessType=chctype} -> 
-		(match chctype with 
-		| ExtChoicS { opList1=list1; opList2=list2} -> 
-			
-		| _ 	-> false)
-	| _ 	-> false
-;; *)
 
 (* function for checking behaviours  *)
 let rec check_behav behaviour stack hash=
 	(* end *)
 	let stack_top = Stack.top stack in 
 	match stack_top with 
-	| Some {label=lab_top;sessType=EndTag} -> Stack.pop stack;( check_behav behaviour stack hash)
+	| Some {label=lab_top;sessType=EndTag} -> Stack.pop stack; check_behav behaviour stack hash
 	| _ 	-> 
 	(match behaviour with 
 			(* Beta *)
@@ -427,29 +417,52 @@ let rec check_behav behaviour stack hash=
 			(* ICh *) 
 			| SndChc {regCa=reg;labl=lab} 				-> ich_check reg lab stack hash
 			(* ECh *)
-			(* | RecChoice {regCb=reg ; cList= lst}     	-> ech_check reg lst stack hash *)
+			| RecChoice {regCb=reg ; cList= lst; selected=i}     	-> ech_check reg lst i stack hash
 			(* rec *)
+		(* 	| RecB {behaVar=beta;behaviour=b} 			-> let newStack = (Stack.create ()) in 
+														 	let newHash = Hashtbl.copy hash in
+														 	newHash.replace ("B"^beta) {behaVar=beta;behaviour=Tau};
+														 	check_bahav b newStack newHash *)
 			(* spn *)
+			| Spawn {spawned=b} 						-> let newStack = (Stack.create ())in (check_behav b newStack hash)
 			(* seq *)
 		 	| Seq {b1=b_1;b2=b_2} 						-> (check_behav b_1 stack hash) && (check_behav b_2 stack hash) 
 			(* tau *)
 			| Tau  										-> true; (*TODO is this right? will move it forward in seq*)
 	)
-	(* | Tau  										->  *)
- 	(* | RecB {behaVar=beta;behaviour=b} 			->   *)
- 	(* | Spawn {spawned=b} 						->   *)
- (* 	| SndType {regionS=reg;outTypeS=typ} 		->  
-	| RecType {regionR=reg;outTypeR=typ} 		->    
-	| SndReg {reg1=r1;reg2=r2} 					-> 
-	| RecLab {regL=r;label=lab} 				->   
-	| SndChc {regCa=reg;labl=lab} 				->  
-	| RecChoice {regCb=reg ; cList= lst}     	->  
-	|  _ 										->   *)
-
+ 
 (* call main function with a copy of stack *)
 and check_choice op1 stack hash = 
 	let s1 = Stack.copy stack in
 	check_behav op1 s1 hash
+
+(* ExtChoicS { opList1 : (string * sesType) list ; opList2 : (string * sesType) list} *)
+
+and ech_check reg lst index stack hash =
+	(* check top of stack right *)
+	let top_frame = Stack.pop stack in 
+	match top_frame with 
+	| Some {label=lab_top;sessType=chctype} -> 
+		(match chctype with 
+		| ExtChoicS { opList1=list1; opList2=list2} ->  
+			(* check all possible J where J is member of lst (string*b) no... wrong i think*)
+			(* find the label from indexed element of list then find corresponding label in stack frame lists *)
+			(match find_tuple ( fst (List.nth_exn lst (int_of_string index)))  (List.append list1 list2)  with
+			| (lab,sess)	-> 
+				(* check constraints *)
+				(match (check_reg_const ("R"^reg) {reg=reg;regLab=(Label lab_top)} hash) with 
+				|true 	-> (Stack.push stack {label=lab_top;sessType=sess}); true
+				| _ 	-> false 
+				)
+			| _		-> false) (*TODO same as above*)
+		| _ 	-> false)
+	| _ 	-> false
+
+(* check if behaviour is allowed for all behaviours in the list *)
+(* and check_list_b lst hash stack =
+	match lst with 
+	| [] 		-> true
+	| (x,y)::l 	-> (check_behav y stack hash) && (check_list_b l hash stack) *)
 ;;
 
 (* print out behaviours *)

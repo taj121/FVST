@@ -3,6 +3,7 @@
 %token <string> BEVAR 
 %token <string> LABLE
 %token <string> REG
+%token <string> INTEGER
 %token TAU
 %token CHOICE
 %token REC
@@ -47,8 +48,8 @@
 %}
 
 %start parse_behaviour /*parse_constraint*/
-/*%type <Behaviour.b * Behaviour.con> parse_behaviour*/  /*best attempt so far at printing both the behaviours and the constraints from file*/
-%type <Behaviour.b> parse_behaviour  /*working version of above with only behaviours printed*/
+%type <Behaviour.b * Behaviour.con> parse_behaviour  /*best attempt so far at printing both the behaviours and the constraints from file*/
+/*%type <Behaviour.b> parse_behaviour*/  /*working version of above with only behaviours printed*/
 /*%type <Behaviour.con> parse_constraint */
 
 %%
@@ -56,8 +57,8 @@
 
 parse_behaviour: 
   /*| EOF {(None,None)}*/
- /* | b = behaviour c = constr EOF {(b,c)}*/ /*best attempt so far at printing both the behaviours and the constraints from file*/
-  | b = behaviour c = constr EOF {(b)} /*working version with only behaviours printed*/
+  | b = behaviour c = constr EOF {(b,c)} /*best attempt so far at printing both the behaviours and the constraints from file*/
+ /* | b = behaviour c = constr EOF {(b)}*/ /*working version with only behaviours printed*/
   ;
 
 /*parse_constraint:
@@ -90,8 +91,8 @@ behaviour :
       {RecLab {regL=r;label=l}}
   | r = REG SND l = LABLE
       {SndChc {regCa=r;labl=l}}
-  | r = REG RECI OPTION LEFT_BRACE_SQ o=oplist RIGHT_BRACE_SQ
-      {RecChoice {regCb=r;cList=o}};
+  | r = REG RECI OPTION LEFT_BRACE_SQ o=oplist RIGHT_BRACE_SQ i=INTEGER
+      {RecChoice {regCb=r;cList=o;selected=i}}; /*TODO update document*/
 
 oplist:
   opt = separated_list(COMMA, opt_field)    

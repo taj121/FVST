@@ -13,20 +13,29 @@ let parse_with_error lexbuf =
   try Parser.parse_behaviour Lexer.lex lexbuf with
   | SyntaxError msg ->
     fprintf stderr "%a: %s\n" print_position lexbuf msg;
-    (* (None,None) *)(*attempt at printing behaviours and constraints*) 
-    (None)
+    (None,None) (*attempt at printing behaviours and constraints*) 
+    (* (None) *)
   | Parser.Error ->
     fprintf stderr "%a: syntax error\n" print_position lexbuf;
     exit (-1)
 
 let rec parse_and_print lexbuf =
-  match parse_with_error lexbuf with
+(*   match parse_with_error lexbuf with 
   (* | (valueb ,valuec) ->  printf "%a\n\n\n%a\n" Behaviour.output_b valueb Behaviour.output_con; *) (*attempt at printing behaviours and constraints*) 
   | (*Some*) (valueb ) -> 
-    printf "%a\n" Behaviour.output_b valueb ;
-    parse_and_print lexbuf
-  (* | (None,None) -> () *) (*attempt at printing behaviours and constraints*) 
-  | (None) -> ()
+    printf "%a\n" Behaviour.output_b valueb ; *)
+  let hash = (Hashtbl.create ()) in
+    match parse_with_error lexbuf with
+    | (b,con) -> 
+      Behaviour.con_add con hash; 
+      printf "%a\n" Behaviour.output_b b ;
+      (match (Behaviour.check_behav b (Stack.create ()) hash) with 
+      | true    -> "all's good"
+      | false   -> "you messed up"
+      | _       -> "you really messed up... like this isn't ever supposed to print");
+      parse_and_print lexbuf
+     | (None,None) -> ()  (*attempt at printing behaviours and constraints*) 
+    (* | (None) -> () *)
 
  let loop filename () =
   let inx = In_channel.create filename in

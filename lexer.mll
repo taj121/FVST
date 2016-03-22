@@ -18,11 +18,13 @@ let tab   = '\009'
 let lf    = '\010'
 let cr    = '\013'
 let eol   = cr | lf | cr lf
+let int   = ['0'-'9'] ['0'-'9']*
 
 rule lex = parse
 (*and lex = parse*)
   | white    		     { lex lexbuf }
   | newline  		     { next_line lexbuf; lex lexbuf }
+  | ['0'-'9'] ['0'-'9']*     as i       { INTEGER (i)}
   | ";"           	 { COLON }
   | ","           	 { COMMA }
   | "("              { LEFT_BRACE }
