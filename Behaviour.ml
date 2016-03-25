@@ -256,18 +256,27 @@ let rec add_all hash key valList =
 				add_all hash key l 
 ;;
 
-(* find a tuple from a list where the first parameter matches label. returns found tuple or none *)
+(* find a tuple from a list where the first parameter matches label. returns found tuple or raises exception *)
 let rec find_tuple label searchList =
 	match searchList with 
 	| [] 	-> raise Not_found
-	| (l,h)::lst 	-> if l = label then (l, h) 
+	| (Some l,h)::lst 	-> if l = label then (l, h) 
                                   else find_tuple label lst
+	| _	-> raise Not_found
+;;
+
+(* find a tuple from a list where the first parameter matches label. returns found tuple or raises exception *)
+let rec find_tuple_nop label searchList =
+	match searchList with 
+	| [] 	-> raise Not_found
+	| (l,h)::lst 	-> if l = label then (l, h) 
+                                  else find_tuple_nop label lst
 ;;
 
 let rec match_list lst_b lst_n retLst= 
 	match lst_b with 
 	| [] 	-> retLst
-	| (l,b)::lb 	-> match (find_tuple l lst_n) with
+	| (l,b)::lb 	-> match (find_tuple_nop l lst_n) with
 						| (ln,n) -> retLst@[(b,n)]					
 ;;
 
@@ -411,7 +420,7 @@ and check_tau stack slabs continuation conSet =
 and check_ich {regCa=reg;labl=lab} stack slabs continuation (bHash, rList) = 
 	match Stack.pop stack with 
 	| Some {label=labSt; sessType=(ChoiceS {opList=opL})} -> 
-								(match (find_tuple lab opL) with 
+								(match (find_tuple_nop lab opL) with 
 								| (labF, sessF) -> (match check_reg_const reg labSt rList with 
 													| true 	-> (Stack.push stack {label=labSt;sessType=sessF});
 																check_step (Tau, stack, slabs, continuation) (bHash, rList)

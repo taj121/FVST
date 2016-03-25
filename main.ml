@@ -1,4 +1,5 @@
 open Behaviour
+module Hash = Hashtbl
 open Core.Std
 open Lexer
 open Lexing
@@ -24,15 +25,17 @@ let rec parse_and_print lexbuf =
   (* | (valueb ,valuec) ->  printf "%a\n\n\n%a\n" Behaviour.output_b valueb Behaviour.output_con; *) (*attempt at printing behaviours and constraints*) 
   | (*Some*) (valueb ) -> 
     printf "%a\n" Behaviour.output_b valueb ; *)
-  let hash = (Hashtbl.create ()) in
+  let hash = (Hash.create ~random:false 10) in
     match parse_with_error lexbuf with
     | (b,con) -> 
-      Behaviour.con_add con hash; 
+      let conSet = (Behaviour.con_add con hash []) in 
+      let newStack = Stack.create () in
+      let newSlabs = Stack.create () in
+      (match Behaviour.checker [(b, newStack, newSlabs, [])] conSet with
+      | true    -> printf "all's good\n"
+      | false   -> printf "you messed up\n"
+      | _       -> printf "you really messed up... like this isn't ever supposed to print");
       printf "%a\n" Behaviour.output_b b ;
-      (match (Behaviour.check_behav b (Stack.create ()) hash) with 
-      | true    -> "all's good"
-      | false   -> "you messed up"
-      | _       -> "you really messed up... like this isn't ever supposed to print");
       parse_and_print lexbuf
      | (None,None) -> ()  (*attempt at printing behaviours and constraints*) 
     (* | (None) -> () *)
