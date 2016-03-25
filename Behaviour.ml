@@ -130,7 +130,7 @@ let rec behaviour_to_string (b:b) =
  	| Tau  												-> "Tau" 
  	| Seq {b1=b_1;b2=b_2} 								-> behaviour_to_string b_1 ^" ;\n "^ behaviour_to_string b_2 
  	| ChoiceB {opt1=op1;opt2=op2} 						-> "chc( " ^ behaviour_to_string op1 ^ ", " ^ behaviour_to_string op2 ^ ")"
- 	| RecB {behaVar=beta;behaviour=b} 					-> "rec " ^ beta ^" "^ behaviour_to_string b 
+ 	| RecB {behaVar=beta;behaviour=b} 					-> "rec " ^ beta ^" "^ behaviour_to_string b  
  	| Spawn {spawned=b} 								-> "Spn( " ^ behaviour_to_string b ^" )"
  	| Push {toPush={label=lab;sessType=sTyp}} 			-> "Psh ( " ^ lab ^", "^  sess_to_string sTyp ^ " )" 
  	| SndType {regionS=reg;outTypeS=typ} 				-> reg ^ " ! " ^ type_to_string typ 
@@ -151,11 +151,11 @@ and p a=
 let rec con_to_string c =
 	match c with 
 	| TCon {smlT=a;bigT=b}				-> type_to_string a ^ " < " ^ type_to_string b ^ " "
-	| BCon {smlB=a;bigB=b}				-> behaviour_to_string a ^ " < " ^ b ^ " "
+	| BCon {smlB=a;bigB=b}				-> "Start behaviour: \n" ^ behaviour_to_string a ^ "\nend behaviour \n" ^ " < " ^ b ^ " "
 	| RegRel {reg=a;regLab=b} 			-> a ^ " ~ " ^ region_to_string b ^ " "    
 	| ConRel {chnlA=a ; endptA=b}		-> a ^ " ~ " ^ sess_to_string b ^" "
 	| ConRelAlt {chnlB=a ; endptB=b}	-> a ^ " ~ " ^ sess_to_string b ^" "
-	| ConSeq {con1=a; con2=b}			-> con_to_string a ^"; "^con_to_string b  
+	| ConSeq {con1=a; con2=b}			-> con_to_string a ^",\n "^con_to_string b  
 	| None 								-> "empty"
 ;;
 

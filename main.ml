@@ -35,7 +35,8 @@ let rec parse_and_print lexbuf =
       | true    -> printf "all's good\n"
       | false   -> printf "you messed up\n"
       | _       -> printf "you really messed up... like this isn't ever supposed to print");
-      printf "%a\n" Behaviour.output_b b ;
+      printf "Behaviours:\n%a\n" Behaviour.output_b b ;
+      printf "Constraints:\n%a\n" Behaviour.output_con con ;
       parse_and_print lexbuf
      | (None,None) -> ()  (*attempt at printing behaviours and constraints*) 
     (* | (None) -> () *)

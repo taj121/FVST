@@ -24,7 +24,6 @@ rule lex = parse
 (*and lex = parse*)
   | white    		     { lex lexbuf }
   | newline  		     { next_line lexbuf; lex lexbuf }
-  | ['0'-'9'] ['0'-'9']*     as i       { INTEGER (i)}
   | ";"           	 { COLON }
   | ","           	 { COMMA }
   | "("              { LEFT_BRACE }

@@ -26,4 +26,12 @@ tau;tau;B71;tau;tau;B72;tau;tau;B73;tau;tau;B74;tau;tau;tau;B75;tau;tau;tau;B76;
 tau;tau;B117;tau < B112,
 tau;tau;B122;tau;tau;tau;B123;tau;tau;B124 < B117,
 tau;tau;B133;tau < B128,
-tau;tau;B138;tau;tau;tau;B139;tau;tau;B140 < B133
+tau;tau;B138;tau;tau;tau;B139;tau;tau;B140 < B133,
+R77 ~ $l1$,
+R80 ~ $l1$,
+R78 ~ $l2$,
+R79 ~ $l2$,
+R125 ~ $l3$,
+R126 ~ $l3$,
+R141 ~ $l3$,
+R142 ~ $l3$
