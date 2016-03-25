@@ -28,15 +28,15 @@ let rec parse_and_print lexbuf =
   let hash = (Hash.create ~random:false 10) in
     match parse_with_error lexbuf with
     | (b,con) -> 
+      printf "Behaviours:\n%a\n" Behaviour.output_b b ;
+      printf "Constraints:\n%a\n" Behaviour.output_con con ;
       let conSet = (Behaviour.con_add con hash []) in 
       let newStack = Stack.create () in
       let newSlabs = Stack.create () in
       (match Behaviour.checker [(b, newStack, newSlabs, [])] conSet with
-      | true    -> printf "all's good\n"
-      | false   -> printf "you messed up\n"
+      | true    -> printf "check successful!\n"
+      | false   -> printf "ERROR: Failed Check\n"
       | _       -> printf "you really messed up... like this isn't ever supposed to print");
-      printf "Behaviours:\n%a\n" Behaviour.output_b b ;
-      printf "Constraints:\n%a\n" Behaviour.output_con con ;
       parse_and_print lexbuf
      | (None,None) -> ()  (*attempt at printing behaviours and constraints*) 
     (* | (None) -> () *)
