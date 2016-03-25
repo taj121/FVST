@@ -1,3 +1,4 @@
+module Hash = Hashtbl
 open Core.Std
 
 (* TYPES *)
@@ -7,7 +8,7 @@ type region = Label of string | RVar of string ;;
 
 (*type for types*)
 type t = Unit 
-	| Bool 
+	| Bool  
 	| Int 
 	| Pair of pair 
 	| Funct of func 
@@ -55,7 +56,7 @@ type b =
 	(* None included due to requirements to run main file *)
 	| None  
 and sndC = { regCa : string ; labl : string}
-and recC = { regCb : string ; cList : (string * b) list ; selected : string} (*TODO document this change*)
+and recC = { regCb : string ; cList : (string * b) list } 
 and recL = { regL : string ; label : string}
 and sndR = { reg1 : string ; reg2 : string}
 and recT = { regionR : string ; outTypeR : t}
@@ -137,7 +138,7 @@ let rec behaviour_to_string (b:b) =
 	| SndReg {reg1=r1;reg2=r2} 							-> r1 ^ " ! "^ r2
 	| RecLab {regL=r;label=lab} 						-> r ^" ? " ^ lab  
 	| SndChc {regCa=reg;labl=lab} 						-> reg ^" ! "^ lab 
-	| RecChoice {regCb=reg ; cList= lst; selected=i}    -> reg ^ " ? optn [" ^ p lst^ "]" ^ " selected: "^( i)
+	| RecChoice {regCb=reg ; cList= lst}			    -> reg ^ " ? optn [" ^ p lst^ "]"
 	|  _ 												-> "\nerr\n " 
 
 (* choice list to string *)
@@ -179,28 +180,74 @@ storing as string in hash table for constraints since constant.
 
 *)
 
+let merge_hash t1 t2 =
+	let add2t1 x y = Hash.add t1 x y in 
+	Hash.iter (add2t1) t2;
+	t1
+;;
 
+(* merge tuples of lists cannot have more than one label*)
+let rec mergeList l =
+	match l with 
+	| x::[] 	-> x
+	| (lab,tbl1)::(lab2,tbl2)::l 	-> (match lab with 
+										| Some s 	-> mergeList ((lab,(merge_hash tbl1 tbl2))::l)
+										| _			-> mergeList ((lab2,(merge_hash tbl1 tbl2))::l))
+;;
+
+(* add new region constraint to list *)
+(* regList is a list of tupples of labels and hash tables consisting of regions.
+the hash tables are searched for the region that is passed in. 
+if regLab is a region the hash tables are searched for this region
+when a match is found (in the case of two regions) the other region is added to the hash table
+in the case where seperate matches are found for the regions the hash table of the second match is added to the first hash table and the label updated appropriately 
+if regLab is a label then the first of the tupple that returns a match for the region is set to be that label
+  *)
+let add_list a b regList =
+	(* find elements of the list with region a in hash table *)
+	let aList = (List.filter regList (fun (lab,table) -> (Hash.mem table a) ) ) in 
+	match b with 
+	| Label s 	-> (let newItem = ((Some s), (Hash.create ~random:false 10)) in (*create new element with empty hash *)
+					let returnList = List.filter regList (fun x -> (not (List.mem aList x )))  in
+					let toMerge = aList @[newItem] in 
+					let newList = mergeList  toMerge in 
+					(List.append returnList [newList]))
+	| RVar s 	-> 	(*create new list that is elements found appended to elements that have the second region in hash table*)
+					(let fullList = (List.append (List.filter regList (fun (lab,table) -> (Hash.mem table s) ) ) aList) in
+						(* filter the original list to only contain elements that are not in the full list *)
+					let newList = List.filter regList (fun x -> not (List.mem fullList x))  in 
+					(* tidy new list to either add the element with the two regions if no elements found with the regions or to  *)
+					let newHash = (Hash.create ~random:false 10) in
+					Hash.add newHash s (); 
+					Hash.add newHash a ();
+					(match newList with 
+					| [] 	-> ( List.append (regList) [(None, newHash)])
+					| _ 	-> (let finalList = List.append fullList [(None, newHash)] in
+									let newItem = mergeList fullList in
+										List.append [newItem] newList))
+					)
+;;
 
 (* add constraints to the hashtable. 
 Key = id^stringOf L.H.S *
 Value = R.H.S  
 id = B for behaviour, 
-T for type 
+T for type  
 R for reg 
 C for channel
 C' for dual 
 *in the case of B key is beta and value is behaviour 
 
 scrap above. New methode is key same value is actual value of con type*)
-let rec con_add con (hshtbl) =
+let rec con_add con bHshtbl rList =
 	match con with 
-	| TCon {smlT=a;bigT=b} 				-> Hashtbl.add hshtbl ("T"^(type_to_string a)) (TCon {smlT=a;bigT=b} )
-	| BCon {smlB=a;bigB=b}				-> Hashtbl.add hshtbl ("B"^b) (BCon {smlB=a;bigB=b}) 
-	| RegRel {reg=a;regLab=b} 			-> Hashtbl.add hshtbl ("R"^a) (RegRel {reg=a;regLab=b})   
-	| ConRel {chnlA=a ; endptA=b}		-> Hashtbl.add hshtbl ("C"^a) (ConRel {chnlA=a ; endptA=b}) 
-	| ConRelAlt {chnlB=a ; endptB=b}	-> Hashtbl.add hshtbl ("C'"^a) (ConRelAlt {chnlB=a ; endptB=b}) 
-	| ConSeq {con1=a; con2=b}			-> con_add a hshtbl; con_add b hshtbl;
-	| None 								-> Hashtbl.add hshtbl "none" (None)
+	| TCon {smlT=a;bigT=b} 				-> (bHshtbl,rList)
+	| BCon {smlB=a;bigB=b}				-> (Hash.add bHshtbl b a) ; (bHshtbl,rList)
+	| RegRel {reg=a; regLab=b} 			-> (bHshtbl, (add_list a b rList))  
+	| ConRel {chnlA=a ; endptA=b}		-> (bHshtbl,rList)
+	| ConRelAlt {chnlB=a ; endptB=b}	-> (bHshtbl,rList)
+	| ConSeq {con1=a; con2=b}			-> let (newb,newr) = (con_add a bHshtbl rList) in con_add b newb newr;
+	| None 								-> (bHshtbl,rList)
 (* 	| TCon {smlT=a;bigT=b} 				-> Hashtbl.add hshtbl ("T"^(type_to_string a)) (type_to_string b)
 	| BCon {smlB=a;bigB=b}				-> Hashtbl.add hshtbl ("B"^b) (behaviour_to_string a) 
 	| RegRel {reg=a;regLab=b} 			-> Hashtbl.add hshtbl ("R"^a) (region_to_string b)   
@@ -233,7 +280,6 @@ let check_sess_rel ses1 ses2 = true
 let check_type_rel t1 t2 = true
 ;;
 
-(* let get_list tbl key = Hashtbl.find_all tbl key   ;; *)
 
 
 (* see if labels match in stack frames *)
@@ -417,7 +463,7 @@ let rec check_behav behaviour stack hash=
 			(* ICh *) 
 			| SndChc {regCa=reg;labl=lab} 				-> ich_check reg lab stack hash
 			(* ECh *)
-			| RecChoice {regCb=reg ; cList= lst; selected=i}     	-> ech_check reg lst i stack hash
+			| RecChoice {regCb=reg ; cList= lst}     	-> ech_check reg lst stack hash
 			(* rec *)
 		(* 	| RecB {behaVar=beta;behaviour=b} 			-> let newStack = (Stack.create ()) in 
 														 	let newHash = Hashtbl.copy hash in
@@ -464,6 +510,8 @@ and ech_check reg lst index stack hash =
 	| [] 		-> true
 	| (x,y)::l 	-> (check_behav y stack hash) && (check_list_b l hash stack) *)
 ;;
+
+(* second attempt at behaviour checking *)
 
 (* print out behaviours *)
 let output_b outc input =  output_string outc (behaviour_to_string input);;
