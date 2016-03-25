@@ -91,8 +91,8 @@ behaviour :
       {RecLab {regL=r;label=l}}
   | r = REG SND l = LABLE
       {SndChc {regCa=r;labl=l}}
-  | r = REG RECI OPTION LEFT_BRACE_SQ o=oplist RIGHT_BRACE_SQ i=INTEGER
-      {RecChoice {regCb=r;cList=o;selected=i}}; /*TODO update document*/
+  | r = REG RECI OPTION LEFT_BRACE_SQ o=oplist RIGHT_BRACE_SQ 
+      {RecChoice {regCb=r;cList=o}}; /*TODO update document*/
 
 oplist:
   opt = separated_list(COMMA, opt_field)    
@@ -113,8 +113,8 @@ sessionType:
     {Delegation { sTypeD=s1; sTypeD2=s2}}
   | RECI s1=sessionType s2=sessionType
     {Resumption { sTypeR=s1; sTypeR2=s2} }
-  | SCHOICE LEFT_BRACE_SQ s=sesOpL RIGHT_BRACE_SQ LEFT_BRACE l=LABLE COLON t=sessionType RIGHT_BRACE
-    {ChoiceS {opList=s; sent=(l,t)}}
+  | SCHOICE LEFT_BRACE_SQ s=sesOpL RIGHT_BRACE_SQ 
+    {ChoiceS {opList=s}}
   | SECHOICE LEFT_BRACE_SQ s1=sesOpL RIGHT_BRACE_SQ LEFT_BRACE_SQ s2=sesOpL RIGHT_BRACE_SQ
     {ExtChoicS {opList1=s1;opList2=s2}}
   | s=SVAR
