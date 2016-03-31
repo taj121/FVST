@@ -336,7 +336,7 @@ and check_step (behaviour, stack, slabs, continuation ) conSet =
 	| true 		-> (*check if behaviour is tau*)
 					(match behaviour with 
 					| Tau 	-> check_tau stack slabs continuation conSet 
-					| _		-> false)
+					| _		-> check_rules (behaviour, stack, slabs, continuation ) conSet)
 	| false 	-> (*check which rule applies*)
 					(*end *)
 					let topFrame = Stack.pop stack in
