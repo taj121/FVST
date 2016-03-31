@@ -29,16 +29,17 @@ let rec parse_and_print lexbuf =
     match parse_with_error lexbuf with
     | (b,con) -> 
       printf "Behaviours:\n%a\n" Behaviour.output_b b ;
-      printf "Constraints:\n%a\n" Behaviour.output_con con ;
+      (* printf "Constraints:\n%a\n" Behaviour.output_con con ; *)
       let conSet = (Behaviour.con_add con hash []) in 
+      printf "%a\n" Behaviour.out_con_set conSet;
       let newStack = Stack.create () in
       let newSlabs = Stack.create () in
       (match Behaviour.checker [(b, newStack, newSlabs, [])] conSet with
       | true    -> printf "check successful!\n"
       | false   -> printf "ERROR: Failed Check\n"
-      | _       -> printf "you really messed up... like this isn't ever supposed to print");
+      (* | _       -> printf "you really messed up... like this isn't ever supposed to print"*)); 
       parse_and_print lexbuf
-     | (None,None) -> ()  (*attempt at printing behaviours and constraints*) 
+     | (None,None) -> () 
     (* | (None) -> () *)
 
  let loop filename () =

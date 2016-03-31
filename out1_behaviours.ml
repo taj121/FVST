@@ -1,7 +1,7 @@
 B123;
 tau;
 chc(tau,B12);
-rec B13 tau;
+rec B13 (tau);
 spn(B57);
 psh($t$, end);
 psh($t$, ! unit end);

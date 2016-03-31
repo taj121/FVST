@@ -3,7 +3,6 @@
 %token <string> BEVAR 
 %token <string> LABLE
 %token <string> REG
-%token <string> INTEGER
 %token TAU
 %token CHOICE
 %token REC
@@ -40,8 +39,8 @@
 %token <string> CHANNEL
 %token <string> CHANNELEND
 
-%right COLON
 %right COMMA
+%right COLON
 
 %{
   open Behaviour
@@ -65,17 +64,16 @@ parse_behaviour:
   | c = constr EOF {c}
   ;*/
 
-
 behaviour :
   | var = BEVAR                           
       {BVar var} 
   | TAU                                  
       {Tau} 
   | b1 = behaviour COLON b2 = behaviour   
-      {Seq {b1=b1;b2=b2}}
+      {Seq {b1=b1;b2=b2}} 
   | CHOICE LEFT_BRACE b1 = behaviour COMMA b2 = behaviour RIGHT_BRACE
       {ChoiceB {opt1=b1;opt2=b2}} 
-  | REC var = BEVAR b = behaviour
+  | REC var = BEVAR LEFT_BRACE b = behaviour RIGHT_BRACE
       {RecB {behaVar=var;behaviour=b}}
   | SPAWN LEFT_BRACE b = behaviour RIGHT_BRACE
       {Spawn {spawned=b}}
@@ -92,7 +90,7 @@ behaviour :
   | r = REG SND l = LABLE
       {SndChc {regCa=r;labl=l}}
   | r = REG RECI OPTION LEFT_BRACE_SQ o=oplist RIGHT_BRACE_SQ 
-      {RecChoice {regCb=r;cList=o}}; /*TODO update document*/
+      {RecChoice {regCb=r;cList=o}}; 
 
 oplist:
   opt = separated_list(COMMA, opt_field)    
@@ -102,12 +100,13 @@ opt_field:
   LEFT_BRACE l=LABLE COLON b=behaviour RIGHT_BRACE
     {(l,b)};
 
+
 sessionType:
   | SESEND
     { EndTag }
-  | SND t=bType s=sessionType
+  | RECI t=bType s=sessionType
     {InputConfinded { inValue=t; sTypeIn=s} }
-  | RECI t=bType LEFT_BRACE s=sessionType RIGHT_BRACE
+  | SND t=bType  s=sessionType 
     {OutputConfinded { outValue=t; sTypeOut=s} }
   | SND s1=sessionType s2=sessionType
     {Delegation { sTypeD=s1; sTypeD2=s2}}

@@ -20,7 +20,7 @@ type t = Unit
 
 (* session types *)
 type sesType = 
-	| EndTag 
+	| EndTag  
 	| InputConfinded of inConT 
 	| OutputConfinded of outConT 
 	| Delegation of del 
@@ -163,21 +163,14 @@ let rec con_to_string c =
 
 (*
 idea for storing constraints for checking
-
 hash table.
-
 key is string version of first part
-
 problems: two types of constrainst
 first part could be really long
 second parts can be different
-
 idea: key is string of second part? less likely to be really long... still could be though
-
 new problem... not sure i can use generic stack/hash table with user defined types
-
 storing as string in hash table for constraints since constant. 
-
 *)
 
 let merge_hash t1 t2 =
@@ -189,11 +182,12 @@ let merge_hash t1 t2 =
 (* merge tuples of lists cannot have more than one label*)
 let rec mergeList l =
 	match l with 
-	| x::[] 	-> x
+	| x::[] 	-> [x]
 	| (lab,tbl1)::(lab2,tbl2)::l 	-> (match lab with 
 										| Some s 	-> mergeList ((lab,(merge_hash tbl1 tbl2))::l)
 										| _			-> mergeList ((lab2,(merge_hash tbl1 tbl2))::l))
-;;
+	| [] 	-> []
+;; 
 
 (* add new region constraint to list *)
 (* regList is a list of tupples of labels and hash tables consisting of regions.
@@ -211,7 +205,7 @@ let add_list a b regList =
 					let returnList = List.filter regList (fun x -> (not (List.mem aList x )))  in
 					let toMerge = aList @[newItem] in 
 					let newList = mergeList  toMerge in 
-					(List.append returnList [newList]))
+					(List.append returnList newList))
 	| RVar s 	-> 	(*create new list that is elements found appended to elements that have the second region in hash table*)
 					(let fullList = (List.append (List.filter regList (fun (lab,table) -> (Hash.mem table s) ) ) aList) in
 						(* filter the original list to only contain elements that are not in the full list *)
@@ -223,8 +217,8 @@ let add_list a b regList =
 					(match newList with 
 					| [] 	-> ( List.append (regList) [(None, newHash)])
 					| _ 	-> (let finalList = List.append fullList [(None, newHash)] in
-									let newItem = mergeList fullList in
-										List.append [newItem] newList))
+									let newItem = mergeList finalList in
+										List.append newItem newList))
 					)
 ;;
 
@@ -238,6 +232,42 @@ let rec con_add con bHshtbl rList =
 	| ConRelAlt {chnlB=a ; endptB=b}	-> (bHshtbl,rList)
 	| ConSeq {con1=a; con2=b}			-> let (newb,newr) = (con_add a bHshtbl rList) in con_add b newb newr;
 	| None 								-> (bHshtbl,rList)
+;;
+
+let rec hsh_lst_to_string hshlst =
+	match hshlst with
+	| [] -> ""
+	| (k,v)::l -> "\nPaired: key " ^ (k) ^ " value: \n" ^ (behaviour_to_string v) ^ hsh_lst_to_string l
+;;
+
+let behav_con_to_string bHash =
+	let hshLst = Hash.fold (fun k v acc -> (k, v) :: acc) bHash [] in 
+	"Behaviour constraints:\n"^hsh_lst_to_string hshLst
+;;
+
+let rec reg_lst_to_str hshLst = 
+	match hshLst with
+	| [] -> ""
+	| x::xs -> x ^ "\n" ^ (reg_lst_to_str xs)
+;;
+
+let reg_hs_to_string rhsh =
+	let hshLst = Hash.fold (fun k v acc -> k :: acc) rhsh [] in 
+	reg_lst_to_str hshLst
+;;
+
+
+let rec reg_con_to_string rlst = 
+	match rlst with
+	| [] -> ""
+	| ((Some l),h)::ls -> "label: " ^ l ^ "\n regions:\n"^(reg_hs_to_string h) ^ (reg_con_to_string ls)
+	| (None, h)::ls -> "label: None "  ^ "\n regions:\n"^(reg_hs_to_string h) ^ (reg_con_to_string ls)
+;;
+
+
+(* constraint set to string *)
+let con_set_to_string (bHash,rLst) = 
+	(behav_con_to_string bHash) ^ "\nRegion Constraints:\n " ^(reg_con_to_string rLst)
 ;;
 
 (* second attempt at behaviour checking *)
@@ -284,7 +314,7 @@ let rec match_list lst_b lst_n retLst=
 let check_reg_const reg label regList =
 	match (find_tuple label regList) with 
 	| (lab, hashT) 	-> (Hash.mem hashT reg)
-	| _ 	-> false
+	(* | _ 	-> false *)
 ;;
 
 (* TODO placeholder for type constraint checking function *)
@@ -317,9 +347,12 @@ and check_step (behaviour, stack, slabs, continuation ) conSet =
 and check_rules (behaviour, stack, slabs, continuation ) (bHash,rList) =
 	match behaviour with 
 	(* Beta *)
-	| BVar beta 								-> let bList = Hash.find_all bHash beta in (*get list of all behaviours with links to beta in constraints*)
+	| BVar beta 								-> (match Hash.mem bHash beta with 
+													| true -> let bList = Hash.find_all bHash beta in (*get list of all behaviours with links to beta in constraints*)
 														(*call check step on each behaviour in list with a copy of the stack*)
 														check_each bList stack slabs continuation (bHash,rList)
+													| _ -> true)
+													
 	(* plus *)
  	| ChoiceB {opt1=op1;opt2=op2} 				-> let choiceList = [op1]@[op2] in
  														(*check each choice with copy of stack*)
@@ -351,9 +384,10 @@ and check_rules (behaviour, stack, slabs, continuation ) (bHash,rList) =
 													(*TODO check this is right. should it be new stacks?*) 
 	(* seq *)
  	| Seq {b1=b_1;b2=b_2} 						-> let newContinue = [b_2]@continuation in 
- 													check_step (b_1, stack, slabs, continuation) (bHash, rList)
+ 													check_step (b_1, stack, slabs, newContinue) (bHash, rList)
 	(* tau *)
 	| Tau  										-> check_tau stack slabs continuation (bHash, rList)
+	| None										-> false
 
 (* check each behaviour in list using copy of current stack *)
 and check_each bList stack slabs continuation conSet =
@@ -425,7 +459,7 @@ and check_ich {regCa=reg;labl=lab} stack slabs continuation (bHash, rList) =
 													| true 	-> (Stack.push stack {label=labSt;sessType=sessF});
 																check_step (Tau, stack, slabs, continuation) (bHash, rList)
 													| _		-> false)
-								| _ 	-> false	)
+								(*| _ 	-> false*)	)
 	| _ 	-> false
 
 (* for each b in cList check that there is a  *)
@@ -455,10 +489,11 @@ and check_rec {behaVar=beta;behaviour=b} stack slabs continuation (bHash, rList)
 				let newbHash = Hash.copy bHash in 
 				let newStack = Stack.create () in
 				let newSlabs = Stack.create () in
-				remove_all newbHash beta (List.length newbList);
-				add_all newbHash beta newbList;
+				let hashN = remove_all newbHash beta (List.length newbList) in
+				let hashN1 = add_all hashN beta newbList in
 				(check_step (Tau, stack, slabs, continuation) (bHash, rList)) 
-				&& (checker [(b, newStack, newSlabs, continuation)] (newbHash,rList)) 
+				&& (checker [(b, newStack, newSlabs, continuation)] (hashN1,rList)) 
+	| _		-> false
 ;;
 
 
@@ -466,5 +501,7 @@ and check_rec {behaVar=beta;behaviour=b} stack slabs continuation (bHash, rList)
 let output_b outc input =  output_string outc (behaviour_to_string input);;
 (*print out constraints*)
 let output_con outc input =  output_string outc (con_to_string input);;
+
+let out_con_set outc input = output_string outc (con_set_to_string input);;
 
 (* currently can only call one of these at a time from main, need to fix *)
