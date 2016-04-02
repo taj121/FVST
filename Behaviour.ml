@@ -174,7 +174,7 @@ storing as string in hash table for constraints since constant.
 *)
 
 let merge_hash t1 t2 =
-	let add2t1 x y = Hash.add t1 x y in 
+	let add2t1 x y = (if not(Hash.mem t1 x) then Hash.add t1 x y) in 
 	Hash.iter (add2t1) t2;
 	t1
 ;;
@@ -183,11 +183,12 @@ let merge_hash t1 t2 =
 let rec mergeList l =
 	match l with 
 	| x::[] 	-> [x]
-	| (lab,tbl1)::(lab2,tbl2)::l 	-> (match lab with 
-										| Some s 	-> mergeList ((lab,(merge_hash tbl1 tbl2))::l)
-										| _			-> mergeList ((lab2,(merge_hash tbl1 tbl2))::l))
+	| (lab,tbl1)::(lab2,tbl2)::ls 	-> (match lab with 
+										| Some s 	-> mergeList ((lab,(merge_hash tbl1 tbl2))::ls)
+										| _			-> mergeList ((lab2,(merge_hash tbl1 tbl2))::ls))
 	| [] 	-> []
 ;; 
+
 
 (* add new region constraint to list *)
 (* regList is a list of tupples of labels and hash tables consisting of regions.
@@ -201,26 +202,35 @@ let add_list a b regList =
 	(* find elements of the list with region a in hash table *)
 	let aList = (List.filter regList (fun (lab,table) -> (Hash.mem table a) ) ) in 
 	match b with 
-	| Label s 	-> (let newItem = ((Some s), (Hash.create ~random:false 10)) in (*create new element with empty hash *)
-					let returnList = List.filter regList (fun x -> (not (List.mem aList x )))  in
-					let toMerge = aList @[newItem] in 
-					let newList = mergeList  toMerge in 
-					(List.append returnList newList))
-	| RVar s 	-> 	(*create new list that is elements found appended to elements that have the second region in hash table*)
+	| Label s 	-> (match List.filter regList (fun (lab,table) -> (lab = (Some s))) with 
+					| [] 	->  (let newHash = Hash.create ~random:false 10 in
+									Hash.add newHash a ();
+									let toMerge = [(Some s, newHash)]@aList in
+										let returnList = List.filter regList (fun x -> not(List.mem aList x)) in
+											(mergeList toMerge)@returnList
+								)
+					| (l,t)::[] 	-> (Hash.add t a ();
+										let toMerge = aList@[(l,t)] in
+											let returnList = List.filter regList (fun x -> not(List.mem toMerge x)) in
+												(mergeList toMerge)@returnList
+								  		)
+					| _		-> regList
+					)
+
+	| RVar s 	-> 	(* create new list that is elements found appended to elements that have the second region in hash table *)
 					(let fullList = (List.append (List.filter regList (fun (lab,table) -> (Hash.mem table s) ) ) aList) in
 						(* filter the original list to only contain elements that are not in the full list *)
-					let newList = List.filter regList (fun x -> not (List.mem fullList x))  in 
-					(* tidy new list to either add the element with the two regions if no elements found with the regions or to  *)
-					let newHash = (Hash.create ~random:false 10) in
-					Hash.add newHash s (); 
-					Hash.add newHash a ();
-					(match newList with 
-					| [] 	-> ( List.append (regList) [(None, newHash)])
-					| _ 	-> (let finalList = List.append fullList [(None, newHash)] in
+						let newList = List.filter regList (fun x -> not (List.mem fullList x))  in 
+							(* tidy new list to either add the element with the two regions if no elements found with the regions or to  *)
+							let newHash = (Hash.create ~random:false 10) in
+								Hash.add newHash s (); 
+								Hash.add newHash a ();
+								let finalList = List.append fullList [(None, newHash)] in
 									let newItem = mergeList finalList in
-										List.append newItem newList))
+										List.append newItem newList 
 					)
 ;;
+
 
 (* constraints added. Currently only concerned with behaviour and region constraints. behaviour constraints added to a hashtable region to a list of label*hashtable tupples. *)
 let rec con_add con bHshtbl rList =
@@ -438,7 +448,7 @@ and check_del {reg1=r1;reg2=r2} stack slabs continuation (bHash, rList) =
 and check_res {regL=r;label=lab} stack slabs continuation (bHash, rList) =
 	match Stack.pop stack with 
 	| Some {label=labSt; sessType=(Resumption {sTypeR=s1;sTypeR2=s2})} -> 
-					(match ((not(phys_equal lab labSt)) && (check_reg_const r labSt rList)) with 
+					(match ((( lab <> labSt)) && (check_reg_const r labSt rList)) with 
 					| true 	-> (Stack.push stack {label=lab;sessType=s1});
 								(Stack.push stack {label=labSt ;sessType=s2});
 								check_step (Tau, stack, slabs, continuation) (bHash, rList)
@@ -484,8 +494,8 @@ and check_each_ses lab lst stack slabs continuation conSet =
 
 and check_rec {behaVar=beta;behaviour=b} stack slabs continuation (bHash, rList) = 
 	let bList = Hash.find_all bHash beta in
-	match List.exists bList (fun x -> phys_equal x (RecB { behaVar=beta ; behaviour=b} )) with 
-	| true 	-> let newbList = List.filter bList  (fun x ->not(phys_equal x (RecB { behaVar=beta ; behaviour=b} ))) in
+	match List.exists bList (fun x ->  x = (RecB { behaVar=beta ; behaviour=b} )) with 
+	| true 	-> let newbList = List.filter bList  (fun x ->( x <> (RecB { behaVar=beta ; behaviour=b} ))) in
 				let newbHash = Hash.copy bHash in 
 				let newStack = Stack.create () in
 				let newSlabs = Stack.create () in
