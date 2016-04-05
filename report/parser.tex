@@ -65,14 +65,13 @@ The lexer is written using ocamllex. This allows us to define multiple lexing ru
 \section {Grammars}
 
 \subsection{Types}
-\newpage
 \begin{grammar}
 
-<bType> ::= Unit
+<bType> ::= 'unit'
 \alt ' bool '
 \alt 'int'
 \alt 'pair' '(' <bType> ';' <bType> ')'
-\alt 'funct' <bType> $\rightarrow$ <bType> '-' <behaviourVariable>
+\alt 'funct' <bType> '-$>$' <bType> '-' <behaviourVariable>
 \alt 'ses' <region>
 \alt <TVar>
 
@@ -82,7 +81,7 @@ The lexer is written using ocamllex. This allows us to define multiple lexing ru
 
 \begin{grammar}
 
-<sessionType> ::= 'End'
+<sessionType> ::= 'end'
 \alt '!' <bType> <sessionType>
 \alt '?' <bType> <sessionType>
 \alt '!' <sessionType> <sessionType>
@@ -100,7 +99,7 @@ The lexer is written using ocamllex. This allows us to define multiple lexing ru
 \subsection{Behaviour}
 
 \begin{grammar}
-
+\newpage
 <behaviour> ::= <behaviourVariable>
 \alt 'tau'
 \alt <behaviour> ';' <behaviour>
