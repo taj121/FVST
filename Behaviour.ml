@@ -290,6 +290,20 @@ let rec con_add con bHshtbl rList =
 (* ********************************************behaviour checker ************************************************** *)
 (* and functions used for it  *)
 
+(* takes list of tuples and returns list of first elemnets *)
+let rec get_lab_lst lst =
+	match lst with 
+	| [] 	-> []
+	| (l,x)::xs 	-> [l] @ (get_lab_lst xs)
+;;
+
+(* checks if every label from every element of sub is in a tuple in par *)
+let check_subset sub par = 
+	let lab_sub = get_lab_lst sub in
+	let lab_par = get_lab_lst par in
+	List.for_all lab_sub (fun x -> List.mem lab_par x)
+;;
+
 (* remove x binding for key from hash table *)
 let rec remove_all hash key valCount = 
 	match valCount with 
@@ -514,10 +528,10 @@ and check_ech {regCb=reg; cList=lst} stack slabs continuation (bHash, rList) =
 	(* check top of stack *)
 	match Stack.pop stack with 
 	| Some {label=labSt; sessType= (ExtChoicS{opList1 = ol1;opList2=ol2})} -> 
-						(match (check_reg_const reg labSt rList)  with (*TODO check i1 subset j and j subset i1 union i2*)
+						(match (check_reg_const reg labSt rList) && (check_subset ol1 lst) && (check_subset lst (ol1@ol2)) with (*TODO check i1 subset j and j subset i1 union i2*)
 						| true 	-> let newLst=(match_list lst ol1 []) in
 									check_each_ses labSt newLst stack slabs continuation (bHash, rList)
-						| _		-> printf "region constraints failed check\n";false) 
+						| _		-> printf "region constraints failed check or lists structured incorrectly, ech\n";false) 
 						
 	| _		-> printf "stack frame incorrect for current behaviour\n";false
 
