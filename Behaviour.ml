@@ -458,7 +458,7 @@ and check_each bList stack slabs continuation conSet =
 (* check if passed in frame label matches any label that has been on stack before. If not push frame and continue check. If yes return false *)
 and check_push {label=lab;sessType=sTyp} stack slabs continuation conSet =
 	match (Stack.mem slabs lab) with 
-	| true 	-> printf "label %s has already been pushed to stack\n" lab;false
+	| true 	-> printf "push rule\nlabel %s has already been pushed to stack\n" lab;false
 	| false -> (Stack.push stack {label=lab;sessType=sTyp});
 				(Stack.push slabs lab); 
 				(* printf "before call to check_step stack is:\n";
@@ -472,8 +472,8 @@ and check_out {regionS=reg;outTypeS=typ} stack slabs continuation (bHash, rList)
 			(match ((check_reg_const reg lab rList) && check_types typSt typ ) with 
 			| true 	-> (Stack.push stack {label=lab;sessType=styp}) ;
 						check_step (Tau, stack, slabs, continuation) (bHash, rList)
-			| _ 	-> printf "region constraints failed check\n"; false)
-	| _		-> printf "stack frame incorrect for current behaviour\n";false
+			| _ 	-> printf "out rule\nregion constraints failed check\n"; false)
+	| _		-> printf "out rule\nstack frame incorrect for current behaviour\n";false
 
 and check_in {regionR=reg;outTypeR=typ} stack slabs continuation (bHash, rList) = 
 	match (Stack.pop stack) with 
@@ -481,8 +481,8 @@ and check_in {regionR=reg;outTypeR=typ} stack slabs continuation (bHash, rList) 
 			(match (  (check_reg_const reg lab rList)&& check_types typ typSt ) with 
 			| true 	->  (Stack.push stack {label=lab;sessType=styp}) ;
 						check_step (Tau, stack, slabs, continuation) (bHash, rList)
-			| _ 	-> printf "region constraints or functional type constraints failed check\n";false)
-	| _		-> printf "stack frame incorrect for current behaviour\n";false
+			| _ 	-> printf "in rule\nregion constraints or functional type constraints failed check\n";false)
+	| _		-> printf "in rule\nstack frame incorrect for current behaviour\n";false
 
 and check_del {reg1=r1;reg2=r2} stack slabs continuation (bHash, rList) = 
 	match (Stack.pop stack ) with 
@@ -492,9 +492,9 @@ and check_del {reg1=r1;reg2=r2} stack slabs continuation (bHash, rList) =
 									(match ((check_reg_const r1 lab rList) && (check_reg_const r2 lab2 rList) && (check_sess s1 sessT2)) with 
 									| true 	-> (Stack.push stack {label=lab; sessType=s2});
 												check_step (Tau, stack, slabs, continuation) (bHash, rList)
-									| _	-> printf "region constraints or session constraints failed check\n";false ) 
+									| _	-> printf "del rule\nregion constraints or session constraints failed check\n";false ) 
 						| _ 	-> false)
-	| _		-> false
+	| _		-> printf "del rule\nstack frame incorrect for current behaviour\n";false
 
 and check_res {regL=r;label=lab} stack slabs continuation (bHash, rList) =
 	match Stack.pop stack with 
@@ -503,8 +503,8 @@ and check_res {regL=r;label=lab} stack slabs continuation (bHash, rList) =
 					| true 	-> (Stack.push stack {label=lab;sessType=s1});
 								(Stack.push stack {label=labSt ;sessType=s2});
 								check_step (Tau, stack, slabs, continuation) (bHash, rList)
-					| _ 	->printf "region constraints failed check or incorrect label \n"; false)
-	| _		-> printf "stack frame incorrect for current behaviour\n";false
+					| _ 	->printf "resume rule\nregion constraints failed check or incorrect label \n"; false)
+	| _		-> printf "resume rule\nstack frame incorrect for current behaviour\n";false
 
 
 and check_tau stack slabs continuation conSet =
@@ -519,21 +519,21 @@ and check_ich {regCa=reg;labl=lab} stack slabs continuation (bHash, rList) =
 								| (labF, sessF) -> (match check_reg_const reg labSt rList with 
 													| true 	-> (Stack.push stack {label=labSt;sessType=sessF});
 																check_step (Tau, stack, slabs, continuation) (bHash, rList)
-													| _		->printf "region constraints failed check\n"; false)
+													| _		->printf "ich rule\nregion constraints failed check\n"; false)
 								(*| _ 	-> false*)	)
-	| _		-> printf "stack frame incorrect for current behaviour\n";false
+	| _		-> printf "ich rule\nstack frame incorrect for current behaviour\n";false
 
 (* for each b in cList check that there is a  *)
 and check_ech {regCb=reg; cList=lst} stack slabs continuation (bHash, rList) = 
 	(* check top of stack *)
 	match Stack.pop stack with 
 	| Some {label=labSt; sessType= (ExtChoicS{opList1 = ol1;opList2=ol2})} -> 
-						(match (check_reg_const reg labSt rList) && (check_subset ol1 lst) && (check_subset lst (ol1@ol2)) with (*TODO check i1 subset j and j subset i1 union i2*)
+						(match (check_reg_const reg labSt rList) && (check_subset ol1 lst) && (check_subset lst (ol1@ol2)) with 
 						| true 	-> let newLst=(match_list lst ol1 []) in
 									check_each_ses labSt newLst stack slabs continuation (bHash, rList)
-						| _		-> printf "region constraints failed check or lists structured incorrectly, ech\n";false) 
+						| _		-> printf "ech rule\nregion constraints failed check or lists structured incorrectly\n";false) 
 						
-	| _		-> printf "stack frame incorrect for current behaviour\n";false
+	| _		-> printf "ech rule\nstack frame incorrect for current behaviour\n";false
 
 and check_each_ses lab lst stack slabs continuation conSet = 
 	match lst with
@@ -554,7 +554,7 @@ and check_rec {behaVar=beta;behaviour=b} stack slabs continuation (bHash, rList)
 				let hashN1 = add_all hashN beta newbList in
 				(check_step (Tau, stack, slabs, continuation) (bHash, rList)) 
 				&& (checker [(b, newStack, newSlabs, continuation)] (hashN1,rList)) 
-	| _		-> printf "recursion error\n";false
+	| _		-> printf "rec ruls \nrecursion error\n";false
 ;;
 
 (* *****************************************************output functions*************************************************************** *)
