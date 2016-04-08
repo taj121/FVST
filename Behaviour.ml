@@ -520,7 +520,7 @@ and check_push {label=lab;sessType=sTyp} stack slabs continuation conSet =
 and check_out {regionS=reg;outTypeS=typ} stack slabs continuation (bHash, rList, tHash) = 
 	match (Stack.pop stack) with 
 	| Some {label=lab; sessType=(OutputConfinded {outValue=typSt;sTypeOut=styp})}	-> 
-			(match ((check_reg_const reg lab rList) && (check_types typSt typ bHash rList tHash) ) with 
+			(match ((check_reg_const reg lab rList) && (check_types typ typSt bHash rList tHash) ) with 
 			| true 	-> (Stack.push stack {label=lab;sessType=styp}) ;
 						check_step (Tau, stack, slabs, continuation) (bHash, rList, tHash)
 			| _ 	-> printf "out rule\nregion constraints failed check\n"; false)
@@ -529,7 +529,7 @@ and check_out {regionS=reg;outTypeS=typ} stack slabs continuation (bHash, rList,
 and check_in {regionR=reg;outTypeR=typ} stack slabs continuation (bHash, rList, tHash) = 
 	match (Stack.pop stack) with 
 	| Some {label=lab; sessType=(InputConfinded {inValue=typSt;sTypeIn=styp})}	-> 
-			(match (  (check_reg_const reg lab rList)&& (check_types typ typSt bHash rList tHash)) with 
+			(match (  (check_reg_const reg lab rList)&& (check_types typSt typ bHash rList tHash)) with 
 			| true 	->  (Stack.push stack {label=lab;sessType=styp}) ;
 						check_step (Tau, stack, slabs, continuation) (bHash, rList, tHash)
 			| _ 	-> printf "in rule\nregion constraints or functional type constraints failed check\n";false)
