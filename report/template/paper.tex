@@ -1,0 +1,41 @@
+%!TEX root = FVST.tex
+\chapter{Summary of Paper Type Based Analysis for Session Inference}
+
+\section{Overview} \label{overview}
+This paper introduces a new idea for a design approach to Binary Session Types which uses effects. A high level language is developed where communication protocols can be programmed and checked statically. In this paper \cite{paper1} the approach is applied to $ML_s$, a core of the language ML with session communication.
+
+The approach suggested separates traditional and session typing using a two level system. The first level uses a type and effect system, which is an adaptation of the one developed by Amtoft, Neilsen and Neilsen 1999 \cite{amtoft}. Types allow for clear representation of program properties and enable modular reasoning. The effects are essentially behaviour types that record the actions of interest that will happen at run time. From this system a complete behaviour inference algorithm is obtained, this extracts a behaviour for a program providing it respects ML types. In this level the programs are typed against both an ML type and a behaviour. Session protocols are not considered here and so endpoints are given a type $ses^\rho$ instead (see \ref{level2}).   
+
+The second level checks the behaviour to see that it complies with the session types of both channels and endpoints. In performing this check the operational semantics are used (see \ref{level2}). 
+
+This level is inspired by the work done by Castagna et al. \cite{foundSessTypes}. In their system session based interaction is established on a public channel, once established the parties continue to communicate on a private channel. Messages are exchanged on the private channel according to a given protocol. Internal and external choices are also required by this system to implement control. Internal choices are when the decision is made autonomously by a process and external choices occur when a decision is based entirely on messages received. 
+
+This level ensures that sessions respect the order of communication and message types described by the session type of the channel. It also ensures partial lock freedom due to stacked interleaving of sessions \ref{level2}.
+
+One of the most appealing aspects of the session type discipline proposed here is that it allows for complete session type inference from behaviours. When this is combined with behaviour inference from level 1 we get a method from complete session type inference without programmer annotations. 
+
+The two levels of the system only interact through behaviours. This allows for the development of front ends for different languages and back ends for different session disciplines and to combine the two to cover an extensive selection of requirements. 
+
+\section{The Fist Level} \label{level1}
+
+At this level the type and effect system of Amtoft, Neilsen and Neilsen 1999 \cite{amtoft} is extended to session communications in $ML_s$. The type and effect system consists of constructions of judgments of the form $C;\Gamma \vdash e : T \triangleright b$. In this statement $C$ represents the constraint environment which is used to relate type level variables to terms and so enables session inference. $\Gamma$ represents the type environment which is used to bind program variables to type schemas. To read this judgment we would say that expression $e$ has type $T$ and behaviour $b$ under type environment $\Gamma$ and constraint environment $C$.
+
+In the system designed in the paper an $ML_s$ expression can have either a standard ML type or a session type. Session types are of the form $ses^\rho$ where $\rho$ is a static approximation of the location of the endpoint. Functional types have an associated behaviour $\beta$ and type variables $\alpha$ are used for ML polymorphism. 
+
+\begin{figure}
+\caption{Syntax of types, behaviours, constraints and session types}
+\label{syntaxTypes}
+\end{figure}
+
+Polymorphism is extended with type schemas. These are of the form $\forall(\overrightarrow{\gamma}:C_0).T$ where $\gamma$ is a list made up of some combination of type ($\alpha$), behaviour ($\beta$), region ($\rho$) and session ($\psi$) variables and $C_0$ represents the constraint environment that imposes constraints on the quantified variables. 
+
+The rules for the type and effect system proposed are given in fig. \ref{typeAndEffect}. These are made of of the judgments described above and requirements for the rule. These rules say that if we have a judgments of the form given above the line and if the requirements beside the rule (if they exist) are met then the judgment below the line should be valid. 
+
+\begin{figure}
+\caption{Type and Effect system for $ML_s$ Expressions omitting rule for pairs}
+\label{typeAndEffect}
+\end{figure}
+
+
+
+\section{The Second Level} \label{level2}

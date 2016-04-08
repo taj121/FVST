@@ -1,0 +1,21 @@
+%!TEX root = FVST.tex
+\chapter{Introduction}
+
+The aims of this project are to investigate the formal verification of session types, specifically in relation to the paper Type-Based Analysis for Session Inference \cite{paper1}, and to implement a behaviour checker based on the designs described in this paper.  
+
+\section{Motivation}
+The modern world is growing increasingly dependent on distributed systems, changing the historical approach to computing dramatically. In order for modern society to function it is important that these systems communicate correctly and that when proposing or introducing new systems we can show that they will communicate correctly under all circumstances. 
+
+Modern programming languages support data types. These allow us to use verification techniques to show that the program will run as expected on all forms of input. A similar system could be used for communication over distributed systems. Ideally a type system for communication would be embedded into languages in a similar fashion to the type systems of all modern languages. 
+
+\section{Current Work}
+This area is currently been researched by multiple groups. However it is currently not used in real world systems to any great extent. To date systems have been developed for applying session type disciplines to functional languages, object oriented languages and operating systems. 
+
+\section{Background}
+Traditional type systems embedded into programming languages focus on the computations and what they should produces. Session type systems aim to embed session types that describe both the sequence and they type of messages that are been transmitted on communication channels into modern programming languages. This allows for the verification of the communications on a channel since the session type describes the protocol of the channel. 
+
+\subsection{Main Session Type Approaches}
+According to H\"{u}ttle et al. \cite{foundBTypes} the main approaches to session types are as follows.
+
+\textit{Session types} are usually associated with binary communication channels where the two ends using the channel see it as complementary types. It is then possible to use static type checking to ensure that the communications on the channel are in accordance with the protocol. \textit{Multiparty session types} extend binary session types to allow for more than two programs to communicate. \textit{Conversation session types} unify local and global multipary types and allow for unspecified numbers for communication. \textit{Contracts} focus on general theory to confirm that communications follow the specified abstract description of input/output actions.
+

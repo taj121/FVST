@@ -1,0 +1,2 @@
+Btest
+Btest2;chc(Rtest1!Ttest1, Rtest2?Ttest2)

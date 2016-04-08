@@ -1,0 +1,12 @@
+write up parser stuff for report
+
+work out how to store things for the checker
+
+start checker
+
+p ~l 
+
+need to check if p~p~p...~l
+
+
+stack labels can't be the same even if they have been removed
