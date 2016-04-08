@@ -400,14 +400,41 @@ let rec check_types t1 t2 bHash rList tHash=
 					(match t2 with 
 					| Funct {inType=t2_1 ; outType=t2_2 ; behav=t2_b} -> (*TODO think maybe rule might be mixed up*)
 						(check_type_b_con t1_b t2_b bHash)
-						&& (check_types t1_1 t2_1 bHash rList tHash) 
+						&& (check_types t2_1 t1_1 bHash rList tHash) 
 						&& (check_types t1_2 t2_2 bHash rList tHash)
 					| _ -> false)
 		| t1 -> (check_t_con t1 t2 tHash)
 ;;
 
 (* TODO placeholder for session type constraint checking function *)
-let check_sess t1 t2 = true;;
+(*sub super*)
+let rec check_sess n1 n2 bHash rList tHash= 
+	match n1 with 
+	| EndTag -> (match n2 with 
+				| EndTag -> true
+				| _		-> false)
+	| InputConfinded {inValue=n1_t ; sTypeIn= n1_n} -> 
+		(match n2 with 
+		| InputConfinded {inValue=n2_t ; sTypeIn= n2_n} -> 
+				(check_types n2_t n1_t bHash rList tHash)
+				&& (check_sess n1_n n2_n bHash rList tHash)
+		| _	-> false)
+	| OutputConfinded {outValue=n1_t ; sTypeOut= n1_n} ->
+		(match n2 with 
+		| OutputConfinded {outValue=n2_t ; sTypeOut= n2_n} -> 
+				(check_types n1_t n2_t bHash rList tHash)
+				&& (check_sess n1_n n2_n bHash rList tHash)
+		| _	-> false) 
+	| ChoiceS {opList=n1_lst} -> 
+		(match n2 with 
+		| ChoiceS {opList=n2_lst} -> true (*TODO*)
+		| _ -> false)
+	| ExtChoicS {opList1=n1_lst1; opList2=n1_lst2} -> 
+		(match n2 with 
+		| ExtChoicS {opList1=n2_lst1; opList2=n2_lst2} -> true (*TODO*)
+		| _ -> false)
+	| _ -> false
+;;
 
 (* testing functions for printing call parameters *)
 let rec print_list l =
@@ -540,7 +567,7 @@ and check_del {reg1=r1;reg2=r2} stack slabs continuation (bHash, rList, tHash) =
 	| Some {label=lab; sessType=(Delegation {sTypeD=s1;sTypeD2=s2})} -> 
 						(match Stack.pop stack with 
 						| Some {label=lab2;sessType=sessT2} -> 
-									(match ((check_reg_const r1 lab rList) && (check_reg_const r2 lab2 rList) && (check_sess s1 sessT2)) with 
+									(match ((check_reg_const r1 lab rList) && (check_reg_const r2 lab2 rList) && (check_sess s1 sessT2 bHash rList tHash)) with 
 									| true 	-> (Stack.push stack {label=lab; sessType=s2});
 												check_step (Tau, stack, slabs, continuation) (bHash, rList, tHash)
 									| _	-> printf "del rule\nregion constraints or session constraints failed check\n";false ) 
