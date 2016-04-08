@@ -25,12 +25,13 @@ let rec parse_and_print lexbuf =
   (* | (valueb ,valuec) ->  printf "%a\n\n\n%a\n" Behaviour.output_b valueb Behaviour.output_con; *) (*attempt at printing behaviours and constraints*) 
   | (*Some*) (valueb ) -> 
     printf "%a\n" Behaviour.output_b valueb ; *)
-  let hash = (Hash.create ~random:false 10) in
+  let bhash = (Hash.create ~random:false 10) in
+  let thash = (Hash.create ~random:false 10) in
     match parse_with_error lexbuf with
     | (b,con) -> 
       printf "Behaviours:\n%a\n" Behaviour.output_b b ;
       (* printf "Constraints:\n%a\n" Behaviour.output_con con ; *)
-      let conSet = (Behaviour.con_add con hash []) in 
+      let conSet = (Behaviour.con_add con bhash [] thash) in 
       printf "%a\n" Behaviour.out_con_set conSet;
       let newStack = Stack.create () in
       let newSlabs = Stack.create () in

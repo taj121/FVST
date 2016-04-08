@@ -9,7 +9,7 @@ type region = Label of string | RVar of string ;;
 (*type for types*)
 type t = Unit 
 	| Bool  
-	| Int 
+	| Int  
 	| Pair of pair 
 	| Funct of func 
 	| Ses of string
@@ -160,11 +160,17 @@ let rec con_to_string c =
 ;;
 
 
-(* list from hash table to string *)
+(* list from hash table to string behaviours *)
 let rec hsh_lst_to_string hshlst =
 	match hshlst with
 	| [] -> ""
-	| (k,v)::l -> "\nPaired: key " ^ (k) ^ " value: \n" ^ (behaviour_to_string v) ^ hsh_lst_to_string l
+	| (k,v)::l -> "\nPaired: \nBeta: " ^ (k) ^ " Behaviour: \n" ^ (behaviour_to_string v) ^ hsh_lst_to_string l
+
+;;(* list from hash table to string types *)
+let rec thsh_lst_to_string hshlst =
+	match hshlst with
+	| [] -> ""
+	| (k,v)::l -> "\nPaired: \nSuper: " ^ (type_to_string k) ^ " sub: \n" ^ (type_to_string v) ^ thsh_lst_to_string l
 ;;
 
 (* behaviour constraint to string*)
@@ -194,9 +200,14 @@ let rec reg_con_to_string rlst =
 	| (None, h)::ls -> "label: None "  ^ "\n regions:\n"^(reg_hs_to_string h) ^ (reg_con_to_string ls)
 ;;
 
+let type_con_to_string tHash =
+	let hshLst = Hash.fold (fun k v acc -> (k, v) :: acc) tHash [] in 
+	thsh_lst_to_string hshLst
+;;
+
 (* constraint set to string *)
-let con_set_to_string (bHash,rLst) = 
-	(behav_con_to_string bHash) ^ "\nRegion Constraints:\n " ^(reg_con_to_string rLst)
+let con_set_to_string (bHash,rLst,tHash) = 
+	(behav_con_to_string bHash) ^ "\nRegion Constraints:\n " ^(reg_con_to_string rLst) ^ "\nType Constraints:\n " ^ (type_con_to_string tHash)
 ;;
 
 (******************************************** TYPE CHECKING *******************************************************)
@@ -273,17 +284,16 @@ let add_list a b regList =
 					)
 ;;
 
-
-(* constraints added. Currently only concerned with behaviour and region constraints. behaviour constraints added to a hashtable region to a list of label*hashtable tupples. *)
-let rec con_add con bHshtbl rList =
+(* constraints added. Currently only concerned with type, behaviour and region constraints. behaviour constraints added to a hashtable region to a list of label*hashtable tupples. *)
+let rec con_add con bHshtbl rList tHshtbl=
 	match con with 
-	| TCon {smlT=a;bigT=b} 				-> (bHshtbl,rList)
-	| BCon {smlB=a;bigB=b}				-> (Hash.add bHshtbl b a) ; (bHshtbl,rList)
-	| RegRel {reg=a; regLab=b} 			-> (bHshtbl, (add_list a b rList))  
-	| ConRel {chnlA=a ; endptA=b}		-> (bHshtbl,rList)
-	| ConRelAlt {chnlB=a ; endptB=b}	-> (bHshtbl,rList)
-	| ConSeq {con1=a; con2=b}			-> let (newb,newr) = (con_add a bHshtbl rList) in con_add b newb newr;
-	| None 								-> (bHshtbl,rList)
+	| TCon {smlT=a;bigT=b} 				-> Hash.add tHshtbl b a;(bHshtbl,rList,tHshtbl)
+	| BCon {smlB=a;bigB=b}				-> (Hash.add bHshtbl b a) ; (bHshtbl,rList,tHshtbl)
+	| RegRel {reg=a; regLab=b} 			-> (bHshtbl, (add_list a b rList),tHshtbl) 
+	| ConRel {chnlA=a ; endptA=b}		-> (bHshtbl,rList,tHshtbl)
+	| ConRelAlt {chnlB=a ; endptB=b}	-> (bHshtbl,rList,tHshtbl) 
+	| ConSeq {con1=a; con2=b}			-> let (newb,newr, newt) = (con_add a bHshtbl rList tHshtbl) in con_add b newb newr newt;
+	| None 								-> (bHshtbl,rList,tHshtbl)
 ;;
 
 
@@ -352,8 +362,49 @@ let check_reg_const reg label regList =
 	(* | _ 	-> false *)
 ;;
 
-(* TODO placeholder for type constraint checking function *)
-let check_types t1 t2 = true;;
+let rec check_t_con sub super tHash =
+	let tList = Hash.find_all tHash super in 
+		if List.mem tList sub then true 
+			else check_t_each sub tList tHash
+
+and check_t_each sub superList tHash =
+	match superList with 
+	| [] -> false
+	| x::xs -> if (check_t_con sub x tHash) then true 
+					else check_t_each sub xs tHash 
+;;
+
+(* find all behaviours associated with the subtype then check to see if they are all also associated with the supertype *)
+let check_type_b_con sub super bHash =
+	let lstSub = Hash.find_all bHash sub in 
+	let lstSup = Hash.find_all bHash super in
+		List.for_all lstSub (fun x -> List.mem lstSup x)
+;; 
+
+(* type constraint checking function *)
+(* sub super typeCon regCon behaviourCon *)
+let rec check_types t1 t2 bHash rList tHash= 
+	if t1 = t2  (*check for reflexive*)
+		then true 
+		else match t1 with 
+		| Ses reg1 -> (match t2 with 
+						| Ses reg2 -> (check_reg_const reg1 reg2 rList)
+						| _ -> false)
+		| Pair {type1=t1_1 ; type2=t1_2} -> 
+					(match t2 with
+					| Pair {type1=t2_1 ; type2=t2_2} -> 
+						(check_types t1_1 t2_1 bHash rList tHash) 
+						&& (check_types t1_2 t2_2 bHash rList tHash)
+					| _ -> false) 
+		| Funct {inType=t1_1 ; outType=t1_2 ; behav=t1_b} -> 
+					(match t2 with 
+					| Funct {inType=t2_1 ; outType=t2_2 ; behav=t2_b} -> (*TODO think maybe rule might be mixed up*)
+						(check_type_b_con t1_b t2_b bHash)
+						&& (check_types t1_1 t2_1 bHash rList tHash) 
+						&& (check_types t1_2 t2_2 bHash rList tHash)
+					| _ -> false)
+		| t1 -> (check_t_con t1 t2 tHash)
+;;
 
 (* TODO placeholder for session type constraint checking function *)
 let check_sess t1 t2 = true;;
@@ -400,7 +451,7 @@ and check_step (behaviour, stack, slabs, continuation ) conSet =
 	| Some stackframe	->  (Stack.push stack stackframe);check_rules (behaviour, stack, slabs, continuation ) conSet (*otherwise check if other rules apply*)
 	| _					-> check_rules (behaviour, stack, slabs, continuation ) conSet)
 
-and check_rules (behaviour, stack, slabs, continuation ) (bHash,rList) =
+and check_rules (behaviour, stack, slabs, continuation ) (bHash,rList,tHash) =
 (* 	printf "\ncall to check_rules \n Stack:";
 	print_stack stack; *)
 	match behaviour with 
@@ -409,43 +460,43 @@ and check_rules (behaviour, stack, slabs, continuation ) (bHash,rList) =
 													| true -> let bList = Hash.find_all bHash beta in (*get list of all behaviours with links to beta in constraints*)
 														(*call check step on each behaviour in list with a copy of the stack*)
 														(* print_list bList; *)
-														check_each bList stack slabs continuation (bHash,rList)
+														check_each bList stack slabs continuation (bHash,rList,tHash)
 													| _ -> true)
 													
 	(* plus *)
  	| ChoiceB {opt1=op1;opt2=op2} 				-> let choiceList = [op1]@[op2] in
  														(*check each choice with copy of stack*)
- 														check_each choiceList  stack slabs continuation (bHash,rList)
+ 														check_each choiceList  stack slabs continuation (bHash,rList,tHash)
 	(* push *)
  	| Push {toPush=frame} 						-> (*check that label hasn't already been on stack, if not push frame*)
- 														check_push frame stack slabs continuation (bHash,rList) 
+ 														check_push frame stack slabs continuation (bHash,rList,tHash) 
 	(* out *)
 	| SndType send						 		-> (*check top stackframe correct type, check reg constraints, check type stuff*)
-														check_out send stack slabs continuation (bHash, rList)
+														check_out send stack slabs continuation (bHash, rList, tHash)
 	(* in *)
 	| RecType reci						 		-> (*same as out but different top of stack & reverse of type check*)
-														check_in reci stack slabs continuation (bHash, rList)
+														check_in reci stack slabs continuation (bHash, rList, tHash)
 	(* del *) 
-	| SndReg  del              					-> check_del del stack slabs continuation (bHash, rList)
+	| SndReg  del              					-> check_del del stack slabs continuation (bHash, rList, tHash)
 	(*res*)
-	| RecLab res				 				-> check_res res stack slabs continuation (bHash, rList)
+	| RecLab res				 				-> check_res res stack slabs continuation (bHash, rList, tHash)
 	(* ICh *) 
-	| SndChc ich				 				-> check_ich ich stack slabs continuation (bHash, rList)
+	| SndChc ich				 				-> check_ich ich stack slabs continuation (bHash, rList, tHash)
 	(* ECh *)
-	| RecChoice ech 					     	-> check_ech ech stack slabs continuation (bHash, rList)
+	| RecChoice ech 					     	-> check_ech ech stack slabs continuation (bHash, rList, tHash)
 	(* rec *)
-	| RecB 	recurs					 			-> check_rec recurs stack slabs continuation (bHash, rList)
+	| RecB 	recurs					 			-> check_rec recurs stack slabs continuation (bHash, rList, tHash)
 	(* spn *)
 	| Spawn {spawned=b} 						-> let newStack = Stack.create () in
 													let newSlabs = Stack.create () in
-													(check_step (Tau, stack, slabs, continuation) (bHash,rList)) 
-													&& (checker [(b, newStack, newSlabs, continuation)] (bHash, rList)) 
+													(check_step (Tau, stack, slabs, continuation) (bHash,rList,tHash)) 
+													&& (checker [(b, newStack, newSlabs, continuation)] (bHash, rList, tHash)) 
 													(*TODO check this is right. should it be new stacks?*) 
 	(* seq *)
  	| Seq {b1=b_1;b2=b_2} 						-> let newContinue = [b_2]@continuation in 
- 													check_step (b_1, stack, slabs, newContinue) (bHash, rList)
+ 													check_step (b_1, stack, slabs, newContinue) (bHash, rList, tHash)
 	(* tau *)
-	| Tau  										-> check_tau stack slabs continuation (bHash, rList)
+	| Tau  										-> check_tau stack slabs continuation (bHash, rList, tHash)
 	| None										-> printf "Empty constraint error\n";false
 
 (* check each behaviour in list using copy of current stack *)
@@ -466,43 +517,43 @@ and check_push {label=lab;sessType=sTyp} stack slabs continuation conSet =
 				(check_step (Tau, stack, slabs, continuation) conSet) 
 
 (* check if top of stack correct, constraints ok and types ok. If yes continue if no return false *)
-and check_out {regionS=reg;outTypeS=typ} stack slabs continuation (bHash, rList) = 
+and check_out {regionS=reg;outTypeS=typ} stack slabs continuation (bHash, rList, tHash) = 
 	match (Stack.pop stack) with 
 	| Some {label=lab; sessType=(OutputConfinded {outValue=typSt;sTypeOut=styp})}	-> 
-			(match ((check_reg_const reg lab rList) && check_types typSt typ ) with 
+			(match ((check_reg_const reg lab rList) && (check_types typSt typ bHash rList tHash) ) with 
 			| true 	-> (Stack.push stack {label=lab;sessType=styp}) ;
-						check_step (Tau, stack, slabs, continuation) (bHash, rList)
+						check_step (Tau, stack, slabs, continuation) (bHash, rList, tHash)
 			| _ 	-> printf "out rule\nregion constraints failed check\n"; false)
 	| _		-> printf "out rule\nstack frame incorrect for current behaviour\n";false
 
-and check_in {regionR=reg;outTypeR=typ} stack slabs continuation (bHash, rList) = 
+and check_in {regionR=reg;outTypeR=typ} stack slabs continuation (bHash, rList, tHash) = 
 	match (Stack.pop stack) with 
 	| Some {label=lab; sessType=(InputConfinded {inValue=typSt;sTypeIn=styp})}	-> 
-			(match (  (check_reg_const reg lab rList)&& check_types typ typSt ) with 
+			(match (  (check_reg_const reg lab rList)&& (check_types typ typSt bHash rList tHash)) with 
 			| true 	->  (Stack.push stack {label=lab;sessType=styp}) ;
-						check_step (Tau, stack, slabs, continuation) (bHash, rList)
+						check_step (Tau, stack, slabs, continuation) (bHash, rList, tHash)
 			| _ 	-> printf "in rule\nregion constraints or functional type constraints failed check\n";false)
 	| _		-> printf "in rule\nstack frame incorrect for current behaviour\n";false
 
-and check_del {reg1=r1;reg2=r2} stack slabs continuation (bHash, rList) = 
+and check_del {reg1=r1;reg2=r2} stack slabs continuation (bHash, rList, tHash) = 
 	match (Stack.pop stack ) with 
 	| Some {label=lab; sessType=(Delegation {sTypeD=s1;sTypeD2=s2})} -> 
 						(match Stack.pop stack with 
 						| Some {label=lab2;sessType=sessT2} -> 
 									(match ((check_reg_const r1 lab rList) && (check_reg_const r2 lab2 rList) && (check_sess s1 sessT2)) with 
 									| true 	-> (Stack.push stack {label=lab; sessType=s2});
-												check_step (Tau, stack, slabs, continuation) (bHash, rList)
+												check_step (Tau, stack, slabs, continuation) (bHash, rList, tHash)
 									| _	-> printf "del rule\nregion constraints or session constraints failed check\n";false ) 
 						| _ 	-> false)
 	| _		-> printf "del rule\nstack frame incorrect for current behaviour\n";false
 
-and check_res {regL=r;label=lab} stack slabs continuation (bHash, rList) =
+and check_res {regL=r;label=lab} stack slabs continuation (bHash, rList, tHash) =
 	match Stack.pop stack with 
 	| Some {label=labSt; sessType=(Resumption {sTypeR=s1;sTypeR2=s2})} -> 
 					(match ((( lab <> labSt)) && (check_reg_const r labSt rList)) with 
 					| true 	-> (Stack.push stack {label=lab;sessType=s1});
 								(Stack.push stack {label=labSt ;sessType=s2});
-								check_step (Tau, stack, slabs, continuation) (bHash, rList)
+								check_step (Tau, stack, slabs, continuation) (bHash, rList, tHash)
 					| _ 	->printf "resume rule\nregion constraints failed check or incorrect label \n"; false)
 	| _		-> printf "resume rule\nstack frame incorrect for current behaviour\n";false
 
@@ -512,25 +563,25 @@ and check_tau stack slabs continuation conSet =
 	| [] 	-> (Stack.is_empty stack)
 	| b::cont 	-> check_step (b, stack, slabs, cont) conSet
 
-and check_ich {regCa=reg;labl=lab} stack slabs continuation (bHash, rList) = 
+and check_ich {regCa=reg;labl=lab} stack slabs continuation (bHash, rList, tHash) = 
 	match Stack.pop stack with 
 	| Some {label=labSt; sessType=(ChoiceS {opList=opL})} -> 
 								(match (find_tuple_nop lab opL) with 
 								| (labF, sessF) -> (match check_reg_const reg labSt rList with 
 													| true 	-> (Stack.push stack {label=labSt;sessType=sessF});
-																check_step (Tau, stack, slabs, continuation) (bHash, rList)
+																check_step (Tau, stack, slabs, continuation) (bHash, rList, tHash)
 													| _		->printf "ich rule\nregion constraints failed check\n"; false)
 								(*| _ 	-> false*)	)
 	| _		-> printf "ich rule\nstack frame incorrect for current behaviour\n";false
 
 (* for each b in cList check that there is a  *)
-and check_ech {regCb=reg; cList=lst} stack slabs continuation (bHash, rList) = 
+and check_ech {regCb=reg; cList=lst} stack slabs continuation (bHash, rList, tHash) = 
 	(* check top of stack *)
 	match Stack.pop stack with 
 	| Some {label=labSt; sessType= (ExtChoicS{opList1 = ol1;opList2=ol2})} -> 
 						(match (check_reg_const reg labSt rList) && (check_subset ol1 lst) && (check_subset lst (ol1@ol2)) with 
 						| true 	-> let newLst=(match_list lst ol1 []) in
-									check_each_ses labSt newLst stack slabs continuation (bHash, rList)
+									check_each_ses labSt newLst stack slabs continuation (bHash, rList, tHash)
 						| _		-> printf "ech rule\nregion constraints failed check or lists structured incorrectly\n";false) 
 						
 	| _		-> printf "ech rule\nstack frame incorrect for current behaviour\n";false
@@ -543,7 +594,7 @@ and check_each_ses lab lst stack slabs continuation conSet =
 					Stack.push newStack {label=lab;sessType=n};
 					(check_step (b, newStack, newSlabs, continuation) conSet ) && (check_each_ses lab l stack slabs continuation conSet)
 
-and check_rec {behaVar=beta;behaviour=b} stack slabs continuation (bHash, rList) = 
+and check_rec {behaVar=beta;behaviour=b} stack slabs continuation (bHash, rList, tHash) = 
 	let bList = Hash.find_all bHash beta in
 	match List.exists bList (fun x ->  x = (RecB { behaVar=beta ; behaviour=b} )) with 
 	| true 	-> let newbList = List.filter bList  (fun x ->( x <> (RecB { behaVar=beta ; behaviour=b} ))) in
@@ -552,8 +603,8 @@ and check_rec {behaVar=beta;behaviour=b} stack slabs continuation (bHash, rList)
 				let newSlabs = Stack.create () in
 				let hashN = remove_all newbHash beta (List.length bList) in
 				let hashN1 = add_all hashN beta newbList in
-				(check_step (Tau, stack, slabs, continuation) (bHash, rList)) 
-				&& (checker [(b, newStack, newSlabs, continuation)] (hashN1,rList)) 
+				(check_step (Tau, stack, slabs, continuation) (bHash, rList, tHash)) 
+				&& (checker [(b, newStack, newSlabs, continuation)] (hashN1,rList,tHash)) 
 	| _		-> printf "rec ruls \nrecursion error\n";false
 ;;
 
