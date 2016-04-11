@@ -1,5 +1,5 @@
 %!TEX root = FVST.tex
-\chapter{Summary of Paper Type Based Analysis for Session Inference}
+\chapter{Summary of the Paper ``Type Based Analysis for Session Inference''}
 
 \section{Overview} \label{overview}
 This paper introduces a new idea for a design approach to Binary Session Types which uses effects. A high level language is developed where communication protocols can be programmed and checked statically. In this paper \cite{paper1} the approach is applied to $ML_s$, a core of the language ML with session communication.
@@ -29,13 +29,50 @@ In the system designed in the paper an $ML_s$ expression can have either a stand
 
 Polymorphism is extended with type schemas. These are of the form $\forall(\overrightarrow{\gamma}:C_0).T$ where $\gamma$ is a list made up of some combination of type ($\alpha$), behaviour ($\beta$), region ($\rho$) and session ($\psi$) variables and $C_0$ represents the constraint environment that imposes constraints on the quantified variables. 
 
-The rules for the type and effect system proposed are given in fig. \ref{typeAndEffect}. These are made of of the judgments described above and requirements for the rule. These rules say that if we have a judgments of the form given above the line and if the requirements beside the rule (if they exist) are met then the judgment below the line should be valid. 
+The rules for the type and effect system proposed are given in fig. \ref{typeAndEffect}. These are made of of the judgments described above and requirements for the rule. These rules say that if we have a judgments of the form given above the line and if the requirements beside the rule (if they exist) are met then the judgment below the line will be valid.
+
+\subsection{explain the rules} 
 
 \begin{figure}
 \caption{Type and Effect system for $ML_s$ Expressions omitting rule for pairs}
 \label{typeAndEffect}
 \end{figure}
 
+\subsection{Type Schemas, Locations and Region Variables}
 
+Through the constraint environment ($C$) region variables ($\rho$) are linked to region constraints. These region constraints are produced during pre-processing. They are annotations to the program that identify the textual source of endpoints. 
+
+For example if $req-c^l$ is called we know from l where in the code it was called from. This means that if this were to be called in, for example, a for loop we would have multiple instances of endpoints related to l. 
+
+If we have an expression with type $Ses^\rho$ which evaluates to $p^l$ then a region constraint must exist to link $l$ to $\rho$. This takes the form of $C\vdash \rho  \sim l$ which says that $\rho$ and $l$ are linked under constraint environment $C$. This tells us that $p$ was generated from the location int the code referenced by $l$.
+
+If we were to look up this location we would find one of $req-c^l, acc-c^l or resume-c^l$ where $c$ references the channel on which the communication will take place. These primitive functions are typed by the rule TConst given in fig. \ref{typeAndEffect}
+
+\begin{figure}
+$$req-c^l :  \forall(\beta \rho \psi:push(l:\psi) \subseteq \beta, \rho \sim l, c \sim \psi).Unit  \overset{\beta}{\rightarrow} Ses^\rho$$
+$$acc-c^l :  \forall(\beta \rho \psi:push(l:\psi) \subseteq \beta, \rho \sim l, \bar{c} \sim \psi).Unit  \overset{\beta}{\rightarrow} Ses^\rho$$
+$$ressume-c^l :  \forall(\beta \rho \rho':\rho ? \rho' \subseteq \beta, \rho' \sim l).Ses^{\rho}  \overset{\beta}{\rightarrow} Ses^{\rho'}$$
+
+
+$$recv : \forall(\alpha \beta \rho : \rho ? \alpha \subseteq \beta cfd(\alpha)).Ses^{\rho} \overset{\beta}{\rightarrow} \alpha$$
+$$send : \forall(\alpha \beta \rho : \rho ! \alpha \subseteq \beta cfd(\alpha)).Ses^{\rho} \times \alpha \overset{\beta}{\rightarrow} Unit$$
+$$deleg : \forall(\alpha \rho \rho' : \rho ! \rho' \subseteq \beta ).Ses^{\rho} \times Ses^{\rho'} \overset{\beta}{\rightarrow} Unit$$
+$$sel-L : \forall(\alpha \rho : \rho ? L \subseteq \beta ).Ses^{\rho}  \overset{\beta}{\rightarrow} Unit$$
+\caption{Type Schemas}
+\label{ts}
+\end{figure}
+
+They type schemas of these primitives are given in fig. \ref{ts}. In the case of $req-c^l$ a new session is started on the static endpoint $l$. In order for it to be type-able $C$ must contain its effect which is $push(l:\psi) \subseteq \beta$. In the stack frame $\psi$ is the session variable that represents the session type of endpoint $l$. $C$ must also record that the region variable $\rho$ is linked to $l$ and that the "request" endpoint of $c$, the channel, has session type $\psi$. 
+
+The remaining type schemas are read in a similar way. 
 
 \section{The Second Level} \label{level2}
+
+At this level session types are considered. Theses take the form of: $$ \eta ::= end | !T.\eta | ?T.\eta | !\eta.\eta | ?\eta.\eta | | | \psi $$ Either communication on the endpoint is finished (end) or more communications are going to take place. These include sending or receiving a confined type. Confined here meaning that this type will not effect the frames on the stack and any new endpoints created will be consumed. Endpoints can also be sent over other endpoints for delegation ($!\eta.\eta$) and can be resumed ($?\eta.\eta$). Non deterministic selection of a label $L_i$ indicated that the session type associated with it, $\eta_i$, is to be followed next. The offer of external choice to the communication partner is also supported. 
+
+\begin{figure}
+\caption{Abstract Interpretation Semantics}
+\label{rules2}
+\end{figure}
+
+\subsection{explain rules}
