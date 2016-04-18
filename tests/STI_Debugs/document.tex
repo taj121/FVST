@@ -1,0 +1,311 @@
+%%This is a very basic article template.
+%%There is just one section and two subsections.
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+% \usepackage{ntheorem} % or amsthm % lipics does not like this
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+\usepackage[usenames,dvipsnames]{xcolor}  % options: color code names
+
+\usepackage{vk}
+\usepackage{sessions}
+\usepackage{TransCCS}
+
+\title{Session type inference examples }
+\begin{document}
+\maketitle
+
+\section{Introduction}
+This documents contains the outputs of Algorithm W (adapted to session types)
+for the examples presented in \cite{forte}. The first level of type
+inference algorithm returns the following information:
+\begin{itemize}
+  \item Expression: the input expression plus automatically generated
+  labels $l$ on channel names;
+  \item Type: the type $ T $ of the expression;
+  \item Behaviour: the inferred behaviour $b$ of the expression;
+  \item Constraints: the set $C$ of inferred constraints. Notice that session
+  constraints (i.e. $\seql c \eta $) may be duplicated.
+\end{itemize}
+
+\section{Examples}
+\subsection{Swap service}
+This is the result of analysing Example 2.1 from \cite{forte}.
+
+\vspace{1em}
+\noindent
+\texttt{Inference complete.
+\\ Expression: $ \elet{coord}{\efix{coord}{z}{\elet{p1}{(\eaccept{ l_{1}
+}{swap}~())}{\elet{v1}{(\erecv{}{}~p1)}{\elet{p2}{(\eaccept{ l_{2}
+}{swap}~())}{\elet{v2}{(\erecv{}{}~p2)}{\elet{\#}{(\esend{}~(p2,
+v1))}{\elet{\#}{(\esend{}~(p1,
+v2))}{(coord~())}}}}}}}}{\elet{swap}{\efunc{x}{\elet{p}{(\erequest{ l_{3}
+}{swap}~())}{\elet{\#}{(\esend{}~(p, x))}{(\erecv{}{}~p)}}}}{\elet{\#}{\espawn
+(coord)}{\elet{\#}{\espawn (\efunc{z}{\elet{\#}{(swap~1)}{()}})}{\espawn
+(\efunc{z}{\elet{\#}{(swap~2)}{()}})}}}}$
+\\ Type: $\tunit$ 
+\\ Behaviour: $ \tau; \tau; \tau; \espawn{ (\beta_{95})}; \tau; \espawn{
+(\beta_{112})}; \tau; \espawn{ (\beta_{128})} $
+\\ Constraints:}
+\begin{itemize}
+\item $ \overline{{swap}^{l_{1}}} \sim\psi_{99} $
+\item $ \overline{{swap}^{l_{2}}} \sim\psi_{100} $
+\item $ {swap}^{l_{3}} \sim\psi_{120} $
+\item $ \pusho{ l_{1}} {\psi_{99}}{} \subseteq \beta_{102} $
+\item $ \pusho{ l_{2}} {\psi_{100}}{} \subseteq \beta_{104} $
+\item $ \pusho{ l_{3}} {\psi_{120}}{} \subseteq \beta_{122} $
+\item $ \pusho{ l_{3}} {\psi_{120}}{} \subseteq \beta_{138} $
+\item $ \rho_{110}!\alpha_{97} \subseteq \beta_{106} $
+\item $ \rho_{111}!\alpha_{98} \subseteq \beta_{107} $
+\item $ \rho_{125}!\tint \subseteq \beta_{123} $
+\item $ \rho_{141}!\tint \subseteq \beta_{139} $
+\item $ \rho_{108}?\alpha_{97} \subseteq \beta_{103} $
+\item $ \rho_{109}?\alpha_{98} \subseteq \beta_{105} $
+\item $ \rho_{126}?\alpha_{119} \subseteq \beta_{124} $
+\item $ \rho_{142}?\alpha_{135} \subseteq \beta_{140} $
+\item $ \tau; \tau; \beta_{117}; \tau \subseteq \beta_{112} $
+\item $ \tau; \tau; \beta_{122}; \tau; \tau; \tau; \beta_{123}; \tau; \tau; \beta_{124} \subseteq \beta_{117} $
+\item $ \tau; \tau; \beta_{133}; \tau \subseteq \beta_{128} $
+\item $ \tau; \tau; \beta_{138}; \tau; \tau; \tau; \beta_{139}; \tau; \tau; \beta_{140} \subseteq \beta_{133} $
+\item $ \orec{ (\tau; \tau; \beta_{102}; \tau; \tau; \beta_{103}; \tau; \tau; \beta_{104}; \tau; \tau; \beta_{105}; \tau; \tau; \tau; \beta_{106}; \tau; \tau; \tau; \beta_{107}; \tau; \tau; \beta_{95})}{\beta_{95}} \subseteq \beta_{95} $
+\item $ l_{1} \sim\rho_{108} $
+\item $ l_{1} \sim\rho_{111} $
+\item $ l_{2} \sim\rho_{109} $
+\item $ l_{2} \sim\rho_{110} $
+\item $ l_{3} \sim\rho_{125} $
+\item $ l_{3} \sim\rho_{126} $
+\item $ l_{3} \sim\rho_{141} $
+\item $ l_{3} \sim\rho_{142} $
+\end{itemize}
+
+\subsection{Delegation for Efficiency}
+This is the result of analysing Example 2.2 from \cite{forte}.
+
+\vspace{1em}
+\noindent
+\texttt{Inference complete.
+\\Expression: 
+$ \elet{coord}{\efix{coord}{z}{\elet{p1}{(\eaccept{ l_{1}
+}{swap}~())}{\elet{\#}{\eselectnew{SWAP }~p1}{\elet{p2}{(\eaccept{ l_{2}
+}{swap}~())}{\elet{\#}{\eselectnew{LEAD }~p2}{\elet{\#}{(\edeleg{}~(p2,
+p1))}{(coord~())}}}}}}}{\elet{swap}{\efunc{x}{\elet{p}{(\erequest{ l_{3}
+}{swap}~())}{\ematch{p}{SWAP : \elet{\#}{(\esend{}~(p, x))}{(\erecv{}{}~p)},
+LEAD :
+\elet{q}{(\eresume{l_{4}}{}~p)}{\elet{y}{(\erecv{}{}~q)}{\elet{\#}{(\esend{}~(q,
+x))}{y}}}}{}}}}{\elet{\#}{\espawn (coord)}{\elet{\#}{\espawn
+(\efunc{z}{\elet{\#}{(swap~1)}{()}})}{\espawn
+(\efunc{z}{\elet{\#}{(swap~2)}{()}})}}}}$
+\\Type: $\tunit$ 
+\\Behaviour: 
+$ \tau; \tau; \tau; \espawn{ (\beta_{112})}; \tau; \espawn{ (\beta_{126})}; \tau; \espawn{ (\beta_{157})}$
+\\Constraints:}
+\\Expression: 
+\begin{itemize}
+\item $ \overline{{swap}^{l_{1}}} \sim\psi_{114} $
+\item $ \overline{{swap}^{l_{2}}} \sim\psi_{115} $
+\item $ {swap}^{l_{3}} \sim\psi_{136} $
+\item $ \pusho{ l_{1}} {\psi_{114}}{} \subseteq \beta_{117} $
+\item $ \pusho{ l_{2}} {\psi_{115}}{} \subseteq \beta_{119} $
+\item $ \pusho{ l_{3}} {\psi_{136}}{} \subseteq \beta_{138} $
+\item $ \pusho{ l_{3}} {\psi_{136}}{} \subseteq \beta_{169} $
+\item $ \rho_{145}!\tint \subseteq \beta_{139} $
+\item $ \rho_{149}!\tint \subseteq \beta_{143} $
+\item $ \rho_{176}!\tint \subseteq \beta_{170} $
+\item $ \rho_{180}!\tint \subseteq \beta_{174} $
+\item $ \rho_{146}?\alpha_{154} \subseteq \beta_{140} $
+\item $ \rho_{148}?\alpha_{151} \subseteq \beta_{142} $
+\item $ \rho_{177}?\alpha_{185} \subseteq \beta_{171} $
+\item $ \rho_{179}?\alpha_{182} \subseteq \beta_{173} $
+\item $ \rho_{124}!\rho_{125} \subseteq \beta_{121} $
+\item $ \rho_{147}?l_{4} \subseteq \beta_{141} $
+\item $ \rho_{178}?l_{4} \subseteq \beta_{172} $
+\item $ \rho_{122}!SWAP \subseteq \beta_{118} $
+\item $ \rho_{123}!LEAD \subseteq \beta_{120} $
+\item $ \tau; \tau; \beta_{131}; \tau \subseteq \beta_{126} $
+\item $ \tau; \tau; \beta_{138}; \tau; + \{\rho_{144}?SWAP.\tau; \tau; \tau; \beta_{139}; \tau; \tau; \beta_{140},~\rho_{144}?LEAD.\tau; \tau; \beta_{141}; \tau; \tau; \beta_{142}; \tau; \tau; \tau; \beta_{143}; \tau \} \subseteq \beta_{131} $
+\item $ \tau; \tau; \beta_{162}; \tau \subseteq \beta_{157} $
+\item $ \tau; \tau; \beta_{169}; \tau; + \{\rho_{175}?SWAP.\tau; \tau; \tau; \beta_{170}; \tau; \tau; \beta_{171},~\rho_{175}?LEAD.\tau; \tau; \beta_{172}; \tau; \tau; \beta_{173}; \tau; \tau; \tau; \beta_{174}; \tau \} \subseteq \beta_{162} $
+\item $ \orec{ (\tau; \tau; \beta_{117}; \tau; \beta_{118}; \tau; \tau; \beta_{119}; \tau; \beta_{120}; \tau; \tau; \tau; \beta_{121}; \tau; \tau; \beta_{112})}{\beta_{112}} \subseteq \beta_{112} $
+\item $ l_{1} \sim\rho_{122} $
+\item $ l_{1} \sim\rho_{125} $
+\item $ l_{2} \sim\rho_{123} $
+\item $ l_{2} \sim\rho_{124} $
+\item $ l_{3} \sim\rho_{144} $
+\item $ l_{3} \sim\rho_{145} $
+\item $ l_{3} \sim\rho_{146} $
+\item $ l_{3} \sim\rho_{147} $
+\item $ l_{3} \sim\rho_{175} $
+\item $ l_{3} \sim\rho_{176} $
+\item $ l_{3} \sim\rho_{177} $
+\item $ l_{3} \sim\rho_{178} $
+\item $ l_{4} \sim\rho_{148} $
+\item $ l_{4} \sim\rho_{149} $
+\item $ l_{4} \sim\rho_{179} $
+\item $ l_{4} \sim\rho_{180} $
+\end{itemize}
+
+
+\subsection{A Database Library}
+This is the result of analysing Example 2.2 from \cite{forte}.
+
+\vspace{1em}
+\noindent
+\texttt{Inference complete.
+\\Expression: 
+$ \elet{process}{\efunc{x}{x}}{\elet{coord}{\efix{coord}{z}{\elet{p}{(\eaccept{
+l_{1} }{db}~())}{\elet{loop}{\efix{loop}{z}{\ematch{p}{QRY :
+\elet{sql}{(\erecv{}{}~p)}{\elet{res}{(process~sql)}{\elet{\#}{(\esend{}~(p,
+res))}{(loop~())}}}, END : ()}{}}}{\elet{\#}{\espawn
+(coord)}{(loop~())}}}}}{\elet{\#}{\espawn
+(coord)}{\elet{clientInit}{\efunc{z}{\elet{con}{(\erequest{ l_{2}
+}{db}~())}{\elet{f1}{\efunc{sql}{\elet{\#}{\eselectnew{QRY
+}~con}{\elet{\#}{(\esend{}~(con,
+sql))}{(\erecv{}{}~con)}}}}{\elet{f2}{\efunc{z}{\eselectnew{END }~con}}{(f1,
+f2)}}}}}{\elet{dbInit}{(clientInit~())}{\elet{qry}{(\mathtt{fst}~dbInit)}
+{\elet{close}{(\mathtt{snd}~dbInit)}{\elet{\#}{(qry~1)}{\elet{\#}{(qry~2)}
+{(close~())}}}}}}}}}$
+\\Type: $\tunit$ 
+\\Behaviour: $ \tau; \tau; \tau; \espawn{ (\beta_{64})}; \tau; \tau; \tau;
+\beta_{155}; \tau; \tau; \beta_{179}; \tau; \tau; \beta_{205}; \tau; \tau;
+\beta_{230}; \tau; \tau; \beta_{242}; \tau; \tau; \beta_{254}$ 
+\\Constraints:
+}
+\begin{itemize}
+\item $ \overline{{db}^{l_{1}}} \sim\psi_{66} $
+\item $ {db}^{l_{2}} \sim\psi_{160} $
+\item $ \tau \subseteq \beta_{71} $
+\item $ \tau \subseteq \beta_{179} $
+\item $ \tau \subseteq \beta_{205} $
+\item $ \pusho{ l_{1}} {\psi_{66}}{} \subseteq \beta_{67} $
+\item $ \pusho{ l_{2}} {\psi_{160}}{} \subseteq \beta_{162} $
+\item $ \rho_{75}!\alpha_{65} \subseteq \beta_{72} $
+\item $ \rho_{219}!\alpha_{209} \subseteq \beta_{213} $
+\item $ \rho_{238}!\tint \subseteq \beta_{234} $
+\item $ \rho_{250}!\tint \subseteq \beta_{246} $
+\item $ \rho_{74}?\alpha_{65} \subseteq \beta_{70} $
+\item $ \rho_{220}?\alpha_{210} \subseteq \beta_{214} $
+\item $ \rho_{239}?\alpha_{232} \subseteq \beta_{235} $
+\item $ \rho_{251}?\alpha_{244} \subseteq \beta_{247} $
+\item $ \rho_{195}!END \subseteq \beta_{189} $
+\item $ \rho_{218}!QRY \subseteq \beta_{212} $
+\item $ \rho_{237}!QRY \subseteq \beta_{233} $
+\item $ \rho_{249}!QRY \subseteq \beta_{245} $
+\item $ \rho_{258}!END \subseteq \beta_{256} $
+\item $ \tau; \beta_{189} \subseteq \beta_{200} $
+\item $ \tau; \beta_{256} \subseteq \beta_{254} $
+\item $ \tau; \beta_{212}; \tau; \tau; \tau; \beta_{213}; \tau; \tau; \beta_{214} \subseteq \beta_{224} $
+\item $ \tau; \beta_{233}; \tau; \tau; \tau; \beta_{234}; \tau; \tau; \beta_{235} \subseteq \beta_{230} $
+\item $ \tau; \beta_{245}; \tau; \tau; \tau; \beta_{246}; \tau; \tau; \beta_{247} \subseteq \beta_{242} $
+\item $ \tau; \tau; \beta_{162}; \tau; \tau; \tau; \tau \subseteq \beta_{155} $
+\item $ \orec{ (\tau; + \{\rho_{73}?QRY.\tau; \tau; \beta_{70}; \tau; \tau; \beta_{71}; \tau; \tau; \tau; \beta_{72}; \tau; \tau; \beta_{69},~\rho_{73}?END.\tau \})}{\beta_{69}} \subseteq \beta_{69} $
+\item $ \orec{ (\tau; \tau; \beta_{67}; \tau; \tau; \espawn{ (\beta_{64})}; \tau; \tau; \beta_{69})}{\beta_{64}} \subseteq \beta_{64} $
+\item $ l_{1} \sim\rho_{73} $
+\item $ l_{1} \sim\rho_{74} $
+\item $ l_{1} \sim\rho_{75} $
+\item $ l_{2} \sim\rho_{195} $
+\item $ l_{2} \sim\rho_{218} $
+\item $ l_{2} \sim\rho_{219} $
+\item $ l_{2} \sim\rho_{220} $
+\item $ l_{2} \sim\rho_{237} $
+\item $ l_{2} \sim\rho_{238} $
+\item $ l_{2} \sim\rho_{239} $
+\item $ l_{2} \sim\rho_{249} $
+\item $ l_{2} \sim\rho_{250} $
+\item $ l_{2} \sim\rho_{251} $
+\item $ l_{2} \sim\rho_{258} $
+\end{itemize}
+
+\begin{thebibliography}{1}
+
+\bibitem{forte} C. Spaccasassi, V. Koutavas, {\em Type-Based Analysis for
+Session Inference} 2016, http://arxiv.org/abs/1510.03929.
+
+
+\section{Session sub-typing system in Gay \& Hole}
+
+\begin{tabular}{|c|}
+\hline\\
+\irule*[][]
+  { \subType {T_2}  {T_1} \qquad \subType{\eta_1}{\eta_2} }
+  { \subType {!T_1.\eta_1} {!T_2.\eta_2} }
+\\[2em]
+\hline\\
+\irule*[][]
+  { \subType {T_1}  {T_2} \qquad \subType{\eta_1}{\eta_2} }
+  { \subType {?T_1.\eta_1} {?T_2.\eta_2} }
+\\[2em]
+% \hline&\\
+% \irule*[][]
+%   { m \leq n \qquad \forall i \in [1,m].\subt {\eta_i} {\eta_i}}
+%   { \subType
+%     { \sechoice{i}{[1, n]}{\eta }  }
+%     { \sechoice{i}{[1, m]}{\eta }  }
+% %   }
+% &
+% \irule*[][]
+%   { m \leq n \qquad \forall i \in [1, m]. \Gamma, x^p:T_i \vdash P_i }
+%   { \Gamma, x^p:\sechoice{i\in [1,m]}{l_i:T_i} \vdash
+%   \ematch{x^p}{l_i\Rightarrow P_i}_{i\in[1,n]} }
+% \\[2em]
+\hline\\
+\irule*[][]
+  { m \leq n \qquad \forall i \leq n.\subType {\eta_i} {\eta_j}}
+  { \subType
+    { \sichoice{i}{ [1, m]}{\eta }  }
+    { \sichoice{j}{ [1, n]}{\eta }  }
+  }
+\\
+\hline\\
+\irule*[][]
+  {I_1\subseteq J_1, J_1\cup J_2\subseteq I_1\cup I_2,
+  \forall( i \in J_1\cup J_2).~
+C \vdash  \subt{\eta_i}{\eta_i'}
+  }
+  {C \vdash\sechoicetext{i}{I_1}{I_2}{\eta'}
+    \subt{}
+  \sechoicetext{i}{J_2}{J_2}{\eta'}
+}\\
+\hline
+\end{tabular}
+
+\vspace{5cm}
+\subsection{Bounded quantification - removing $C$ constraints}
+Types: $ X \bnff Top \bnff \tfun{T}{b}{T} \bnff \forall X<:T. T \bnff \forall
+X<:\eta.
+T$ \\\irule[][]
+  {}
+  {
+    \erequest{}{} : \forall \chi. \forall (X <: \eta).
+    \tfun{ \tchan{\eta}{} }{ \tses{ \chi } }{ \pusho{\chi}{X}{} }
+  }
+\\\irule[][]
+  {}
+  {
+    \esend{} : \forall \chi. \forall (X <: T).
+    \tfun{ (X, \tses{ \chi }) }{ \tunit }{ \popo{\chi}{!T}{} }
+  }
+\\\irule[][]
+  {}
+  {
+    \erecv{} : \forall \chi. \forall (X <: T).
+    \tfun{ \tses{ \chi } }{ T }{ \popo{\chi}{?X}{} }
+  }
+\\
+  Rule \textsc{Ins} is type application.
+\\Rule \textsc{Gen} becomes:
+\begin{center}
+  \irule[][]
+    {\Gamma, X <:U \vdash t : (T, b)}
+    {\Gamma \vdash \lambda X <: U.t : (\forall X<:U.T, b) }
+    \condBox{
+    \begin{minipage}{6cm}
+       $\forall X <: U. T$ is well-formed (see N.\&N.)
+    \\ $X \not \in FV(b, \Gamma)$
+    \end{minipage}
+    }
+\end{center}
+
+
+
+\end{thebibliography}\end{document}

@@ -2,51 +2,51 @@
 \chapter{Summary of the Paper ``Type Based Analysis for Session Inference''}
 
 \section{Overview} \label{overview}
-This paper introduces a new idea for a design approach to Binary Session Types which uses effects. A high level language is developed where communication protocols can be programmed and checked statically. In this paper \cite{paper1} the approach is applied to $ML_s$, a core of the language ML with session communication.
+This paper\cite{paper1} proposes a system for a design approach to Binary Session Types which uses effects. For this high level language is developed where communication protocols can be programmed and statically checked. In the paper the approach is applied to $ML_s$, a core of the language ML with session communication.
 
-The approach suggested separates traditional and session typing using a two level system. The first level uses a type and effect system, which is an adaptation of the one developed by Amtoft, Neilsen and Neilsen 1999 \cite{amtoft}. Types allow for clear representation of program properties and enable modular reasoning. The effects are essentially behaviour types that record the actions of interest that will happen at run time. From this system a complete behaviour inference algorithm is obtained, this extracts a behaviour for a program providing it respects ML types. In this level the programs are typed against both an ML type and a behaviour. Session protocols are not considered here and so endpoints are given a type $ses^\rho$ instead (see \ref{level2}).   
+The approach suggested separates traditional typing and session typing using a two level system. The first level uses a type and effect system, which is an adaptation of the one developed by (Amtoft, Neilsen and Neilsen, 1999 )\cite{amtoft}. The types allow for a clear representation of program properties and enable modular reasoning. The effects are essentially behaviour types that record the actions of interest that will occur at run time. From this system a complete behaviour inference algorithm is obtained, this extracts a behaviour for a program providing it respects ML types. In this level the programs are typed against both an ML type and a behaviour. Session protocols are not considered here and so endpoints (see \ref{level2}) are given a type $ses^\rho$ instead.   
 
 The second level checks the behaviour to see that it complies with the session types of both channels and endpoints. In performing this check the operational semantics are used (see \ref{level2}). 
 
-This level is inspired by the work done by Castagna et al. \cite{foundSessTypes}. In their system session based interaction is established on a public channel, once established the parties continue to communicate on a private channel. Messages are exchanged on the private channel according to a given protocol. Internal and external choices are also required by this system to implement control. Internal choices are when the decision is made autonomously by a process and external choices occur when a decision is based entirely on messages received. 
+This level is inspired by the work done by Castagna et al. \cite{foundSessTypes}. In their system session based interaction is established on a public channel, once established the parties continue to communicate on a private channel. Messages are exchanged on the private channel according to a given protocol. Internal and external choices are also required to implement control. Internal choices are when the decision is made autonomously by a process and external choices occur when a decision is based entirely on messages received. 
 
-This level ensures that sessions respect the order of communication and message types described by the session type of the channel. It also ensures partial lock freedom due to stacked interleaving of sessions \ref{level2}.
+This level ensures that sessions respect the order of communication and message types described by the session type of the channel. It also ensures partial lock freedom due to stacked interleaving of sessions. 
 
-One of the most appealing aspects of the session type discipline proposed here is that it allows for complete session type inference from behaviours. When this is combined with behaviour inference from level 1 we get a method from complete session type inference without programmer annotations. 
+One of the most appealing aspects of the session type discipline proposed here is that it allows for complete session type inference from behaviours. When this is combined with behaviour inference from level 1 a method for complete session type inference without programmer annotations is achieved. 
 
-The two levels of the system only interact through behaviours. This allows for the development of front ends for different languages and back ends for different session disciplines and to combine the two to cover an extensive selection of requirements. 
+The two levels of the system only interact through behaviours. This allows for the development of front ends for different languages and back ends for different session disciplines and to combine the two to cover an extensive selection of requirements. The behaviour checker implemented (see \ref{checker}) can be used with any implementation of the first level provided that the output is of the correct format.
 
-\section{The Fist Level} \label{level1}
+\section{The First Level} \label{level1}
 
-At this level the type and effect system of Amtoft, Neilsen and Neilsen 1999 \cite{amtoft} is extended to session communications in $ML_s$. The type and effect system consists of constructions of judgments of the form $C;\Gamma \vdash e : T \triangleright b$. In this statement $C$ represents the constraint environment which is used to relate type level variables to terms and so enables session inference. $\Gamma$ represents the type environment which is used to bind program variables to type schemas. To read this judgment we would say that expression $e$ has type $T$ and behaviour $b$ under type environment $\Gamma$ and constraint environment $C$.
+At this level the type and effect system of (Amtoft, Neilsen and Neilsen, 1999) \cite{amtoft} is extended to session communications in $ML_s$. The type and effect system consists of constructions of judgments. Judgments are of the form $C;\Gamma \vdash e : T \triangleright b$. In these statements $C$ represents the constraint environment which is used to relate type level variables to terms and so enables session inference. $\Gamma$ represents the type environment which is used to bind program variables to type schemas. To read this judgment we would say that expression $e$ has type $T$ and behaviour $b$ under type environment $\Gamma$ and constraint environment $C$.
 
 In the system designed in the paper an $ML_s$ expression can have either a standard ML type or a session type. Session types are of the form $ses^\rho$ where $\rho$ is a static approximation of the location of the endpoint. Functional types have an associated behaviour $\beta$ and type variables $\alpha$ are used for ML polymorphism. 
 
 \begin{figure}
-\caption{Syntax of types, behaviours, constraints and session types}
+to fill in
+
+\caption{Syntax of types, behaviours and constraints}
 \label{syntaxTypes}
 \end{figure}
 
 Polymorphism is extended with type schemas. These are of the form $\forall(\overrightarrow{\gamma}:C_0).T$ where $\gamma$ is a list made up of some combination of type ($\alpha$), behaviour ($\beta$), region ($\rho$) and session ($\psi$) variables and $C_0$ represents the constraint environment that imposes constraints on the quantified variables. 
 
-The rules for the type and effect system proposed are given in fig. \ref{typeAndEffect}. These are made of of the judgments described above and requirements for the rule. These rules say that if we have a judgments of the form given above the line and if the requirements beside the rule (if they exist) are met then the judgment below the line will be valid.
+\subsection{Syntax of types, behaviours and constraints}
 
-\subsection{explain the rules} 
+Of the types detailed in \ref{syntaxTypes} behaviours and constraints are the most relevant to the implementation discussed in \ref{chapMyWork}. Behaviours can be of the simple forms $\beta$ a behaviour variable, $\tau$ the behaviour with no effect, $b;b$ a sequence of behaviours or $b \oplus b$ a choice in behaviours. The more complicate forms also include $rec_\beta b$ for recursive behaviour. In this case, and in the case of $spawn b$, the body of the recursion must be confined (must not effect open endpoints and must consume all endpoints it opens). Behaviour can also input or output types ($\rho!T, \rho?T$), delegate and resume endpoints ($\rho!\rho, \rho!l$), select from an internal choice $\rho ! L_i$ and offer external choice $\underset{i \in I}{\&}\{\rho?L_i ; b_i\}$.
 
-\begin{figure}
-\caption{Type and Effect system for $ML_s$ Expressions omitting rule for pairs}
-\label{typeAndEffect}
-\end{figure}
+Constraints can specify that types are subtypes of another type $T\subseteq T$, or that they are confined $cfd(T)$. They also specify what behaviours behaviour variables can act as $b\subseteq \beta$. Region constraints ($\rho \sim r$) link region variables to other region variables or to locations. Channel constraints ($c\sim\eta, \bar{c}\sim\eta$) specify the link between channels and their endpoints. The duality constraint ($\eta \bowtie \eta$) states that two endpoints are complementary. Sets of constraints can also be specified. 
 
-\subsection{Type Schemas, Locations and Region Variables}
 
-Through the constraint environment ($C$) region variables ($\rho$) are linked to region constraints. These region constraints are produced during pre-processing. They are annotations to the program that identify the textual source of endpoints. 
+\subsubsection{Type schemas, locations and region variables}
 
-For example if $req-c^l$ is called we know from l where in the code it was called from. This means that if this were to be called in, for example, a for loop we would have multiple instances of endpoints related to l. 
+Through the constraint environment ($C$) region constraints specify links between region variables ($\rho$) and other region variables or labels. These region constraints are produced during pre-processing. They identify the textual source of endpoints. The labels $l$ specify locations in the input code that endpoints are generated.
+
+For example if $req-c^l$ is called l is the location in the code it is called from. This means that if this were to be called in, for example, a for loop we would have multiple instances of endpoints related to l. This is a limitation of this system. 
 
 If we have an expression with type $Ses^\rho$ which evaluates to $p^l$ then a region constraint must exist to link $l$ to $\rho$. This takes the form of $C\vdash \rho  \sim l$ which says that $\rho$ and $l$ are linked under constraint environment $C$. This tells us that $p$ was generated from the location int the code referenced by $l$.
 
-If we were to look up this location we would find one of $req-c^l, acc-c^l or resume-c^l$ where $c$ references the channel on which the communication will take place. These primitive functions are typed by the rule TConst given in fig. \ref{typeAndEffect}
+If we were to look up this location we would find one of $req-c^l, acc-c^l or resume-c^l$ where $c$ references the private channel on which the communication will take place. These primitive functions are typed by the rule TConst given in fig. \ref{typeAndEffect}
 
 \begin{figure}
 $$req-c^l :  \forall(\beta \rho \psi:push(l:\psi) \subseteq \beta, \rho \sim l, c \sim \psi).Unit  \overset{\beta}{\rightarrow} Ses^\rho$$
@@ -62,17 +62,75 @@ $$sel-L : \forall(\alpha \rho : \rho ? L \subseteq \beta ).Ses^{\rho}  \overset{
 \label{ts}
 \end{figure}
 
-They type schemas of these primitives are given in fig. \ref{ts}. In the case of $req-c^l$ a new session is started on the static endpoint $l$. In order for it to be type-able $C$ must contain its effect which is $push(l:\psi) \subseteq \beta$. In the stack frame $\psi$ is the session variable that represents the session type of endpoint $l$. $C$ must also record that the region variable $\rho$ is linked to $l$ and that the "request" endpoint of $c$, the channel, has session type $\psi$. 
+They type schemas of these primitives are given in fig. \ref{ts}. In the case of $req-c^l$ a new session is started on the static endpoint $l$. In order for it to be type-able $C$ must contain its effect which is $push(l:\psi) \subseteq \beta$. In the stack frame $\psi$ is the session variable that represents the session type of endpoint $l$. $C$ must also record that the region variable $\rho$ is linked to $l$ and that the `request' endpoint of $c$, the channel, has session type $\psi$. 
 
 The remaining type schemas are read in a similar way. 
 
-\section{The Second Level} \label{level2}
 
-At this level session types are considered. Theses take the form of: $$ \eta ::= end | !T.\eta | ?T.\eta | !\eta.\eta | ?\eta.\eta | | | \psi $$ Either communication on the endpoint is finished (end) or more communications are going to take place. These include sending or receiving a confined type. Confined here meaning that this type will not effect the frames on the stack and any new endpoints created will be consumed. Endpoints can also be sent over other endpoints for delegation ($!\eta.\eta$) and can be resumed ($?\eta.\eta$). Non deterministic selection of a label $L_i$ indicated that the session type associated with it, $\eta_i$, is to be followed next. The offer of external choice to the communication partner is also supported. 
+\subsection{Type and effect system} 
+
+The rules for the type and effect system proposed are given in fig. \ref{typeAndEffect}. These consist of the judgments described above and requirements for the rule. These rules say that if we have a judgments of the form given above the line and if the requirements beside the rule (if they exist) are met then the judgment below the line will be valid.
+
+For example the rule TSUB it states that if we have constraint environment $C$, type environment $\Gamma$, expression $e$ of type $T$ with associated behaviour $b$ and we also know that constraint environment $C$ contains constraints telling us that $T$ is a functional subtype of $T'$ and the $b$ is a sub-behaviour of $\beta$ then we can also say that under the same type and constraint environments the expression $e$ can be said to have type $T'$ and behaviour $\beta$.
+
+Of the remaining rules TLeft, TVar, TIf, TConst, TApp, TFun, TSpawn and the rule for pairs are used to perform standard type checking of sequential and non-deterministic behaviour. TSub allows us to replace a behaviour variable with its associated behaviour. TIns and TGen are used to extend the instantiation and generalisation rules of ML. 
+
+TRec ensures that in the case of recursion the communication effect of the body of the recursion is confined. This means that it will not effect any endpoints already open when called and will consume all end points opened during its execution. 
+
+TEndP ensure that if we have an expression with the type of a session endpoint with associated region and this expression evaluates to a value associated with a location then there exists a link between the region and the location in the constraint environment. 
+
+TConst types primitive functions such as $req-c^l$.
 
 \begin{figure}
+To fill in
+\caption{Type and Effect system for $ML_s$ Expressions omitting rule for pairs}
+\label{typeAndEffect}
+\end{figure}
+
+\section{The Second Level} \label{level2}
+
+At this level session types are considered. Theses take the form of: $$ \eta ::= end | !T.\eta | ?T.\eta | !\eta.\eta | ?\eta.\eta | \underset{i \in I}{\oplus}\{L_i : \eta_i\}| \underset{i \in (I_1,I_2)}{\&}\{L_i : \eta_i\} | \psi $$ Either communication on the endpoint is finished ($end$) or more communications are going to take place. These include sending or receiving a confined type ($!T.\eta,?T.\eta$), delegating by sending one endpoint over another ($!\eta.\eta $) and resuming an endpoint ($?\eta.\eta$). Non deterministic selection involves selecting a label $L_i$, selected by the selection behaviour, and then following the selected session type $\eta_i$. External choice ($\underset{i \in (I_1,I_2)}{\&}\{L_i : \eta_i\}$) is also supported.
+
+
+\begin{figure}
+\begin{tabular}{l c p{4cm}}
+END: & $(l:end).\Delta \models b \rightarrow c \Delta \models b$ & \\
+BETA: &  $\Delta \models \beta \rightarrow c \Delta \models b$ & if $C \vdash b \subseteq \beta$ \\
+PLUS: & $\Delta \models b_1 \oplus b_2 \rightarrow c \Delta \models b_i $ & if $i \in {1,2}$ \\
+PUSH: & $\Delta \models push(l:\eta) \rightarrow c (l:\eta).\Delta \models \tau$ & if $l \notin \Delta.labels$ \\
+OUT: & $(l:!T.\eta).\Delta \models \rho!T' \rightarrow c (l:\eta).\Delta \models \tau$ & if $ C \vdash \rho \sim l, T' <: T$\\
+IN: & $(l:?T.\eta).\Delta \models \rho?T' \rightarrow c (l:\eta).\Delta \models \tau$ & if $ C \vdash \rho \sim l, T <: T'$\\
+DEL: & $(l:!\eta_d.\eta).(l_d:\eta_{d}').\Delta \models \rho!\rho_d \rightarrow c (l:\eta).\Delta \models \tau$ & if $C \vdash \rho \sim l, \rho_d \sim l_d,\eta_{d}' <: \eta_d $\\
+RES: & $(l:?\eta_r .\eta) \models \rho?l_r \rightarrow c (l:\eta).(l_r:\eta_r) \models \tau$ & if $(l \neq l_r),  C \vdash \rho \sim l$\\
+ICH: & $(l:\underset{i\in I}{\oplus} \{L_i:\eta_i\}).\Delta \models \rho!L_j \rightarrow c (l:\eta_{j}).\Delta \models \tau$ & if $(J\in I), C \vdash \rho \sim l $\\
+ECH: & $(l:\underset{i \in (I_1, I_2)}{\& \{ L_i : \eta_i}).\Delta \models \underset{j \in J}{\&} \{ \rho ? L_j: b_j\} \rightarrow c (l:\eta_k).\Delta \models b_k$ & if $ k \in J, C \vdash \rho \sim l, I_1 \subseteq J \subseteq I_1 \cup I_2  $\\
+REC: & $\Delta \models rec_{\beta}b \rightarrow c \Delta \models \tau$ & if $ \epsilon \models b \Downarrow c', C' = (C\backslash(rec_{\beta}b \subseteq \beta))\cup (\tau \subseteq \beta) $\\
+SPN: & $\Delta \models spawn b \rightarrow c \Delta \models \tau$ & if $\epsilon \models b \Downarrow c $\\
+SEQ: & $\Delta \models b_1 ; b_2 \rightarrow c \Delta' \models b_{1}' ; b_2$ & if $ \Delta \models b_1 \rightarrow c \Delta' \models b_{1}' $\\
+TAU: & $\Delta \models \tau ; b \rightarrow c \Delta \models b$ & \\
+\end{tabular}
 \caption{Abstract Interpretation Semantics}
 \label{rules2}
 \end{figure}
 
-\subsection{explain rules}
+\subsection{Abstract interpretation semantics}
+
+In these semantics (fig. \ref{rules2}) $\Delta$ represents the stack which consists of frames of a label and a session type, $c$ represents the channel, $C$ is the set of constraints. A behaviour and the current stack are taken and an attempt is made to match them to one of the rules. These rules then describe what actions are to be taken.
+
+For example the REC Rule states that if the current behaviour is recursion then we must check that the behaviour associated with that recursion will follow these rules, starting with an empty stack, to end in a state with the empty stack and the behaviour $\tau$. Another constraint is that any behaviour constraints in the constraint environment of the form $rec_{\beta}b \subseteq \beta$ must be replaced with $\tau \subseteq \beta$. If these constraints are met then the next behaviour to be checked is $\tau$ with the stack remaining unchanged.
+
+This ensures that recursive behaviour is confined, which is necessary for this system. 
+
+Of the other rules END removes a finished stack frame. BETA looks up behaviour variables and subs in the behaviours associated with them in the constraint environment. PLUS choses a branch. PUSH adds a new frame to the stack given that the label has not previously been pushed to the stack. OUT and IN reduce the frame at the top of the stack. DEL and RES are used to transfer endpoints. RES must be applied to a one frame stack to ensure that there are no two endpoints of the same session pushed to the same stack (this is to avoid deadlock). ICH offers internal choice of session types. ECH offers external choice. SPN ensures that spawned processes are confined. 
+
+\section{Inference Algorithm}
+
+There are three inference algorithms used in the proposed system. The first of these is used with the first level to infer functional types and communication effects. The remaining two are used with the second level to infer session types from the abstract interpretation rules (fig. \ref{rules2}) and the duality requirement. 
+
+The Duality Requirement states that a constraint environment $C$ is valid if there exist a substitution $\sigma$ of variables $\psi$ with closed session types, such that $C_\sigma$ is well formed and for all $(c\sim \eta), (\bar{c} \sim \eta') \in C_\sigma$ we have $C \vdash \eta \bowtie \eta'$
+
+The first algorithm is an adaptation of the homonymous algorithm from Amtoft, Neilsen \& Neilsen \cite{amtoft}. From expression $e$ if calculates it type, behaviour and constraint set. No session information is calculated. 
+
+The second algorithm infers a substitution and a refined set of constraints in such a way that the empty stack and behaviour $\tau$ will be reached when the rules from (fig. \ref{rules2}) are applied to a behaviour on which the substitution has been applied. 
+
+The third algorithm deals with the constraints relating to channels and generates duality constraints. It also checks these constraints. 

@@ -26,8 +26,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \documentclass[a4paper, 12pt, oneside]{report}         %% LaTeX2e document.
-\usepackage {tcdthesis}              %% Preamble.
-\usepackage {cite}
+\usepackage{tcdthesis}              %% Preamble.
+\usepackage{cite}
 \usepackage{url}
 \usepackage{amsmath}
 \usepackage{mathtools}
@@ -35,6 +35,53 @@
 \usepackage{textcomp}
 \usepackage{listings}
 \usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{semantic}
+
+% \usepackage{ntheorem} % or amsthm % lipics does not like this
+\usepackage{stmaryrd}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[usenames,dvipsnames]{xcolor}  % options: color code names
+\usepackage{xifthen}        % for macros
+\usepackage{hyperref}     % lipics does not like this
+\usepackage{cleveref}
+
+
+\usepackage{longtable}
+\usepackage{TransCCS}
+\usepackage{sessions}
+\usepackage{multirow}
+\usepackage{environ}
+
+\lstset{
+  breaklines=true,
+  mathescape=true,%
+  xleftmargin=2pt,%
+  tabsize=2,%
+  emphstyle={\bf},%
+  showspaces=false,%
+  keywordstyle=\bfseries\rmfamily,%
+  basicstyle=\small\sffamily,%
+  showstringspaces=false,%
+}
+
+
+\NewEnviron{myequation}{%
+    \begin{align*}
+    \scalebox{1.5}{$\BODY$}
+    \end{align*}
+    }
+
+% For ToDos
+% \usepackage{xargs}                      % Use more than one optional parameter in a new commands
+% \usepackage[pdftex,dvipsnames]{xcolor}  % Coloured text etc.
+% % 
+% \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+% \newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+% \newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+% \newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+% \newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+% \newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
 
 %\mastersthesis                     %% Uncomment one of these; if you don't
 %\phdthesis                         %% use either, the default is \phdthesis.
@@ -64,7 +111,7 @@
 \renewcommand{\thesisyear}{2016}                      %% Your year of graduation.
 \renewcommand{\thesistitle}{Formal Verification of Session Types}            %% The title of your thesis; use mixed-case.
 \renewcommand{\thesisauthorpreviousdegrees}{}  %% Your previous degrees, abbreviated; separate multiple degrees by commas.
-\renewcommand{\thesissupervisor}{...}      %% Your thesis supervisor; use mixed-case and don't use any titles or degrees.
+\renewcommand{\thesissupervisor}{Dr. Vasileios Koutavas}      %% Your thesis supervisor; use mixed-case and don't use any titles or degrees.
 % \renewcommand{\thesiscosupervisor}{}                %% Your PhD. thesis co-supervisor; if any.
 
 % \renewcommand{\thesiscommitteemembera}{}
@@ -132,17 +179,13 @@
 
 %\thesisdedicationpage                             %% Generate the dedication page.
 
-\begin{thesisacknowledgments}                     %% Use this to write your
-...ACKNOWLEDGMENTS...                          %% acknowledgments; it can be anything
-\end{thesisacknowledgments}                       %% allowed in LaTeX2e par-mode.
+% \include{acknowledgments}
 
-\begin{thesisabstract}
-...ABSTRACT...
-\end{thesisabstract}
+\include{abstract}
 
 \tableofcontents                                  %% Generate table of contents.
-\listoftables                                     %% Uncomment this to generate list of tables.
-\listoffigures                                    %% Uncomment this to generate list of figures.
+% \listoftables                                     %% Uncomment this to generate list of tables.
+% \listoffigures                                    %% Uncomment this to generate list of figures.
 
 %%
 %% Include thesis chapters here...
@@ -151,6 +194,8 @@
   \include{paper}  
   \include{myWork}  
   \include{example}  
+  \include{evaluation}  
+  \include{conclusion} 
 
 
 
@@ -161,7 +206,7 @@
 \end{appendix}
 
 
-%\addcontentsline {toc}{chapter}{Bibliography}     %% Force Bibliography to appear in contents
+\addcontentsline {toc}{chapter}{Bibliography}     %% Force Bibliography to appear in contents
 
                        %% to generate your bibliography.
 \bibliographystyle{ieeetr}

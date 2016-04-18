@@ -1,0 +1,2293 @@
+\documentclass[12pt]{article}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{syntax}
+\usepackage{textcomp}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{moredefs}
+\begin{document}
+
+Step W : $ \elet{client}{\elet{p1}{(\erequest{ l_{1} }{tsl}~())}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})})}}{\elet{server}{\elet{myVNum}{2}{\elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))}}}{\elet{#}{\espawn (client)}{\espawn (server)}}} $\\
+ typing context: $ $ 
+\\ --------------\\
+Step W : $ \elet{p1}{(\erequest{ l_{1} }{tsl}~())}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})})} $\\
+ typing context: $ $ 
+\\ --------------\\
+Step W : $ (\erequest{ l_{1} }{tsl}~()) $\\
+ typing context: $ $ 
+\\ --------------\\
+Step W : $ \erequest{ l_{1} }{tsl} $\\
+ typing context: $ $ 
+\\ --------------\\
+Step W': $ \erequest{ l_{1} }{tsl} $\\
+  type: $ \tunit \xrightarrow{\beta_{7}}  \tses{ \rho_{6}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ {tsl}^{l_{1}} \sim\psi_{5} $
+\item $ \pusho{ l_{1}} {\psi_{5}}{} \subseteq \beta_{7} $
+\item $ l_{1} \sim\rho_{6} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \erequest{ l_{1} }{tsl} $
+ \\ cons: \begin{itemize}
+\item $ {tsl}^{l_{1}} \sim\psi_{5} $
+\item $ \pusho{ l_{1}} {\psi_{5}}{} \subseteq \beta_{7} $
+\item $ l_{1} \sim\rho_{6} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \erequest{ l_{1} }{tsl} $\\
+  type: $ \tunit \xrightarrow{\beta_{7}}  \tses{ \rho_{6}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ {tsl}^{l_{1}} \sim\psi_{5} $
+\item $ \pusho{ l_{1}} {\psi_{5}}{} \subseteq \beta_{7} $
+\item $ l_{1} \sim\rho_{6} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ () $\\
+ typing context: $ $ 
+\\ --------------\\
+Step W': $ () $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ () $
+ \\ cons: \begin{itemize}
+\item $  $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ () $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (\erequest{ l_{1} }{tsl}~()) $\\
+  type: $ \alpha_{3} $ 
+\\  beha: $ \tau; \tau; \beta_{4} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \xrightarrow{\beta_{7}}  \tses{ \rho_{6}} \subseteq \tunit \xrightarrow{\beta_{4}} \alpha_{3} $
+\item $ {tsl}^{l_{1}} \sim\psi_{5} $
+\item $ \pusho{ l_{1}} {\psi_{5}}{} \subseteq \beta_{7} $
+\item $ l_{1} \sim\rho_{6} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (\erequest{ l_{1} }{tsl}~()) $
+ \\ cons: \begin{itemize}
+\item $ {tsl}^{l_{1}} \sim\psi_{5} $
+\item $ \beta_{7} \subseteq \beta_{4} $
+\item $ \pusho{ l_{1}} {\psi_{5}}{} \subseteq \beta_{7} $
+\item $ \rho_{8} \sim\rho_{6} $
+\item $ l_{1} \sim\rho_{6} $
+\end{itemize}
+ subs:  $ [ \alpha_{3}\mapsto \tses{ \rho_{8}}] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (\erequest{ l_{1} }{tsl}~()) $\\
+  type: $  \tses{ \rho_{8}} $ 
+\\  beha: $ \tau; \tau; \beta_{4} $ 
+\\  cons: \begin{itemize}
+\item $ {tsl}^{l_{1}} \sim\psi_{5} $
+\item $ \pusho{ l_{1}} {\psi_{5}}{} \subseteq \beta_{4} $
+\item $ l_{1} \sim\rho_{8} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})}) $\\
+ typing context: $ p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ \esend{} $\\
+ typing context: $ p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ \esend{} $\\
+  type: $ ( \tses{ \rho_{12}} \times \alpha_{13}) \xrightarrow{\beta_{11}} \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{12}!\alpha_{13} \subseteq \beta_{11} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \esend{} $
+ \\ cons: \begin{itemize}
+\item $ \rho_{12}!\alpha_{13} \subseteq \beta_{11} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \esend{} $\\
+  type: $ ( \tses{ \rho_{12}} \times \alpha_{13}) \xrightarrow{\beta_{11}} \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{12}!\alpha_{13} \subseteq \beta_{11} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ \elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})} $\\
+ typing context: $ p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ (p1, 1) $\\
+ typing context: $ p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ p1 $\\
+ typing context: $ p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ p1 $\\
+  type: $  \tses{ \rho_{17}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{17} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ p1 $
+ \\ cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{17} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ p1 $\\
+  type: $  \tses{ \rho_{17}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{17} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ 1 $\\
+ typing context: $ p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ 1 $\\
+  type: $ \tint $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ 1 $
+ \\ cons: \begin{itemize}
+\item $  $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ 1 $\\
+  type: $ \tint $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (p1, 1) $\\
+  type: $ \alpha_{16} $ 
+\\  beha: $ \tau; \tau $ 
+\\  cons: \begin{itemize}
+\item $ \alpha_{14} \rightarrow \alpha_{15} \rightarrow (\alpha_{14} \times \alpha_{15}) \subseteq  \tses{ \rho_{17}} \rightarrow \tint \rightarrow \alpha_{16} $
+\item $ l_{1} \sim\rho_{17} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (p1, 1) $
+ \\ cons: \begin{itemize}
+\item $ \rho_{18} \sim\rho_{17} $
+\item $ \rho_{19} \sim\rho_{18} $
+\item $ l_{1} \sim\rho_{17} $
+\end{itemize}
+ subs:  $ [ \alpha_{14}\mapsto \tses{ \rho_{18}}, \alpha_{15}\mapsto\tint, \alpha_{16}\mapsto( \tses{ \rho_{19}} \times \tint)] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (p1, 1) $\\
+  type: $ ( \tses{ \rho_{19}} \times \tint) $ 
+\\  beha: $ \tau; \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{19} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})}) $\\
+ typing context: $ #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ \esend{} $\\
+ typing context: $ #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ \esend{} $\\
+  type: $ ( \tses{ \rho_{23}} \times \alpha_{24}) \xrightarrow{\beta_{22}} \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{22} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \esend{} $
+ \\ cons: \begin{itemize}
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{22} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \esend{} $\\
+  type: $ ( \tses{ \rho_{23}} \times \alpha_{24}) \xrightarrow{\beta_{22}} \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{22} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ \elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})} $\\
+ typing context: $ #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ (p1, 200) $\\
+ typing context: $ #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ p1 $\\
+ typing context: $ #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ p1 $\\
+  type: $  \tses{ \rho_{28}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{28} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ p1 $
+ \\ cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{28} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ p1 $\\
+  type: $  \tses{ \rho_{28}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{28} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ 200 $\\
+ typing context: $ #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ 200 $\\
+  type: $ \tint $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ 200 $
+ \\ cons: \begin{itemize}
+\item $  $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ 200 $\\
+  type: $ \tint $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (p1, 200) $\\
+  type: $ \alpha_{27} $ 
+\\  beha: $ \tau; \tau $ 
+\\  cons: \begin{itemize}
+\item $ \alpha_{25} \rightarrow \alpha_{26} \rightarrow (\alpha_{25} \times \alpha_{26}) \subseteq  \tses{ \rho_{28}} \rightarrow \tint \rightarrow \alpha_{27} $
+\item $ l_{1} \sim\rho_{28} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (p1, 200) $
+ \\ cons: \begin{itemize}
+\item $ \rho_{29} \sim\rho_{28} $
+\item $ \rho_{30} \sim\rho_{29} $
+\item $ l_{1} \sim\rho_{28} $
+\end{itemize}
+ subs:  $ [ \alpha_{25}\mapsto \tses{ \rho_{29}}, \alpha_{26}\mapsto\tint, \alpha_{27}\mapsto( \tses{ \rho_{30}} \times \tint)] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (p1, 200) $\\
+  type: $ ( \tses{ \rho_{30}} \times \tint) $ 
+\\  beha: $ \tau; \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{30} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})}) $\\
+ typing context: $ #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ \esend{} $\\
+ typing context: $ #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ \esend{} $\\
+  type: $ ( \tses{ \rho_{34}} \times \alpha_{35}) \xrightarrow{\beta_{33}} \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{33} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \esend{} $
+ \\ cons: \begin{itemize}
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{33} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \esend{} $\\
+  type: $ ( \tses{ \rho_{34}} \times \alpha_{35}) \xrightarrow{\beta_{33}} \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{33} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ \elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})} $\\
+ typing context: $ #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ (p1, 1) $\\
+ typing context: $ #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ p1 $\\
+ typing context: $ #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ p1 $\\
+  type: $  \tses{ \rho_{39}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{39} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ p1 $
+ \\ cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{39} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ p1 $\\
+  type: $  \tses{ \rho_{39}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{39} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ 1 $\\
+ typing context: $ #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ 1 $\\
+  type: $ \tint $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ 1 $
+ \\ cons: \begin{itemize}
+\item $  $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ 1 $\\
+  type: $ \tint $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (p1, 1) $\\
+  type: $ \alpha_{38} $ 
+\\  beha: $ \tau; \tau $ 
+\\  cons: \begin{itemize}
+\item $ \alpha_{36} \rightarrow \alpha_{37} \rightarrow (\alpha_{36} \times \alpha_{37}) \subseteq  \tses{ \rho_{39}} \rightarrow \tint \rightarrow \alpha_{38} $
+\item $ l_{1} \sim\rho_{39} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (p1, 1) $
+ \\ cons: \begin{itemize}
+\item $ \rho_{40} \sim\rho_{39} $
+\item $ \rho_{41} \sim\rho_{40} $
+\item $ l_{1} \sim\rho_{39} $
+\end{itemize}
+ subs:  $ [ \alpha_{36}\mapsto \tses{ \rho_{40}}, \alpha_{37}\mapsto\tint, \alpha_{38}\mapsto( \tses{ \rho_{41}} \times \tint)] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (p1, 1) $\\
+  type: $ ( \tses{ \rho_{41}} \times \tint) $ 
+\\  beha: $ \tau; \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{41} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))}) $\\
+ typing context: $ #:\forall (\rho_{41} : l_{1} \sim\rho_{41}). ( \tses{ \rho_{41}} \times \tint), #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ \esend{} $\\
+ typing context: $ #:\forall (\rho_{41} : l_{1} \sim\rho_{41}). ( \tses{ \rho_{41}} \times \tint), #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ \esend{} $\\
+  type: $ ( \tses{ \rho_{45}} \times \alpha_{46}) \xrightarrow{\beta_{44}} \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{44} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \esend{} $
+ \\ cons: \begin{itemize}
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{44} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \esend{} $\\
+  type: $ ( \tses{ \rho_{45}} \times \alpha_{46}) \xrightarrow{\beta_{44}} \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{44} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ \elet{#}{(p1, 1)}{(\esend{}~(p1, 2))} $\\
+ typing context: $ #:\forall (\rho_{41} : l_{1} \sim\rho_{41}). ( \tses{ \rho_{41}} \times \tint), #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ (p1, 1) $\\
+ typing context: $ #:\forall (\rho_{41} : l_{1} \sim\rho_{41}). ( \tses{ \rho_{41}} \times \tint), #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ p1 $\\
+ typing context: $ #:\forall (\rho_{41} : l_{1} \sim\rho_{41}). ( \tses{ \rho_{41}} \times \tint), #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ p1 $\\
+  type: $  \tses{ \rho_{50}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{50} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ p1 $
+ \\ cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{50} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ p1 $\\
+  type: $  \tses{ \rho_{50}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{50} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ 1 $\\
+ typing context: $ #:\forall (\rho_{41} : l_{1} \sim\rho_{41}). ( \tses{ \rho_{41}} \times \tint), #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ 1 $\\
+  type: $ \tint $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ 1 $
+ \\ cons: \begin{itemize}
+\item $  $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ 1 $\\
+  type: $ \tint $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (p1, 1) $\\
+  type: $ \alpha_{49} $ 
+\\  beha: $ \tau; \tau $ 
+\\  cons: \begin{itemize}
+\item $ \alpha_{47} \rightarrow \alpha_{48} \rightarrow (\alpha_{47} \times \alpha_{48}) \subseteq  \tses{ \rho_{50}} \rightarrow \tint \rightarrow \alpha_{49} $
+\item $ l_{1} \sim\rho_{50} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (p1, 1) $
+ \\ cons: \begin{itemize}
+\item $ \rho_{51} \sim\rho_{50} $
+\item $ \rho_{52} \sim\rho_{51} $
+\item $ l_{1} \sim\rho_{50} $
+\end{itemize}
+ subs:  $ [ \alpha_{47}\mapsto \tses{ \rho_{51}}, \alpha_{48}\mapsto\tint, \alpha_{49}\mapsto( \tses{ \rho_{52}} \times \tint)] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (p1, 1) $\\
+  type: $ ( \tses{ \rho_{52}} \times \tint) $ 
+\\  beha: $ \tau; \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{52} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (\esend{}~(p1, 2)) $\\
+ typing context: $ #:\forall (\rho_{52} : l_{1} \sim\rho_{52}). ( \tses{ \rho_{52}} \times \tint), #:\forall (\rho_{41} : l_{1} \sim\rho_{41}). ( \tses{ \rho_{41}} \times \tint), #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ \esend{} $\\
+ typing context: $ #:\forall (\rho_{52} : l_{1} \sim\rho_{52}). ( \tses{ \rho_{52}} \times \tint), #:\forall (\rho_{41} : l_{1} \sim\rho_{41}). ( \tses{ \rho_{41}} \times \tint), #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ \esend{} $\\
+  type: $ ( \tses{ \rho_{56}} \times \alpha_{57}) \xrightarrow{\beta_{55}} \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{56}!\alpha_{57} \subseteq \beta_{55} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \esend{} $
+ \\ cons: \begin{itemize}
+\item $ \rho_{56}!\alpha_{57} \subseteq \beta_{55} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \esend{} $\\
+  type: $ ( \tses{ \rho_{56}} \times \alpha_{57}) \xrightarrow{\beta_{55}} \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{56}!\alpha_{57} \subseteq \beta_{55} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (p1, 2) $\\
+ typing context: $ #:\forall (\rho_{52} : l_{1} \sim\rho_{52}). ( \tses{ \rho_{52}} \times \tint), #:\forall (\rho_{41} : l_{1} \sim\rho_{41}). ( \tses{ \rho_{41}} \times \tint), #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W : $ p1 $\\
+ typing context: $ #:\forall (\rho_{52} : l_{1} \sim\rho_{52}). ( \tses{ \rho_{52}} \times \tint), #:\forall (\rho_{41} : l_{1} \sim\rho_{41}). ( \tses{ \rho_{41}} \times \tint), #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ p1 $\\
+  type: $  \tses{ \rho_{61}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{61} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ p1 $
+ \\ cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{61} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ p1 $\\
+  type: $  \tses{ \rho_{61}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{61} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ 2 $\\
+ typing context: $ #:\forall (\rho_{52} : l_{1} \sim\rho_{52}). ( \tses{ \rho_{52}} \times \tint), #:\forall (\rho_{41} : l_{1} \sim\rho_{41}). ( \tses{ \rho_{41}} \times \tint), #:\forall (\rho_{30} : l_{1} \sim\rho_{30}). ( \tses{ \rho_{30}} \times \tint), #:\forall (\rho_{19} : l_{1} \sim\rho_{19}). ( \tses{ \rho_{19}} \times \tint), p1:\forall (\rho_{8} : l_{1} \sim\rho_{8}).  \tses{ \rho_{8}}$ 
+\\ --------------\\
+Step W': $ 2 $\\
+  type: $ \tint $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ 2 $
+ \\ cons: \begin{itemize}
+\item $  $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ 2 $\\
+  type: $ \tint $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (p1, 2) $\\
+  type: $ \alpha_{60} $ 
+\\  beha: $ \tau; \tau $ 
+\\  cons: \begin{itemize}
+\item $ \alpha_{58} \rightarrow \alpha_{59} \rightarrow (\alpha_{58} \times \alpha_{59}) \subseteq  \tses{ \rho_{61}} \rightarrow \tint \rightarrow \alpha_{60} $
+\item $ l_{1} \sim\rho_{61} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (p1, 2) $
+ \\ cons: \begin{itemize}
+\item $ \rho_{62} \sim\rho_{61} $
+\item $ \rho_{63} \sim\rho_{62} $
+\item $ l_{1} \sim\rho_{61} $
+\end{itemize}
+ subs:  $ [ \alpha_{58}\mapsto \tses{ \rho_{62}}, \alpha_{59}\mapsto\tint, \alpha_{60}\mapsto( \tses{ \rho_{63}} \times \tint)] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (p1, 2) $\\
+  type: $ ( \tses{ \rho_{63}} \times \tint) $ 
+\\  beha: $ \tau; \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{1} \sim\rho_{63} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (\esend{}~(p1, 2)) $\\
+  type: $ \alpha_{53} $ 
+\\  beha: $ \tau; \tau; \tau; \beta_{54} $ 
+\\  cons: \begin{itemize}
+\item $ ( \tses{ \rho_{56}} \times \alpha_{57}) \xrightarrow{\beta_{55}} \tunit \subseteq ( \tses{ \rho_{63}} \times \tint) \xrightarrow{\beta_{54}} \alpha_{53} $
+\item $ \rho_{56}!\alpha_{57} \subseteq \beta_{55} $
+\item $ l_{1} \sim\rho_{63} $
+\end{itemize} 
+  subs:  $ [ \alpha_{58}\mapsto \tses{ \rho_{62}}, \alpha_{59}\mapsto\tint, \alpha_{60}\mapsto( \tses{ \rho_{63}} \times \tint)] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (\esend{}~(p1, 2)) $
+ \\ cons: \begin{itemize}
+\item $ \beta_{55} \subseteq \beta_{54} $
+\item $ \rho_{56}!\tint \subseteq \beta_{55} $
+\item $ \rho_{56} \sim\rho_{63} $
+\item $ l_{1} \sim\rho_{63} $
+\end{itemize}
+ subs:  $ [ \alpha_{53}\mapsto\tunit, \alpha_{57}\mapsto\tint] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (\esend{}~(p1, 2)) $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \beta_{54} $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ \elet{#}{(p1, 1)}{(\esend{}~(p1, 2))} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \beta_{54} $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  subs:  $ [ \alpha_{47}\mapsto \tses{ \rho_{51}}, \alpha_{48}\mapsto\tint, \alpha_{49}\mapsto( \tses{ \rho_{52}} \times \tint), \alpha_{53}\mapsto\tunit, \alpha_{57}\mapsto\tint, \alpha_{58}\mapsto \tses{ \rho_{62}}, \alpha_{59}\mapsto\tint, \alpha_{60}\mapsto( \tses{ \rho_{63}} \times \tint)] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \elet{#}{(p1, 1)}{(\esend{}~(p1, 2))} $
+ \\ cons: \begin{itemize}
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \elet{#}{(p1, 1)}{(\esend{}~(p1, 2))} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \beta_{54} $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))}) $\\
+  type: $ \alpha_{42} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43} $ 
+\\  cons: \begin{itemize}
+\item $ ( \tses{ \rho_{45}} \times \alpha_{46}) \xrightarrow{\beta_{44}} \tunit \subseteq \tunit \xrightarrow{\beta_{43}} \alpha_{42} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{44} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  subs:  $ [ \alpha_{47}\mapsto \tses{ \rho_{51}}, \alpha_{48}\mapsto\tint, \alpha_{49}\mapsto( \tses{ \rho_{52}} \times \tint), \alpha_{53}\mapsto\tunit, \alpha_{57}\mapsto\tint, \alpha_{58}\mapsto \tses{ \rho_{62}}, \alpha_{59}\mapsto\tint, \alpha_{60}\mapsto( \tses{ \rho_{63}} \times \tint)] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))}) $
+ \\ cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \beta_{44} \subseteq \beta_{43} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{44} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize}
+ subs:  $ [ \alpha_{42}\mapsto\tunit] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))}) $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ \elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  subs:  $ [ \alpha_{36}\mapsto \tses{ \rho_{40}}, \alpha_{37}\mapsto\tint, \alpha_{38}\mapsto( \tses{ \rho_{41}} \times \tint), \alpha_{42}\mapsto\tunit, \alpha_{47}\mapsto \tses{ \rho_{51}}, \alpha_{48}\mapsto\tint, \alpha_{49}\mapsto( \tses{ \rho_{52}} \times \tint), \alpha_{53}\mapsto\tunit, \alpha_{57}\mapsto\tint, \alpha_{58}\mapsto \tses{ \rho_{62}}, \alpha_{59}\mapsto\tint, \alpha_{60}\mapsto( \tses{ \rho_{63}} \times \tint)] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})} $
+ \\ cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})}) $\\
+  type: $ \alpha_{31} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ ( \tses{ \rho_{34}} \times \alpha_{35}) \xrightarrow{\beta_{33}} \tunit \subseteq \tunit \xrightarrow{\beta_{32}} \alpha_{31} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{33} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  subs:  $ [ \alpha_{36}\mapsto \tses{ \rho_{40}}, \alpha_{37}\mapsto\tint, \alpha_{38}\mapsto( \tses{ \rho_{41}} \times \tint), \alpha_{42}\mapsto\tunit, \alpha_{47}\mapsto \tses{ \rho_{51}}, \alpha_{48}\mapsto\tint, \alpha_{49}\mapsto( \tses{ \rho_{52}} \times \tint), \alpha_{53}\mapsto\tunit, \alpha_{57}\mapsto\tint, \alpha_{58}\mapsto \tses{ \rho_{62}}, \alpha_{59}\mapsto\tint, \alpha_{60}\mapsto( \tses{ \rho_{63}} \times \tint)] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})}) $
+ \\ cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \beta_{33} \subseteq \beta_{32} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{33} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize}
+ subs:  $ [ \alpha_{31}\mapsto\tunit] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})}) $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ \elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  subs:  $ [ \alpha_{25}\mapsto \tses{ \rho_{29}}, \alpha_{26}\mapsto\tint, \alpha_{27}\mapsto( \tses{ \rho_{30}} \times \tint), \alpha_{31}\mapsto\tunit, \alpha_{36}\mapsto \tses{ \rho_{40}}, \alpha_{37}\mapsto\tint, \alpha_{38}\mapsto( \tses{ \rho_{41}} \times \tint), \alpha_{42}\mapsto\tunit, \alpha_{47}\mapsto \tses{ \rho_{51}}, \alpha_{48}\mapsto\tint, \alpha_{49}\mapsto( \tses{ \rho_{52}} \times \tint), \alpha_{53}\mapsto\tunit, \alpha_{57}\mapsto\tint, \alpha_{58}\mapsto \tses{ \rho_{62}}, \alpha_{59}\mapsto\tint, \alpha_{60}\mapsto( \tses{ \rho_{63}} \times \tint)] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})} $
+ \\ cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})}) $\\
+  type: $ \alpha_{20} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32}; \beta_{21} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ ( \tses{ \rho_{23}} \times \alpha_{24}) \xrightarrow{\beta_{22}} \tunit \subseteq \tunit \xrightarrow{\beta_{21}} \alpha_{20} $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{22} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  subs:  $ [ \alpha_{25}\mapsto \tses{ \rho_{29}}, \alpha_{26}\mapsto\tint, \alpha_{27}\mapsto( \tses{ \rho_{30}} \times \tint), \alpha_{31}\mapsto\tunit, \alpha_{36}\mapsto \tses{ \rho_{40}}, \alpha_{37}\mapsto\tint, \alpha_{38}\mapsto( \tses{ \rho_{41}} \times \tint), \alpha_{42}\mapsto\tunit, \alpha_{47}\mapsto \tses{ \rho_{51}}, \alpha_{48}\mapsto\tint, \alpha_{49}\mapsto( \tses{ \rho_{52}} \times \tint), \alpha_{53}\mapsto\tunit, \alpha_{57}\mapsto\tint, \alpha_{58}\mapsto \tses{ \rho_{62}}, \alpha_{59}\mapsto\tint, \alpha_{60}\mapsto( \tses{ \rho_{63}} \times \tint)] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})}) $
+ \\ cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \beta_{22} \subseteq \beta_{21} $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{22} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize}
+ subs:  $ [ \alpha_{20}\mapsto\tunit] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})}) $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32}; \beta_{21} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{21} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ \elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32}; \beta_{21} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{21} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  subs:  $ [ \alpha_{14}\mapsto \tses{ \rho_{18}}, \alpha_{15}\mapsto\tint, \alpha_{16}\mapsto( \tses{ \rho_{19}} \times \tint), \alpha_{20}\mapsto\tunit, \alpha_{25}\mapsto \tses{ \rho_{29}}, \alpha_{26}\mapsto\tint, \alpha_{27}\mapsto( \tses{ \rho_{30}} \times \tint), \alpha_{31}\mapsto\tunit, \alpha_{36}\mapsto \tses{ \rho_{40}}, \alpha_{37}\mapsto\tint, \alpha_{38}\mapsto( \tses{ \rho_{41}} \times \tint), \alpha_{42}\mapsto\tunit, \alpha_{47}\mapsto \tses{ \rho_{51}}, \alpha_{48}\mapsto\tint, \alpha_{49}\mapsto( \tses{ \rho_{52}} \times \tint), \alpha_{53}\mapsto\tunit, \alpha_{57}\mapsto\tint, \alpha_{58}\mapsto \tses{ \rho_{62}}, \alpha_{59}\mapsto\tint, \alpha_{60}\mapsto( \tses{ \rho_{63}} \times \tint)] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})} $
+ \\ cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{21} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32}; \beta_{21} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{21} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})}) $\\
+  type: $ \alpha_{9} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32}; \beta_{21}; \beta_{10} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ ( \tses{ \rho_{12}} \times \alpha_{13}) \xrightarrow{\beta_{11}} \tunit \subseteq \tunit \xrightarrow{\beta_{10}} \alpha_{9} $
+\item $ \rho_{12}!\alpha_{13} \subseteq \beta_{11} $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{21} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  subs:  $ [ \alpha_{14}\mapsto \tses{ \rho_{18}}, \alpha_{15}\mapsto\tint, \alpha_{16}\mapsto( \tses{ \rho_{19}} \times \tint), \alpha_{20}\mapsto\tunit, \alpha_{25}\mapsto \tses{ \rho_{29}}, \alpha_{26}\mapsto\tint, \alpha_{27}\mapsto( \tses{ \rho_{30}} \times \tint), \alpha_{31}\mapsto\tunit, \alpha_{36}\mapsto \tses{ \rho_{40}}, \alpha_{37}\mapsto\tint, \alpha_{38}\mapsto( \tses{ \rho_{41}} \times \tint), \alpha_{42}\mapsto\tunit, \alpha_{47}\mapsto \tses{ \rho_{51}}, \alpha_{48}\mapsto\tint, \alpha_{49}\mapsto( \tses{ \rho_{52}} \times \tint), \alpha_{53}\mapsto\tunit, \alpha_{57}\mapsto\tint, \alpha_{58}\mapsto \tses{ \rho_{62}}, \alpha_{59}\mapsto\tint, \alpha_{60}\mapsto( \tses{ \rho_{63}} \times \tint)] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})}) $
+ \\ cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{12}} \times \alpha_{13}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \beta_{11} \subseteq \beta_{10} $
+\item $ \rho_{12}!\alpha_{13} \subseteq \beta_{11} $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{21} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize}
+ subs:  $ [ \alpha_{9}\mapsto\tunit] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})}) $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32}; \beta_{21}; \beta_{10} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{12}} \times \alpha_{13}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \rho_{12}!\alpha_{13} \subseteq \beta_{10} $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{21} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ \elet{p1}{(\erequest{ l_{1} }{tsl}~())}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})})} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \beta_{4}; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32}; \beta_{21}; \beta_{10} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{12}} \times \alpha_{13}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ {tsl}^{l_{1}} \sim\psi_{5} $
+\item $ \pusho{ l_{1}} {\psi_{5}}{} \subseteq \beta_{4} $
+\item $ \rho_{12}!\alpha_{13} \subseteq \beta_{10} $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{21} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  subs:  $ [ \alpha_{3}\mapsto \tses{ \rho_{8}}, \alpha_{9}\mapsto\tunit, \alpha_{14}\mapsto \tses{ \rho_{18}}, \alpha_{15}\mapsto\tint, \alpha_{16}\mapsto( \tses{ \rho_{19}} \times \tint), \alpha_{20}\mapsto\tunit, \alpha_{25}\mapsto \tses{ \rho_{29}}, \alpha_{26}\mapsto\tint, \alpha_{27}\mapsto( \tses{ \rho_{30}} \times \tint), \alpha_{31}\mapsto\tunit, \alpha_{36}\mapsto \tses{ \rho_{40}}, \alpha_{37}\mapsto\tint, \alpha_{38}\mapsto( \tses{ \rho_{41}} \times \tint), \alpha_{42}\mapsto\tunit, \alpha_{47}\mapsto \tses{ \rho_{51}}, \alpha_{48}\mapsto\tint, \alpha_{49}\mapsto( \tses{ \rho_{52}} \times \tint), \alpha_{53}\mapsto\tunit, \alpha_{57}\mapsto\tint, \alpha_{58}\mapsto \tses{ \rho_{62}}, \alpha_{59}\mapsto\tint, \alpha_{60}\mapsto( \tses{ \rho_{63}} \times \tint)] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \elet{p1}{(\erequest{ l_{1} }{tsl}~())}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})})} $
+ \\ cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{12}} \times \alpha_{13}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ {tsl}^{l_{1}} \sim\psi_{5} $
+\item $ \pusho{ l_{1}} {\psi_{5}}{} \subseteq \beta_{4} $
+\item $ \rho_{12}!\alpha_{13} \subseteq \beta_{10} $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{21} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \elet{p1}{(\erequest{ l_{1} }{tsl}~())}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})})} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \beta_{4}; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32}; \beta_{21}; \beta_{10} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{12}} \times \alpha_{13}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ {tsl}^{l_{1}} \sim\psi_{5} $
+\item $ \pusho{ l_{1}} {\psi_{5}}{} \subseteq \beta_{4} $
+\item $ \rho_{12}!\alpha_{13} \subseteq \beta_{10} $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{21} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ l_{1} \sim\rho_{56} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ \elet{server}{\elet{myVNum}{2}{\elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))}}}{\elet{#}{\espawn (client)}{\espawn (server)}} $\\
+ typing context: $ client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ \elet{myVNum}{2}{\elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))}} $\\
+ typing context: $ client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ 2 $\\
+ typing context: $ client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ 2 $\\
+  type: $ \tint $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ 2 $
+ \\ cons: \begin{itemize}
+\item $  $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ 2 $\\
+  type: $ \tint $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  --------------\\ 
+Step W : $ \elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))} $\\
+ typing context: $ myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ (\eaccept{ l_{2} }{tsl}~()) $\\
+ typing context: $ myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ \eaccept{ l_{2} }{tsl} $\\
+ typing context: $ myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ \eaccept{ l_{2} }{tsl} $\\
+  type: $ \tunit \xrightarrow{\beta_{68}}  \tses{ \rho_{66}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{68} $
+\item $ l_{2} \sim\rho_{66} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \eaccept{ l_{2} }{tsl} $
+ \\ cons: \begin{itemize}
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{68} $
+\item $ l_{2} \sim\rho_{66} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \eaccept{ l_{2} }{tsl} $\\
+  type: $ \tunit \xrightarrow{\beta_{68}}  \tses{ \rho_{66}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{68} $
+\item $ l_{2} \sim\rho_{66} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ () $\\
+ typing context: $ myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ () $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ () $
+ \\ cons: \begin{itemize}
+\item $  $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ () $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (\eaccept{ l_{2} }{tsl}~()) $\\
+  type: $ \alpha_{64} $ 
+\\  beha: $ \tau; \tau; \beta_{65} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \xrightarrow{\beta_{68}}  \tses{ \rho_{66}} \subseteq \tunit \xrightarrow{\beta_{65}} \alpha_{64} $
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{68} $
+\item $ l_{2} \sim\rho_{66} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (\eaccept{ l_{2} }{tsl}~()) $
+ \\ cons: \begin{itemize}
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \beta_{68} \subseteq \beta_{65} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{68} $
+\item $ \rho_{69} \sim\rho_{66} $
+\item $ l_{2} \sim\rho_{66} $
+\end{itemize}
+ subs:  $ [ \alpha_{64}\mapsto \tses{ \rho_{69}}] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (\eaccept{ l_{2} }{tsl}~()) $\\
+  type: $  \tses{ \rho_{69}} $ 
+\\  beha: $ \tau; \tau; \beta_{65} $ 
+\\  cons: \begin{itemize}
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{65} $
+\item $ l_{2} \sim\rho_{69} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2))))))))) $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ \erecv{}{} $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ \erecv{}{} $\\
+  type: $  \tses{ \rho_{74}} \xrightarrow{\beta_{73}} \alpha_{72} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{74}?\alpha_{72} \subseteq \beta_{73} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \erecv{}{} $
+ \\ cons: \begin{itemize}
+\item $ \rho_{74}?\alpha_{72} \subseteq \beta_{73} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \erecv{}{} $\\
+  type: $  \tses{ \rho_{74}} \xrightarrow{\beta_{73}} \alpha_{72} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{74}?\alpha_{72} \subseteq \beta_{73} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))) $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ p2 $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ p2 $\\
+  type: $  \tses{ \rho_{77}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{77} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ p2 $
+ \\ cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{77} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ p2 $\\
+  type: $  \tses{ \rho_{77}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{77} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2))))))) $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ \erecv{}{} $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ \erecv{}{} $\\
+  type: $  \tses{ \rho_{82}} \xrightarrow{\beta_{81}} \alpha_{80} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{81} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \erecv{}{} $
+ \\ cons: \begin{itemize}
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{81} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \erecv{}{} $\\
+  type: $  \tses{ \rho_{82}} \xrightarrow{\beta_{81}} \alpha_{80} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{81} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))) $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ p2 $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ p2 $\\
+  type: $  \tses{ \rho_{85}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{85} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ p2 $
+ \\ cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{85} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ p2 $\\
+  type: $  \tses{ \rho_{85}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{85} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2))))) $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ \erecv{}{} $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ \erecv{}{} $\\
+  type: $  \tses{ \rho_{90}} \xrightarrow{\beta_{89}} \alpha_{88} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{89} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \erecv{}{} $
+ \\ cons: \begin{itemize}
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{89} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \erecv{}{} $\\
+  type: $  \tses{ \rho_{90}} \xrightarrow{\beta_{89}} \alpha_{88} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{89} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))) $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ p2 $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ p2 $\\
+  type: $  \tses{ \rho_{93}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{93} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ p2 $
+ \\ cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{93} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ p2 $\\
+  type: $  \tses{ \rho_{93}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{93} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (\erecv{}{}~(p2~(\erecv{}{}~p2))) $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ \erecv{}{} $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ \erecv{}{} $\\
+  type: $  \tses{ \rho_{98}} \xrightarrow{\beta_{97}} \alpha_{96} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{97} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \erecv{}{} $
+ \\ cons: \begin{itemize}
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{97} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \erecv{}{} $\\
+  type: $  \tses{ \rho_{98}} \xrightarrow{\beta_{97}} \alpha_{96} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{97} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (p2~(\erecv{}{}~p2)) $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ p2 $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ p2 $\\
+  type: $  \tses{ \rho_{101}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{101} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ p2 $
+ \\ cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{101} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ p2 $\\
+  type: $  \tses{ \rho_{101}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{101} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ (\erecv{}{}~p2) $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ \erecv{}{} $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ \erecv{}{} $\\
+  type: $  \tses{ \rho_{106}} \xrightarrow{\beta_{105}} \alpha_{104} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{105} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \erecv{}{} $
+ \\ cons: \begin{itemize}
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{105} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \erecv{}{} $\\
+  type: $  \tses{ \rho_{106}} \xrightarrow{\beta_{105}} \alpha_{104} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{105} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ p2 $\\
+ typing context: $ p2:\forall (\rho_{69} : l_{2} \sim\rho_{69}).  \tses{ \rho_{69}}, myVNum:\forall ( : ). \tint, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ p2 $\\
+  type: $  \tses{ \rho_{107}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{107} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ p2 $
+ \\ cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{107} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ p2 $\\
+  type: $  \tses{ \rho_{107}} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $ l_{2} \sim\rho_{107} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (\erecv{}{}~p2) $\\
+  type: $ \alpha_{102} $ 
+\\  beha: $ \tau; \tau; \beta_{103} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{106}} \xrightarrow{\beta_{105}} \alpha_{104} \subseteq  \tses{ \rho_{107}} \xrightarrow{\beta_{103}} \alpha_{102} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{105} $
+\item $ l_{2} \sim\rho_{107} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (\erecv{}{}~p2) $
+ \\ cons: \begin{itemize}
+\item $ \alpha_{104} \subseteq \alpha_{108} $
+\item $ \beta_{105} \subseteq \beta_{103} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{105} $
+\item $ \rho_{106} \sim\rho_{107} $
+\item $ l_{2} \sim\rho_{107} $
+\end{itemize}
+ subs:  $ [ \alpha_{102}\mapsto\alpha_{108}] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (\erecv{}{}~p2) $\\
+  type: $ \alpha_{104} $ 
+\\  beha: $ \tau; \tau; \beta_{103} $ 
+\\  cons: \begin{itemize}
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (p2~(\erecv{}{}~p2)) $\\
+  type: $ \alpha_{99} $ 
+\\  beha: $ \tau; \tau; \tau; \beta_{103}; \beta_{100} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}} \alpha_{99} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  subs:  $ [ \alpha_{102}\mapsto\alpha_{108}] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (p2~(\erecv{}{}~p2)) $
+ \\ cons: \begin{itemize}
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}} \alpha_{99} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (p2~(\erecv{}{}~p2)) $\\
+  type: $ \alpha_{99} $ 
+\\  beha: $ \tau; \tau; \tau; \beta_{103}; \beta_{100} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}} \alpha_{99} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (\erecv{}{}~(p2~(\erecv{}{}~p2))) $\\
+  type: $ \alpha_{94} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{98}} \xrightarrow{\beta_{97}} \alpha_{96} \subseteq \alpha_{99} \xrightarrow{\beta_{95}} \alpha_{94} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}} \alpha_{99} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{97} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  subs:  $ [ \alpha_{102}\mapsto\alpha_{108}] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (\erecv{}{}~(p2~(\erecv{}{}~p2))) $
+ \\ cons: \begin{itemize}
+\item $ \alpha_{96} \subseteq \alpha_{110} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{109}} $
+\item $ \beta_{97} \subseteq \beta_{95} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{97} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ \rho_{98} \sim\rho_{109} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize}
+ subs:  $ [ \alpha_{94}\mapsto\alpha_{110}, \alpha_{99}\mapsto \tses{ \rho_{109}}] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (\erecv{}{}~(p2~(\erecv{}{}~p2))) $\\
+  type: $ \alpha_{96} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))) $\\
+  type: $ \alpha_{91} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}} \alpha_{91} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  subs:  $ [ \alpha_{94}\mapsto\alpha_{110}, \alpha_{99}\mapsto \tses{ \rho_{109}}, \alpha_{102}\mapsto\alpha_{108}] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))) $
+ \\ cons: \begin{itemize}
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}} \alpha_{91} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))) $\\
+  type: $ \alpha_{91} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}} \alpha_{91} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2))))) $\\
+  type: $ \alpha_{86} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{90}} \xrightarrow{\beta_{89}} \alpha_{88} \subseteq \alpha_{91} \xrightarrow{\beta_{87}} \alpha_{86} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}} \alpha_{91} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{89} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  subs:  $ [ \alpha_{94}\mapsto\alpha_{110}, \alpha_{99}\mapsto \tses{ \rho_{109}}, \alpha_{102}\mapsto\alpha_{108}] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2))))) $
+ \\ cons: \begin{itemize}
+\item $ \alpha_{88} \subseteq \alpha_{112} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{111}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \beta_{89} \subseteq \beta_{87} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{89} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ \rho_{90} \sim\rho_{111} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize}
+ subs:  $ [ \alpha_{86}\mapsto\alpha_{112}, \alpha_{91}\mapsto \tses{ \rho_{111}}] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2))))) $\\
+  type: $ \alpha_{88} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))) $\\
+  type: $ \alpha_{83} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}} \alpha_{83} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  subs:  $ [ \alpha_{86}\mapsto\alpha_{112}, \alpha_{91}\mapsto \tses{ \rho_{111}}, \alpha_{94}\mapsto\alpha_{110}, \alpha_{99}\mapsto \tses{ \rho_{109}}, \alpha_{102}\mapsto\alpha_{108}] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))) $
+ \\ cons: \begin{itemize}
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}} \alpha_{83} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))) $\\
+  type: $ \alpha_{83} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}} \alpha_{83} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2))))))) $\\
+  type: $ \alpha_{78} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{82}} \xrightarrow{\beta_{81}} \alpha_{80} \subseteq \alpha_{83} \xrightarrow{\beta_{79}} \alpha_{78} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}} \alpha_{83} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{81} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  subs:  $ [ \alpha_{86}\mapsto\alpha_{112}, \alpha_{91}\mapsto \tses{ \rho_{111}}, \alpha_{94}\mapsto\alpha_{110}, \alpha_{99}\mapsto \tses{ \rho_{109}}, \alpha_{102}\mapsto\alpha_{108}] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2))))))) $
+ \\ cons: \begin{itemize}
+\item $ \alpha_{80} \subseteq \alpha_{114} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{113}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \beta_{81} \subseteq \beta_{79} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{81} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ \rho_{82} \sim\rho_{113} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize}
+ subs:  $ [ \alpha_{78}\mapsto\alpha_{114}, \alpha_{83}\mapsto \tses{ \rho_{113}}] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2))))))) $\\
+  type: $ \alpha_{80} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))) $\\
+  type: $ \alpha_{75} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79}; \beta_{76} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}} \alpha_{75} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{77} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  subs:  $ [ \alpha_{78}\mapsto\alpha_{114}, \alpha_{83}\mapsto \tses{ \rho_{113}}, \alpha_{86}\mapsto\alpha_{112}, \alpha_{91}\mapsto \tses{ \rho_{111}}, \alpha_{94}\mapsto\alpha_{110}, \alpha_{99}\mapsto \tses{ \rho_{109}}, \alpha_{102}\mapsto\alpha_{108}] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))) $
+ \\ cons: \begin{itemize}
+\item $  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}} \alpha_{75} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{77} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))) $\\
+  type: $ \alpha_{75} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79}; \beta_{76} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}} \alpha_{75} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{77} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ (\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2))))))))) $\\
+  type: $ \alpha_{70} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79}; \beta_{76}; \beta_{71} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{74}} \xrightarrow{\beta_{73}} \alpha_{72} \subseteq \alpha_{75} \xrightarrow{\beta_{71}} \alpha_{70} $
+\item $  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}} \alpha_{75} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{74}?\alpha_{72} \subseteq \beta_{73} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{77} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  subs:  $ [ \alpha_{78}\mapsto\alpha_{114}, \alpha_{83}\mapsto \tses{ \rho_{113}}, \alpha_{86}\mapsto\alpha_{112}, \alpha_{91}\mapsto \tses{ \rho_{111}}, \alpha_{94}\mapsto\alpha_{110}, \alpha_{99}\mapsto \tses{ \rho_{109}}, \alpha_{102}\mapsto\alpha_{108}] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ (\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2))))))))) $
+ \\ cons: \begin{itemize}
+\item $ \alpha_{72} \subseteq \alpha_{116} $
+\item $  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{115}} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \beta_{73} \subseteq \beta_{71} $
+\item $ \rho_{74}?\alpha_{72} \subseteq \beta_{73} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ \rho_{74} \sim\rho_{115} $
+\item $ l_{2} \sim\rho_{77} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize}
+ subs:  $ [ \alpha_{70}\mapsto\alpha_{116}, \alpha_{75}\mapsto \tses{ \rho_{115}}] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ (\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2))))))))) $\\
+  type: $ \alpha_{72} $ 
+\\  beha: $ \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79}; \beta_{76}; \beta_{71} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \rho_{74}?\alpha_{72} \subseteq \beta_{71} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{77} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ \elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))} $\\
+  type: $ \alpha_{72} $ 
+\\  beha: $ \tau; \tau; \beta_{65}; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79}; \beta_{76}; \beta_{71} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{65} $
+\item $ \rho_{74}?\alpha_{72} \subseteq \beta_{71} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{77} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  subs:  $ [ \alpha_{64}\mapsto \tses{ \rho_{69}}, \alpha_{70}\mapsto\alpha_{116}, \alpha_{75}\mapsto \tses{ \rho_{115}}, \alpha_{78}\mapsto\alpha_{114}, \alpha_{83}\mapsto \tses{ \rho_{113}}, \alpha_{86}\mapsto\alpha_{112}, \alpha_{91}\mapsto \tses{ \rho_{111}}, \alpha_{94}\mapsto\alpha_{110}, \alpha_{99}\mapsto \tses{ \rho_{109}}, \alpha_{102}\mapsto\alpha_{108}] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))} $
+ \\ cons: \begin{itemize}
+\item $  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{65} $
+\item $ \rho_{74}?\alpha_{72} \subseteq \beta_{71} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{77} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))} $\\
+  type: $ \alpha_{72} $ 
+\\  beha: $ \tau; \tau; \beta_{65}; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79}; \beta_{76}; \beta_{71} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{65} $
+\item $ \rho_{74}?\alpha_{72} \subseteq \beta_{71} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{77} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ \elet{myVNum}{2}{\elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))}} $\\
+  type: $ \alpha_{72} $ 
+\\  beha: $ \tau; \tau; \tau; \beta_{65}; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79}; \beta_{76}; \beta_{71} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{65} $
+\item $ \rho_{74}?\alpha_{72} \subseteq \beta_{71} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{77} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  subs:  $ [ \alpha_{64}\mapsto \tses{ \rho_{69}}, \alpha_{70}\mapsto\alpha_{116}, \alpha_{75}\mapsto \tses{ \rho_{115}}, \alpha_{78}\mapsto\alpha_{114}, \alpha_{83}\mapsto \tses{ \rho_{113}}, \alpha_{86}\mapsto\alpha_{112}, \alpha_{91}\mapsto \tses{ \rho_{111}}, \alpha_{94}\mapsto\alpha_{110}, \alpha_{99}\mapsto \tses{ \rho_{109}}, \alpha_{102}\mapsto\alpha_{108}] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \elet{myVNum}{2}{\elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))}} $
+ \\ cons: \begin{itemize}
+\item $  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{65} $
+\item $ \rho_{74}?\alpha_{72} \subseteq \beta_{71} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{77} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \elet{myVNum}{2}{\elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))}} $\\
+  type: $ \alpha_{72} $ 
+\\  beha: $ \tau; \tau; \tau; \beta_{65}; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79}; \beta_{76}; \beta_{71} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{65} $
+\item $ \rho_{74}?\alpha_{72} \subseteq \beta_{71} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{77} $
+\item $ l_{2} \sim\rho_{85} $
+\item $ l_{2} \sim\rho_{93} $
+\item $ l_{2} \sim\rho_{101} $
+\item $ l_{2} \sim\rho_{106} $
+\end{itemize} 
+  --------------\\ 
+Step W : $ \elet{#}{\espawn (client)}{\espawn (server)} $\\
+ typing context: $ server:\forall (\rho_{77}, \rho_{85}, \rho_{93}, \rho_{101} :  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}},  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}},  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}},  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}}, l_{2} \sim\rho_{77}, l_{2} \sim\rho_{85}, l_{2} \sim\rho_{93}, l_{2} \sim\rho_{101}). \alpha_{72}, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ \espawn (client) $\\
+ typing context: $ server:\forall (\rho_{77}, \rho_{85}, \rho_{93}, \rho_{101} :  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}},  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}},  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}},  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}}, l_{2} \sim\rho_{77}, l_{2} \sim\rho_{85}, l_{2} \sim\rho_{93}, l_{2} \sim\rho_{101}). \alpha_{72}, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ client $\\
+ typing context: $ server:\forall (\rho_{77}, \rho_{85}, \rho_{93}, \rho_{101} :  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}},  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}},  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}},  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}}, l_{2} \sim\rho_{77}, l_{2} \sim\rho_{85}, l_{2} \sim\rho_{93}, l_{2} \sim\rho_{101}). \alpha_{72}, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ client $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ client $
+ \\ cons: \begin{itemize}
+\item $  $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ client $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  $
+\end{itemize} 
+  --------------\\ 
+Step W': $ \espawn (client) $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \espawn{ (\beta_{117})} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \xrightarrow{\beta_{117}} \tunit \subseteq \tunit $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \espawn (client) $
+ \\ cons: \begin{itemize}
+\item $ \tunit \xrightarrow{\beta_{117}} \tunit \subseteq \tunit $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \espawn (client) $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \espawn{ (\beta_{117})} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \xrightarrow{\beta_{117}} \tunit \subseteq \tunit $
+\end{itemize} 
+  --------------\\ 
+Step W : $ \espawn (server) $\\
+ typing context: $ #:\forall ( : ). \tunit, server:\forall (\rho_{77}, \rho_{85}, \rho_{93}, \rho_{101} :  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}},  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}},  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}},  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}}, l_{2} \sim\rho_{77}, l_{2} \sim\rho_{85}, l_{2} \sim\rho_{93}, l_{2} \sim\rho_{101}). \alpha_{72}, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W : $ server $\\
+ typing context: $ #:\forall ( : ). \tunit, server:\forall (\rho_{77}, \rho_{85}, \rho_{93}, \rho_{101} :  \tses{ \rho_{77}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}},  \tses{ \rho_{85}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}},  \tses{ \rho_{93}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}},  \tses{ \rho_{101}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}}, l_{2} \sim\rho_{77}, l_{2} \sim\rho_{85}, l_{2} \sim\rho_{93}, l_{2} \sim\rho_{101}). \alpha_{72}, client:\forall ( : ). \tunit$ 
+\\ --------------\\
+Step W': $ server $\\
+  type: $ \alpha_{72} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ server $
+ \\ cons: \begin{itemize}
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ server $\\
+  type: $ \alpha_{72} $ 
+\\  beha: $ \tau $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ \espawn (server) $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \espawn{ (\beta_{118})} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \xrightarrow{\beta_{118}} \tunit \subseteq \alpha_{72} $
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize} 
+  subs:  $ [ ] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \espawn (server) $
+ \\ cons: \begin{itemize}
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \beta_{118} \subseteq \beta_{123} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize}
+ subs:  $ [ \alpha_{72}\mapsto\tunit \xrightarrow{\beta_{123}} \tunit] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \espawn (server) $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \espawn{ (\beta_{118})} $ 
+\\  cons: \begin{itemize}
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \beta_{118} \subseteq \beta_{123} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ \elet{#}{\espawn (client)}{\espawn (server)} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \espawn{ (\beta_{117})}; \tau; \espawn{ (\beta_{118})} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \xrightarrow{\beta_{117}} \tunit \subseteq \tunit $
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \beta_{118} \subseteq \beta_{123} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize} 
+  subs:  $ [ \alpha_{72}\mapsto\tunit \xrightarrow{\beta_{123}} \tunit] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \elet{#}{\espawn (client)}{\espawn (server)} $
+ \\ cons: \begin{itemize}
+\item $ \tunit \xrightarrow{\beta_{117}} \tunit \subseteq \tunit $
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \beta_{118} \subseteq \beta_{123} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \elet{#}{\espawn (client)}{\espawn (server)} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \espawn{ (\beta_{117})}; \tau; \espawn{ (\beta_{118})} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \xrightarrow{\beta_{117}} \tunit \subseteq \tunit $
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \beta_{118} \subseteq \beta_{123} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ \elet{server}{\elet{myVNum}{2}{\elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))}}}{\elet{#}{\espawn (client)}{\espawn (server)}} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \beta_{65}; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79}; \beta_{76}; \beta_{71}; \tau; \espawn{ (\beta_{117})}; \tau; \espawn{ (\beta_{118})} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \xrightarrow{\beta_{117}} \tunit \subseteq \tunit $
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \beta_{118} \subseteq \beta_{123} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{65} $
+\item $ \rho_{74}?\tunit \xrightarrow{\beta_{123}} \tunit \subseteq \beta_{71} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{106} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize} 
+  subs:  $ [ \alpha_{64}\mapsto \tses{ \rho_{69}}, \alpha_{70}\mapsto\alpha_{116}, \alpha_{72}\mapsto\tunit \xrightarrow{\beta_{123}} \tunit, \alpha_{75}\mapsto \tses{ \rho_{115}}, \alpha_{78}\mapsto\alpha_{114}, \alpha_{83}\mapsto \tses{ \rho_{113}}, \alpha_{86}\mapsto\alpha_{112}, \alpha_{91}\mapsto \tses{ \rho_{111}}, \alpha_{94}\mapsto\alpha_{110}, \alpha_{99}\mapsto \tses{ \rho_{109}}, \alpha_{102}\mapsto\alpha_{108}] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \elet{server}{\elet{myVNum}{2}{\elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))}}}{\elet{#}{\espawn (client)}{\espawn (server)}} $
+ \\ cons: \begin{itemize}
+\item $ \tunit \xrightarrow{\beta_{117}} \tunit \subseteq \tunit $
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \beta_{118} \subseteq \beta_{123} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{65} $
+\item $ \rho_{74}?\tunit \xrightarrow{\beta_{123}} \tunit \subseteq \beta_{71} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{106} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \elet{server}{\elet{myVNum}{2}{\elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))}}}{\elet{#}{\espawn (client)}{\espawn (server)}} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \tau; \beta_{65}; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79}; \beta_{76}; \beta_{71}; \tau; \espawn{ (\beta_{117})}; \tau; \espawn{ (\beta_{118})} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \xrightarrow{\beta_{117}} \tunit \subseteq \tunit $
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{65} $
+\item $ \rho_{74}?\tunit \xrightarrow{\beta_{118}} \tunit \subseteq \beta_{71} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{2} \sim\rho_{106} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize} 
+  --------------\\ 
+Step W': $ \elet{client}{\elet{p1}{(\erequest{ l_{1} }{tsl}~())}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})})}}{\elet{server}{\elet{myVNum}{2}{\elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))}}}{\elet{#}{\espawn (client)}{\espawn (server)}}} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \beta_{4}; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32}; \beta_{21}; \beta_{10}; \tau; \tau; \tau; \beta_{65}; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79}; \beta_{76}; \beta_{71}; \tau; \espawn{ (\beta_{117})}; \tau; \espawn{ (\beta_{118})} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{12}} \times \alpha_{13}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \tunit \xrightarrow{\beta_{117}} \tunit \subseteq \tunit $
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ {tsl}^{l_{1}} \sim\psi_{5} $
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{1}} {\psi_{5}}{} \subseteq \beta_{4} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{65} $
+\item $ \rho_{12}!\alpha_{13} \subseteq \beta_{10} $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{21} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ \rho_{74}?\tunit \xrightarrow{\beta_{118}} \tunit \subseteq \beta_{71} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{1} \sim\rho_{56} $
+\item $ l_{2} \sim\rho_{106} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize} 
+  subs:  $ [ \alpha_{3}\mapsto \tses{ \rho_{8}}, \alpha_{9}\mapsto\tunit, \alpha_{14}\mapsto \tses{ \rho_{18}}, \alpha_{15}\mapsto\tint, \alpha_{16}\mapsto( \tses{ \rho_{19}} \times \tint), \alpha_{20}\mapsto\tunit, \alpha_{25}\mapsto \tses{ \rho_{29}}, \alpha_{26}\mapsto\tint, \alpha_{27}\mapsto( \tses{ \rho_{30}} \times \tint), \alpha_{31}\mapsto\tunit, \alpha_{36}\mapsto \tses{ \rho_{40}}, \alpha_{37}\mapsto\tint, \alpha_{38}\mapsto( \tses{ \rho_{41}} \times \tint), \alpha_{42}\mapsto\tunit, \alpha_{47}\mapsto \tses{ \rho_{51}}, \alpha_{48}\mapsto\tint, \alpha_{49}\mapsto( \tses{ \rho_{52}} \times \tint), \alpha_{53}\mapsto\tunit, \alpha_{57}\mapsto\tint, \alpha_{58}\mapsto \tses{ \rho_{62}}, \alpha_{59}\mapsto\tint, \alpha_{60}\mapsto( \tses{ \rho_{63}} \times \tint), \alpha_{64}\mapsto \tses{ \rho_{69}}, \alpha_{70}\mapsto\alpha_{116}, \alpha_{72}\mapsto\tunit \xrightarrow{\beta_{123}} \tunit, \alpha_{75}\mapsto \tses{ \rho_{115}}, \alpha_{78}\mapsto\alpha_{114}, \alpha_{83}\mapsto \tses{ \rho_{113}}, \alpha_{86}\mapsto\alpha_{112}, \alpha_{91}\mapsto \tses{ \rho_{111}}, \alpha_{94}\mapsto\alpha_{110}, \alpha_{99}\mapsto \tses{ \rho_{109}}, \alpha_{102}\mapsto\alpha_{108}] [] [] [] [] $  
+ \\--------------\\ 
+Step F: $ \elet{client}{\elet{p1}{(\erequest{ l_{1} }{tsl}~())}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})})}}{\elet{server}{\elet{myVNum}{2}{\elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))}}}{\elet{#}{\espawn (client)}{\espawn (server)}}} $
+ \\ cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{12}} \times \alpha_{13}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \tunit \xrightarrow{\beta_{117}} \tunit \subseteq \tunit $
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ {tsl}^{l_{1}} \sim\psi_{5} $
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{1}} {\psi_{5}}{} \subseteq \beta_{4} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{65} $
+\item $ \rho_{12}!\alpha_{13} \subseteq \beta_{10} $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{21} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ \rho_{74}?\tunit \xrightarrow{\beta_{118}} \tunit \subseteq \beta_{71} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{1} \sim\rho_{56} $
+\item $ l_{2} \sim\rho_{106} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize}
+ subs:  $ [ ] [] [] [] [] $ 
+  \\--------------\\ 
+Step R: $ \elet{client}{\elet{p1}{(\erequest{ l_{1} }{tsl}~())}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 200)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~\elet{#}{(p1, 1)}{(\esend{}~(p1, 2))})})})})}}{\elet{server}{\elet{myVNum}{2}{\elet{p2}{(\eaccept{ l_{2} }{tsl}~())}{(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~(p2~(\erecv{}{}~p2)))))))))}}}{\elet{#}{\espawn (client)}{\espawn (server)}}} $\\
+  type: $ \tunit $ 
+\\  beha: $ \tau; \tau; \beta_{4}; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{54}; \beta_{43}; \beta_{32}; \beta_{21}; \beta_{10}; \tau; \tau; \tau; \beta_{65}; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \tau; \beta_{103}; \beta_{100}; \beta_{95}; \beta_{92}; \beta_{87}; \beta_{84}; \beta_{79}; \beta_{76}; \beta_{71}; \tau; \espawn{ (\beta_{117})}; \tau; \espawn{ (\beta_{118})} $ 
+\\  cons: \begin{itemize}
+\item $ \tunit \subseteq ( \tses{ \rho_{12}} \times \alpha_{13}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{23}} \times \alpha_{24}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{34}} \times \alpha_{35}) $
+\item $ \tunit \subseteq ( \tses{ \rho_{45}} \times \alpha_{46}) $
+\item $ \tunit \xrightarrow{\beta_{117}} \tunit \subseteq \tunit $
+\item $  \tses{ \rho_{119}} \subseteq \alpha_{80} \xrightarrow{\beta_{76}}  \tses{ \rho_{74}} $
+\item $  \tses{ \rho_{120}} \subseteq \alpha_{88} \xrightarrow{\beta_{84}}  \tses{ \rho_{82}} $
+\item $  \tses{ \rho_{121}} \subseteq \alpha_{96} \xrightarrow{\beta_{92}}  \tses{ \rho_{90}} $
+\item $  \tses{ \rho_{122}} \subseteq \alpha_{104} \xrightarrow{\beta_{100}}  \tses{ \rho_{98}} $
+\item $ {tsl}^{l_{1}} \sim\psi_{5} $
+\item $ \overline{{tsl}^{l_{2}}} \sim\psi_{67} $
+\item $ \pusho{ l_{1}} {\psi_{5}}{} \subseteq \beta_{4} $
+\item $ \pusho{ l_{2}} {\psi_{67}}{} \subseteq \beta_{65} $
+\item $ \rho_{12}!\alpha_{13} \subseteq \beta_{10} $
+\item $ \rho_{23}!\alpha_{24} \subseteq \beta_{21} $
+\item $ \rho_{34}!\alpha_{35} \subseteq \beta_{32} $
+\item $ \rho_{45}!\alpha_{46} \subseteq \beta_{43} $
+\item $ \rho_{56}!\tint \subseteq \beta_{54} $
+\item $ \rho_{74}?\tunit \xrightarrow{\beta_{118}} \tunit \subseteq \beta_{71} $
+\item $ \rho_{82}?\alpha_{80} \subseteq \beta_{79} $
+\item $ \rho_{90}?\alpha_{88} \subseteq \beta_{87} $
+\item $ \rho_{98}?\alpha_{96} \subseteq \beta_{95} $
+\item $ \rho_{106}?\alpha_{104} \subseteq \beta_{103} $
+\item $ l_{1} \sim\rho_{56} $
+\item $ l_{2} \sim\rho_{106} $
+\item $ l_{2} \sim\rho_{119} $
+\item $ l_{2} \sim\rho_{120} $
+\item $ l_{2} \sim\rho_{121} $
+\item $ l_{2} \sim\rho_{122} $
+\end{itemize} 
+  --------------\\ 
+SessionTypeInference: unbound beta variable \beta_{100}
+
+\end{document}

@@ -1,0 +1,359 @@
+\ProvidesPackage{TransCCS}
+
+% \RequirePackage[usenames,dvipsnames]{color}
+% \RequirePackage{vk}
+% \RequirePackage{xargs}
+% \RequirePackage{stmaryrd}
+
+%%%% Start of definitions %%%%
+%% spaced vertical bar for syntax definitions
+\newcommand{\bnf}{\mathrel{\big|}}
+\newcommand{\wand}{-\!\!\!*\ }
+
+\def\co{\overline}
+\def\eqv{\leftrightarrow}
+%%% Semantic relations
+% arrows
+\DeclareMathOperator*{\arrow}           {\mathrel{\longrightarrow}}
+\DeclareMathOperator*{\nub}     {\nu\!}
+
+\DeclareMathOperator*{\coa}{\keyw{co}\xspace}
+\newcommand{\cob}{\keyw{co}\xspace}
+\DeclareMathOperator*{\aba}{\keyw{ab}\xspace}
+\newcommand{\abb}{\keyw{ab}\xspace}
+%\newcommand{\embb}{\keyw{emb}\xspace}
+
+
+\DeclareMathOperator*{\para}    {\mathrel{\vert}}
+
+\newcommand{\af}{\mathit{af}}
+\newcommand{\cf}{\mathit{cf}}
+
+\DeclareMathOperator*{\ftn}     {\mathit{ftn}\xspace}
+\newcommand{\sdif}    {\mathrel{\backslash}}
+
+%%% Use t1xtt zero for \piNil
+\DeclareFontFamily{T1}{tcxtt}{}
+\DeclareFontShape{T1}{tcxtt}{m}{n}{<-8><8><9><10>%
+  <10.95><12><14.4><17.28><20.74><24.88> txtt}{}
+\DeclareSymbolFont{NilF}{T1}{tcxtt}{m}{n}
+\DeclareMathSymbol\pinil{\mathord}{NilF}{"30}
+
+
+%\DeclareMathOperator*{\klet}    {\textbf{let}}
+%\DeclareMathOperator*{\kin}    {\textbf{in}}
+%\DeclareMathOperator*{\kif}    {\textbf{if}}
+%\DeclareMathOperator*{\kthen}    {\textbf{then}}
+%\DeclareMathOperator*{\kelse}    {\textbf{else}}
+%
+%\DeclareMathOperator*{\kspawn}    {\textbf{spawn}}
+%\DeclareMathOperator*{\knewchan}    {\textbf{newchan}}
+%\DeclareMathOperator*{\krecv}    {\textbf{recv}}
+%\DeclareMathOperator*{\ksend}    {\textbf{send}}
+%
+%% transactions
+\def\lt{\llbracket}
+\def\rt{\rrbracket}
+%\DeclareMathOperator*{\katomic}    {\textbf{atomic}}
+%\DeclareMathOperator*{\kcommit}    {\textbf{commit}}
+
+% Rule Names
+
+
+%%% Syntax
+\newcommand{\m}[1]{\ensuremath{#1}\xspace}
+\newcommand{\keyw}[1]{\textsf{#1}}
+\newcommand{\type}[1]{\textsf{#1}}
+%% Types
+\newcommand{\tbool}{\type{Bool}}
+\newcommand{\tint} {\type{Int}}
+\newcommand{\tunit}{\type{Unit}}
+\newcommand{\tpair}[2]{#1 \m{\times} #2}
+\newcommand{\tfun}[3]{#1 \mathbin{\overset{#3}{\rightarrow}} #2}
+% \newcommand{\tchan}[2]{#1~\m{\type{chan}}~#2}
+\newcommand{\tchan}[2]{#1~\m{\type{chan}}}
+\newcommand{\tevent}[2]{#1~\m{\type{event}}~#2}
+\newcommand{\tlist}[1]{\m{#1~\type{list}}}
+\newcommand{\tbegin}[1]{\m{\type{begin.}}#1}
+\newcommand{\tend}{\m{\type{end}}}
+\newcommand{\tstring}{\m{\type{String}}}
+
+
+\newcommand{\bchan}[2]{#1~\type{newchan}~#2}
+
+%% optional labels
+\newcommand{\lbl}[1]{\ifempty{#1}{#1}{^{{\color{magenta}#1}}}}
+
+%% Constants
+\newcommand{\cunit}[1][]{\keyw{()}}
+\newcommand{\ctrue}[1][]{\keyw{tt}}
+\newcommand{\cfalse}[1][]{\keyw{ff}}
+%% Keywords
+\newcommand{\kfun}{\keyw{fn}}
+\newcommand{\klet}{\keyw{let}}
+\newcommand{\kin}{\keyw{in}}
+\newcommand{\kif}{\keyw{if}}
+\newcommand{\kthen}{\keyw{then}}
+\newcommand{\kelse}{\keyw{else}}
+\newcommand{\ksend}{\keyw{send}}
+\newcommand{\krecv}{\keyw{recv}}
+\DeclareMathOperator*{\knewchan}{\keyw{new}}
+\newcommand{\kspawn}{\keyw{spawn}}
+\newcommand{\katomic}{\keyw{atomic}}
+\newcommand{\korelse}{\keyw{orelse}}
+\newcommand{\kcommit}{\keyw{commit}}
+\newcommand{\kfst}{\keyw{fst}}
+\newcommand{\ksnd}{\keyw{snd}}
+\newcommand{\khd}{\keyw{hd}}
+\newcommand{\ktl}{\keyw{tl}}
+\newcommand{\knull}{\keyw{null}}
+\newcommand{\kpair}{\keyw{pair}}
+\newcommand{\kcons}{\keyw{cons}}
+\newcommand{\ksync}{\keyw{sync}}
+\newcommand{\kchannel}{\keyw{channel}}
+\newcommand{\kselect}{\keyw{select}}
+\newcommand{\kmatch}{\keyw{case}}
+\newcommand{\kfrom}{\keyw{with}}
+\newcommand{\kwhere}{\keyw{where}}
+
+
+\newcommand{\kpush}{\keyw{push}}
+\newcommand{\kpop}{}%{\keyw{pop}}
+\newcommand{\krec}{\keyw{rec}}
+
+%Concurrency
+\DeclareMathOperator*{\Send}    {\textsc{\footnotesize Send}}
+\DeclareMathOperator*{\Recv}    {\textsc{\footnotesize Recv}}
+\DeclareMathOperator*{\Sync}    {\textsc{\footnotesize Sync}}
+
+\DeclareMathOperator*{\TrTau}    {\textsc{\footnotesize Tau}}
+\DeclareMathOperator*{\TrRec}    {\textsc{\footnotesize Rec}}
+\DeclareMathOperator*{\TrRestr}  {\textsc{\footnotesize Restr}}
+\DeclareMathOperator*{\TrPar}    {\textsc{\footnotesize Par}}
+\DeclareMathOperator*{\TrEquiv}  {\textsc{\footnotesize Equiv}}
+
+
+%% Types
+\DeclareMathOperator*{\TNil}     {\textsc{\footnotesize T-Nil}}
+\DeclareMathOperator*{\TSum}    {\textsc{\footnotesize T-Sum}}
+\DeclareMathOperator*{\TPar}    {\textsc{\footnotesize T-Par}}
+\DeclareMathOperator*{\TRestr}  {\textsc{\footnotesize T-Restr}}
+\DeclareMathOperator*{\TTrans}  {\textsc{\footnotesize T-Trans}}
+\DeclareMathOperator*{\TCo}     {\textsc{\footnotesize T-Co}}
+
+
+%% Transactions
+\DeclareMathOperator*{\TrCo}       {\textsc{\footnotesize Co}}
+\DeclareMathOperator*{\TrCoL}      {\textsc{\footnotesize Co-L}}
+\DeclareMathOperator*{\TrCoR}      {\textsc{\footnotesize Co-R}}
+
+\DeclareMathOperator*{\TrCoPrim}   {\textsc{\footnotesize CoPrim}}
+\DeclareMathOperator*{\TrCoSec}    {\textsc{\footnotesize CoSec}}
+\DeclareMathOperator*{\TrEmb}      {\textsc{\footnotesize Emb}}
+\DeclareMathOperator*{\TrNest}     {\textsc{\footnotesize Nest}}
+\DeclareMathOperator*{\TrAct}      {\textsc{\footnotesize Act}}
+\DeclareMathOperator*{\TrAbort}    {\textsc{\footnotesize Abort}}
+\DeclareMathOperator*{\TrIgnore}   {\textsc{\footnotesize Ignore}}
+\DeclareMathOperator*{\TrCommit}   {\textsc{\footnotesize Commit}}
+\DeclareMathOperator*{\TrCom}      {\textsc{\footnotesize Com}}
+\DeclareMathOperator*{\TrCDEmb}    {\textsc{\footnotesize C.D. Embed}}
+\DeclareMathOperator*{\TrMerge}    {\textsc{\footnotesize C.D. Merge}}
+
+
+\DeclareMathOperator*{\TrREmb}     {\textsc{\footnotesize Emb-R}}
+\DeclareMathOperator*{\TrLEmb}     {\textsc{\footnotesize Emb-L}}
+
+\DeclareMathOperator*{\TrEmbProc}  {\textsc{\footnotesize Emb-Process}}
+\DeclareMathOperator*{\TrEmbTrans} {\textsc{\footnotesize Emb-Transaction}}
+
+\DeclareMathOperator*{\TrIgnEmbProc}  {\textsc{\footnotesize Ignore-P-Emb}} 
+\DeclareMathOperator*{\TrIgnEmbTrans} {\textsc{\footnotesize Ignore-T-Emb}} 
+\DeclareMathOperator*{\TrIgnAbort}    {\textsc{\footnotesize Ignore-Abort}} 
+\DeclareMathOperator*{\TrIgnCo}   	  {\textsc{\footnotesizeTr-Ignore-Co}}
+\DeclareMathOperator*{\TrIgnCommit}   {\textsc{\footnotesizeTr-Ignore-Commit}}
+
+
+\DeclareMathOperator*{\TrProgAbort} {\textsc{\footnotesize Prog-Abort}}
+\DeclareMathOperator*{\TrProgAb}    {\textsc{\footnotesize Prog-Ab}}
+
+\DeclareMathOperator*{\TrAtomic} {\textsc{\footnotesize Atomic}}
+\DeclareMathOperator*{\TrStart} {\textsc{\footnotesize Start}}
+\DeclareMathOperator*{\TrStep} {\textsc{\footnotesize Step}}
+\DeclareMathOperator*{\TrCoK} {\textsc{\footnotesize Co-K}}
+
+\DeclareMathOperator*{\TrBroadcast} {\textsc{\footnotesize Tr-Broadcast}}
+
+
+\DeclareMathOperator*{\RCo}      {\textsc{\footnotesize R-Co}}
+\DeclareMathOperator*{\REmb}     {\textsc{\footnotesize R-Emb}}
+\DeclareMathOperator*{\RAbort}   {\textsc{\footnotesize R-Abort}}
+
+
+
+
+%% Structural Rules
+\DeclareMathOperator*{\SLet}      {\textsc{\footnotesize S-Let}}
+\DeclareMathOperator*{\SScopeExt} {\textsc{\footnotesize S-Scope-Ext}}
+\DeclareMathOperator*{\SLPar}     {\textsc{\footnotesize S-Par-L}}
+\DeclareMathOperator*{\SRPar}     {\textsc{\footnotesize S-Par-R}}
+\DeclareMathOperator*{\SRestr}    {\textsc{\footnotesize S-Restr}}
+\DeclareMathOperator*{\SSeq}       {\textsc{\footnotesize S-Eq}}
+\DeclareMathOperator*{\STr}       {\textsc{\footnotesize S-Tr}}
+\DeclareMathOperator*{\SCo}       {\textsc{\footnotesize S-Co}}
+
+\DeclareMathOperator*{\TrScopeExt} {\textsc{\footnotesize Tr-Scope-Ext}}
+
+%% Structural Equivalence
+\DeclareMathOperator*{\EqAssoc}      {\textsc{\footnotesize Eq-Assoc}}
+\DeclareMathOperator*{\EqRefl}       {\textsc{\footnotesize Eq-Refl}}
+\DeclareMathOperator*{\EqTran}       {\textsc{\footnotesize Eq-Tran}}
+\DeclareMathOperator*{\EqLComm}      {\textsc{\footnotesize Eq-Comm-L}}
+\DeclareMathOperator*{\EqIf}         {\textsc{\footnotesize Eq-If}}
+\DeclareMathOperator*{\EqApp}        {\textsc{\footnotesize Eq-App}}
+\DeclareMathOperator*{\EqLet}        {\textsc{\footnotesize Eq-Let}}
+\DeclareMathOperator*{\EqTup}        {\textsc{\footnotesize Eq-Tup}}
+\DeclareMathOperator*{\EqOp}         {\textsc{\footnotesize Eq-Op}}
+\DeclareMathOperator*{\EqRestr}      {\textsc{\footnotesize Eq-Restr}}
+\DeclareMathOperator*{\EqRestrOne}   {\textsc{\footnotesize Eq-Restr}}
+\DeclareMathOperator*{\EqRestrTwo}   {\textsc{\footnotesize Eq-Restr'}}
+\DeclareMathOperator*{\EqLetRestr}   {\textsc{\footnotesize Eq-Let-Restr}}
+\DeclareMathOperator*{\EqRestrNest}  {\textsc{\footnotesize Eq-Restr-Nest}}
+\DeclareMathOperator*{\EqCom}        {\textsc{\footnotesize Eq-Com}}
+\DeclareMathOperator*{\EqAbs}        {\textsc{\footnotesize Eq-Absorb}}
+\DeclareMathOperator*{\EqAbsChan}        {\textsc{\footnotesize Eq-Abs-Chan}}
+\DeclareMathOperator*{\EqAbsUnit}        {\textsc{\footnotesize Eq-Abs-Unit}}
+\DeclareMathOperator*{\EqCtx}        {\textsc{\footnotesize Eq-Ctx}}
+
+
+\DeclareMathOperator*{\CStep}     {\textsc{\footnotesize Step}}
+\DeclareMathOperator*{\CSync}     {\textsc{\footnotesize Sync}}
+\DeclareMathOperator*{\CSpawn}    {\textsc{\footnotesize Spawn}}
+\DeclareMathOperator*{\CRestr}    {\textsc{\footnotesize Restr}}
+\DeclareMathOperator*{\CPar}      {\textsc{\footnotesize Par}}
+\DeclareMathOperator*{\CParL}     {\textsc{\footnotesize ParL}}
+\DeclareMathOperator*{\CParR}     {\textsc{\footnotesize ParR}}
+\DeclareMathOperator*{\CEq}       {\textsc{\footnotesize Eq}}
+\DeclareMathOperator*{\CNewChan}  {\textsc{\footnotesize NewChan}}
+\DeclareMathOperator*{\CChan}     {\textsc{\footnotesize Chan}}
+\DeclareMathOperator*{\CDeleg}    {\textsc{\footnotesize Deleg}}
+\DeclareMathOperator*{\CSelect}   {\textsc{\footnotesize Select}}
+
+%% Reduction
+\DeclareMathOperator*{\RIf}       {\textsc{\footnotesize R-If}}
+\DeclareMathOperator*{\ROp}       {\textsc{\footnotesize R-Op}}
+\DeclareMathOperator*{\RApp}      {\textsc{\footnotesize R-App}}
+\DeclareMathOperator*{\RTup}      {\textsc{\footnotesize R-Tup}}
+
+%% Evaluation
+\DeclareMathOperator*{\EVal}      {\textsc{\footnotesize Val      }}
+\DeclareMathOperator*{\ERestr}    {\textsc{\footnotesize Restr    }}
+\DeclareMathOperator*{\EApp}      {\textsc{\footnotesize App      }}
+\DeclareMathOperator*{\EFix}      {\textsc{\footnotesize Fix      }}
+\DeclareMathOperator*{\ELet}      {\textsc{\footnotesize Let      }}
+\DeclareMathOperator*{\EIfT}      {\textsc{\footnotesize If-tt  }}
+\DeclareMathOperator*{\EIfF}      {\textsc{\footnotesize If-ff }}
+\DeclareMathOperator*{\ETup}      {\textsc{\footnotesize Tup      }}
+\DeclareMathOperator*{\EOp}       {\textsc{\footnotesize Op       }}
+\DeclareMathOperator*{\ESelect}   {\textsc{\footnotesize Select   }}
+\DeclareMathOperator*{\ESpawn}    {\textsc{\footnotesize Spawn   }}
+\DeclareMathOperator*{\fc}        {fc}
+
+
+%% macros
+\newcommand{\doQED}     {\hfill\qed }
+
+\newcommand{\bisim}[1]{\mathrel{\mathcal{#1}}}
+
+\newcommand{\transo}[3]{\left\lt #2  \mathrel{\triangleright_{#1}} #3 \right\rt}
+\newcommand{\transShort}[3]{\lt #2  \mathrel{\triangleright_{#1}} #3 \rt}
+\newcommand{\restro}[2]{\nub #1. #2 }
+\newcommand{\elet}[3]{\klet\,#1=#2\mathrel{\kin}#3 }
+\newcommand{\eletmany}[2]{\nbox{\klet\,\abox{#1}\\\mathrel{\kin}#2}}
+\newcommand{\eletstar}[2]{\klet\mathtt{*}\,#1\kin\,#2}
+\newcommand{\eletstarmany}[2]{\nbox{\klet\mathtt{*}\,\abox{#1}\\\mathrel{\kin}#2}}
+\newcommand{\eif}[3]{\kif\,#1\,\kthen\,#2\,\kelse\,#3 }
+
+\newcommand{\esend}[1]{\ma{\ifempty{#1}{\ksend}{\ksend\,#1}}}
+\newcommand{\erecv}[2]{\ma{\ifempty{#2}{\krecv_{#1}}{\eapp{\krecv_{#1}}{#2}}}}
+\newcommand{\newchano}[2][2=]{\knewchan_{#1}\lbl{#2}}
+\newcommand{\spawno}[2]{\kspawn\,#1 }
+\newcommand{\atomico}[2]{\lt #1  \mathrel{\blacktriangleright} #2 \rt}%{\katomic_{#1}\lbl{#4}\lt #2 \korelse #3 \rt }
+\newcommand{\commito}[1]{\kcommit #1}
+\newcommand{\efunc}[2]{\kfun\,#1\,{\Rightarrow}\, #2}
+\newcommand{\eapp}[2]{#1\,#2 }
+\newcommand{\reco}[2]{\mu #1. #2}
+\newcommand{\eselect}[1]{{\color{red}\kselect~#1 }}  %TODO: replace with eselectnew defined in sessions.sty
+\newcommand{\ematch}[3]{\kmatch\,#1\,\{#2\}_{#3} }
+\newcommand{\restarto}[2]{\katomic_{#1}\lt #2 \rt}
+\newcommand{\epair}[2]{(#1, #2) }
+
+% stack operations
+\newcommand{\pusho}[3]{\kpush_{#3}( #1\mathbin{:}#2 )}
+\newcommand{\popo}[2]{\kpop #1#2 }
+\newcommand{\orec}[2]{\krec_{#2}\,#1 }
+\newcommand{\orecrec}[3]{\krec^{#3}_{#2}\,#1 }
+
+\newcommand{\ty}[3]{\vdash #1 : #2 * #3}
+\DeclareMathOperator*{\restartb}  {\textbf{atomic}_{rec}\,}
+
+
+\newcommand{\proc}[3]{\langle #1, #2 \rangle_{#3}}
+
+\newcommand{\conf}[2]{(#1 \mathrel{\rhd} #2)}
+\newcommand{\upd}[2]{\mathsf{upd}(#1,#2)}
+
+% the following two are deprecated
+\newcommand{\btrans}[3][]{\mathrel{\xrightarrow{#1}_{\ifempty{#2}{#3}{(#2,\; #3)}}}}
+\newcommand{\bweaktrans}[3][]{\mathrel{\xRightarrow{#1}_{(#2,\; #3)}}}
+
+\newcommand{\trans}[1][]{\mathrel{\xrightarrow{#1}}}
+\newcommand{\wtrans}[1][]{\mathrel{\xRightarrow{#1}}}
+
+\renewcommand{\c}[1]{\ma{\mathcal{#1}}}
+
+\def\rbe{\mathrel{\cong_{\mathsf{rbe}}}}
+
+\def\vect{\overrightarrow}
+\def\emptylist{\varepsilon}
+
+\def\hist{\mathop{\mathit{hist}}}
+
+\newcommand{\atransl}[1]{{\llparenthesis #1 \rrparenthesis}}
+\def\htransl{\atransl}
+\newcommand{\dom}[1]{\mathit{dom}(#1)}
+\newcommand{\codom}[1]{\mathit{range}(#1)}
+\newcommand{\hco}    {\mathrel{\backslash_{\mathsf{co}}}}
+\newcommand{\hab}    {\mathrel{\backslash_{\mathsf{ab}}}}
+\newcommand{\bisimil} {\approx}
+\newcommand{\bisimilalt} {\approx_{\mathsf{prd}}}
+\newcommand{\where} {\mathrel{\vert}}
+\newcommand{\rel}[1]{\mathrel{\left\langle #1\right\rangle}}
+%\newcommand{\subst}[1]{\{#1\}}
+\newcommand{\recmu}{\mathtt{rec}}
+\newcommand{\barb}[1]{{\Downarrow}#1}
+\newcommand{\nbarb}[1]{{\not\Downarrow}#1}
+\newcommand{\G}[2]{\big\langle\hspace{-.5ex}\big\langle #1 \;;\; #2 \big\rangle\hspace{-.5ex}\big\rangle}
+
+%MH
+
+%MH%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{greenish}{rgb}{.24,.5,.26} % Only RGB, CMYK and BW are predefined.
+\newcommand{\MHx}{\color{greenish}} % M's for Matthew
+%
+\newcommand{\MHc}[1]{{\MHx   #1}}
+%\renewcommand{\MHc}[1]{{#1}}
+%
+\newcommand{\MHf}[1]{\marginpar{\MHx~\bf\fbox{\footnotemark}~}\footnotetext{\color{greenish}   #1}}
+%\renewcommand{\MHf}[1]{}
+
+\newcommand{\leaveout}[1]{}
+
+\newcommand{\tmccs}{\textsl{TCCS$^{\text{m}}$}\xspace}
+
+\newcommand{\fr}{{\mathsf{fr}}}
+
+\newcommand{\scons}{\ensuremath{\mathrel{\bumpeq}}}
+
+\newcommand{\confined}{\ensuremath{\mathit{confd}}}
+\newcommand{\cfd}[1]{\ensuremath{\mathit{cfd}}(#1)}
+%%%% End of Defs %%%%

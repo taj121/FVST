@@ -53,7 +53,7 @@ rule lex = parse
   | "<"				       { SUBSET }
   | "~"				       { LINK }			
   | ['C']['0'-'9' 'A'-'Z' 'a'-'z' '_']+       as s {CHANNEL (s)}
-  | ['C']['0'-'9' 'A'-'Z' 'a'-'z' '_']+['`']  as s {CHANNELEND (s)} (*Dual of channel*)
+  | ['C']['0'-'9' 'A'-'Z' 'a'-'z' '_']+[''']  as s {CHANNELEND (s)} (*Dual of channel*)
   | ['S']['0'-'9' 'A'-'Z' 'a'-'z' '_']+       as s { SVAR (s) }
   | ['B']['0'-'9' 'A'-'Z' 'a'-'z' '_']+       as s { BEVAR (s) }
   | ['R']['0'-'9' 'A'-'Z' 'a'-'z' '_']+       as s { REG (s) }

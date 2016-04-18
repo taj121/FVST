@@ -1,0 +1,378 @@
+\ProvidesPackage{sessions}
+% Various macros
+
+% Expressions
+\newcommand{\kaccept}{\keyw{acc}}
+\newcommand{\krequest}{\keyw{req}}
+\newcommand{\kdeleg}{\keyw{deleg}}
+\newcommand{\kresume}{\keyw{resume}}
+\newcommand{\kfix}{\keyw{fun}}
+\newcommand{\kfixrec}{\keyw{recses}}
+
+\newcommand{\eaccept}[2]{\kaccept\keyw{-}{#2}^{#1}}
+\newcommand{\erequest}[2]{\krequest\keyw{-}{#2}^{#1}}
+\newcommand{\espawn}[1]{\kspawn\,#1}
+\newcommand{\echan}[2]{{#1}_{#2}}  % public channel c_\eta
+\newcommand{\eendp}[2]{{#1}^{#2}}  % session endpoint p_l
+\newcommand{\edeleg}[1]{\kdeleg\,\,#1}
+\newcommand{\eresume}[2]{\ifempty{#2}{\kresume^{#1}}{\eapp{\kresume^{#1}}{#2}}}
+\newcommand{\efix}[3]{\kfix\,#1(#2)\,{=}\, #3 }
+\newcommand{\eselectnew}[1]{\ma{\keyw{sel}\keyw{-}#1}}
+\newcommand{\efixrec}[3]{\kfixrec\,#1(#2)\,{\Rightarrow}\, #3 }
+
+% Types
+\newcommand{\tses}[1]{\type{Ses}^{#1}}
+
+% the input and output symbols
+% macros are needed so make sure that spacing around these symbols is not that of punctuation marks
+\newcommand{\inp}{{?}}
+\newcommand{\outp}{{!}}
+
+% Behaviours
+\newcommand{\bseq}[2]{#1\,;#2}
+%\newcommand{\iseq}{; }
+\newcommand{\bichoice}[2]{#1 \oplus #2}
+\newcommand{\bechoice}[4]{%
+  \ifthenelse{\equal{#1}{}} {\underset{i\in I}{\&}} {\underset{#1}{\&}}
+  \{\bseq{\popo{#2}{?#3}}{#4}\}
+}
+\newcommand{\bechoiceTrap}[4]{%
+  \ifthenelse{\equal{#1}{}} {%
+        \mathclap{\underset{i\in I}{\&}}
+    } {\underset{\mathclap{#1} } {\&}}
+  \bseq{~\popo{#2}{?#3}}{#4}
+}
+\newcommand{\bechoicetext}[4]{%
+  \ifthenelse{\equal{#1}{}} {\textstyle\&_{i\in I}} {\textstyle\&_{#1}}
+  \bseq{\popo{#2}{?#3}}{#4}
+}
+
+
+
+
+% Session types
+\newcommand{\sseq}[2]{#1.#2}
+\newcommand{\sichoiceBase}[4]{%
+  \underset{\mathclap{#1\in #2}}{\oplus} \{L_{#1}: #3_{#4}\} }
+\newcommand{\sichoice}[3]{\sichoiceBase{#1}{#2}{#3}{#1}} 
+\newcommand{\sichoicetext}[3]{\sichoicetextBase{#1}{#2}{#3}{#1}}
+\newcommand{\sichoicetextBase}[4]{%
+  \ma{\textstyle\oplus \{L_{#1}: #3_{#4}\}_{#1\in #2 }}}
+\newcommand{\sichoiceEtaB}[4]{\underset{\mathclap{#1\in #2}}{\oplus}#3_{#4}}
+\newcommand{\sichoiceEta}[3]{\sichoiceEtaB{#1}{#2}{#3}{#1}}
+\newcommand{\sechoiceBase}[5]{%
+    \underset{\mathclap{#1\in (#2, #3)}}{\&\{L_{#1}: #4_{#5}\}}}
+\newcommand{\sechoice}[4]{\sechoiceBase{#1}{#2}{#3}{#4}{#1}}
+\newcommand{\sechoicetext}[4]{\sechoicetextBase{#1}{#2}{#3}{#4}{#1}}
+\newcommand{\sechoicetextBase}[5]{%
+                    \ma{\textstyle\&\{L_{#1} : #4_{#5} \}_{#1\in(#2,#3)}}}
+       % \mathclap reduces space from underset
+\newcommand{\sechoiceeBase}[5]{%
+    \underset{\mathclap{#1\in (#2, #3)}}{\&} ?{#1}.#4_{#5}}
+    
+\newcommand{\sechoiceEtaB}[5]{\underset{\mathclap{#1\in (#2, #3)}}{\&}#4_{#5}}
+\newcommand{\sechoiceEta}[4]{\sechoiceEtaB{#1}{#2}{#3}{#4}{#1} }
+
+% Haskell code typesetting
+\newcommand{\nsub}{\mathsf{~sub}}
+
+% Algorithm names
+\newcommand {\WSys}  {\mathcal{W}_{sys} }
+\newcommand {\algW}  {\mathcal{W} }
+\newcommand {\algWW} {\mathcal{W}' }
+\newcommand {\algF}  {\mathcal{F} }
+\newcommand {\algR}  {\mathcal{R} }
+\newcommand {\algS}  {\mathcal{ST} }
+\newcommand {\algoST}  {\mathcal{ST} }
+\newcommand {\algoSI}  {\mathcal{SI} }
+\newcommand {\algoMC} {\mathcal{MC} }
+\newcommand {\algI}  {\mathcal{I} }
+
+% continuation stack
+\newcommand {\mcclause}[4] {\algoMC\big(\mcconf{#1}{#2},~ #3,~ #4\big)}
+\newcommand {\emptyK} {\epsilon}
+\newcommand {\consK}[2] {#1 \cdot #2}
+
+% Substitutions
+\newcommand{\id}{\sigma_{id}}
+\newcommand{\fin}{\sigma^\star}
+\newcommand{\subStackBase}[1]
+  {\propto_{#1} }
+\newcommand{\subStack}{\subStackBase {C}}
+\newcommand{\eqStack}{\subStackBase {}}
+
+ % Constraint-based type judgements
+\newcommand{\cj}[2]{#1 \vdash #2}
+\newcommand{\subBase}[3]{#1 \vdash #2 \subseteq #3 }
+\newcommand{\subnotBase}[3]{#1 \vdash #2 \not\subseteq #3 }
+\newcommand{\sub}[2]{\subBase{C}{#1}{#2} }
+\newcommand{\under}[2]{#1 \vdash #2}
+\newcommand{\subnot}[2]{\subnotBase{C}{#1}{#2} }
+\newcommand{\subReg}[2]{\subBase{C}{#1}{#2} }
+\newcommand{\suReg}[2]{\su{#1}{#2} }
+\newcommand{\subnotReg}[2]{\subnotBase{C}{#1}{#2} }
+\newcommand{\su}[2]{#1 \subseteq #2 }
+\newcommand{\seql}[2]{#1 \sim #2 }
+\newcommand{\typeschema}[3]{\forall \ifthenelse {\equal{#2}{}}
+                                      {#1.\,#3}
+                                    {(#1 \mathbin{:} #2).\, #3}           }
+\newcommand{\normalizedJdg}[5]{#1, #2 \vdash^{at}_{n} #3 : (#4, #5) }
+\newcommand{\subTSchema}[3]{#1 \leq_{#3} #2}
+\newcommand{\subst}[2]{[{#1}\mapsto {#2}] }
+% equality constraint
+\newcommand{\ceq}[2]    {#1 \sim #2  }
+\newcommand{\sueqBase}[3]{\cj{#1}{\ceq{#2}{#3} }}
+\newcommand{\sueq}[2]    {\sueqBase{C}{#1}{#2}}
+
+% this macro creates an extensible equals sign
+\makeatletter
+\newcommand*{\Relbarfill@}{\arrowfill@\Relbar\Relbar\Relbar}
+\newcommand*{\xeq}[2][]{\ext@arrow 0099\Relbarfill@{#2}{#1}}
+\makeatother
+
+% System configuration, where #1 expr, #2 b, #3 \Delta
+\newcommand{\cfg}[3]{(#1, #2, #3) }
+
+% Expression typing judgement (i.e. Nielson & Nielson)
+\newcommand{\tjrBase}[7]{#6#1;~#7#2 \vdash #3 : #4 \mathrel{\triangleright} #5}
+\newcommand{\tjrBaseVec}[7]{#6#1;~#7#2 \vdash \overrightarrow{#3 : #4 \mathrel{\triangleright} #5}}
+\newcommand{\tjr}[5]{\tjrBase{#1}{#2}{#3}{#4}{#5}{C}{\Gamma}}
+% System typing judgement (i.e. stacks and \Downarrow)
+\newcommand{\tjSysr}[4]{C#1 \Vdash \tconf{#4}{#3}{#2} }% Constrainted system judg.
+\newcommand{\tjSysrVec}[4]{C#1 \Vdash \overrightarrow{\tconf{#4}{#3}{#2}} }% Constrainted system judg.
+\newcommand{\tjParSys}[2]{C#1 \Vdash #2}% Constrainted system% judg.
+
+% constraints
+\newcommand{\subt}[2]{#1\mathrel{<:}#2}
+\newcommand{\coTypeBase}[3]{ \cj{#1}{\subt{#2}{#3}}}
+\newcommand{\coType}[2]{\coTypeBase{C}{#1}{#2}}
+\newcommand{\subType}[2]{\coTypeBase{C}{#1}{#2}}
+\newcommand{\subEquiv}[2]{\cj{C}{#1 \equiv #2}}
+\newcommand{\suEquiv}[2]{#1 \equiv #2 }
+\newcommand{\subEql}[2]{\subEqlBase {#1}{#2}{C} }
+\newcommand{\subEqlBase}[3]{\cj {#3} {\seql{#1}{#2}} }
+\newcommand{\subNotEqlBase}[3]{\cj {#3} {{#1} \not\sim {#2} } }
+\newcommand{\subNotEql}[2]{\subNotEqlBase {#1}{#2}{C} }
+
+% Stack
+\newcommand{\stBase}[3]{({#1} \mathop{:} {#2}) {\,\cdot\,} {#3} }
+\newcommand{\St}[2]{\stBase{#1}{#2}{\Delta}}
+
+% Abstract interpretation
+\newcommand{\stackop}[4]{#3\vDash #2\Downarrow_{C#1} #4}   % stack op judg.
+\newcommand{\stackopVec}[4]{\overrightarrow{#3\vDash #2}\Downarrow_{C#1} #4}   
+\newcommand{\stackopVecc}[4]{%
+  \mc {\overrightarrow{#1}} {#2}
+      \Downarrow_{#3}
+  \overrightarrow{#4} }
+\newcommand{\stackopVeccc}[4]{%
+  \mc {#1} {#2}
+      \Downarrow_{#3}
+  \overrightarrow{#4} }
+\newcommand{\stackopVecccc}[4]{%
+  \mc {\overrightarrow{#1}} {#2}
+      \Downarrow_{#3}
+  \overrightarrow{#4} }
+\newcommand{\stackopVeccccc}[4]{%
+  \mc {\overrightarrow{#1}} {#2}
+      \Downarrow_{#3}
+  #4 }
+\newcommand{\mcconf}[2]{#1\vDash #2}
+\newcommand{\mc}[2]{\mcconf{#1}{#2}}   % shorter version of \mcconf
+\newcommand{\stackeq}[4]{\mcconf{#1}{#2} \equiv \mcconf{#3}{#4} }
+\newcommand{\dstep}[4]{\stackstep{}{#1}{#2}{#3}{#4}{} } % \Delta step
+\newcommand{\dstepBase}[5]{%
+  \mcconf{#1}{#2} \rightarrow_{#5} \mcconf{#3}{#4} 
+} 
+
+% \Delta step
+\newcommand{\stackstep}[6]{\mcconf{#2}{#3} \xrightarrow{#6}_{C#1}
+                                                              \mcconf{#4}{#5} }
+\newcommand{\stackStep}[6]{\mcconf{#2}{#3} \xrightarrow{#6}^{*}_{C#1}
+                                                              \mcconf{#4}{#5} } 
+\newcommand{\stackstepp}[5]{\mcconf{#2}{#3} \xrightarrow{}_{C#1}^*
+                                                              \mcconf{#4}{#5} }
+\newcommand{\stackstepstar}[6]{\mcconf{#2}{#3} \xrightarrow{#6}^*_{C#1}
+                                                              \mcconf{#4}{#5} }
+
+% ``done'' arrows
+\newcommand{\donearrowBase}[1]{\not\rightarrow_{#1}{}}
+\newcommand{\donearrow} {\donearrowBase{C}}
+\newcommand{\donearroww}{\donearrowBase{C'}}
+
+
+% Behaviour LTS
+\newcommand{\bstepBase}[4]{#1 \xrightarrow{#2}_{#4} #3}
+\newcommand{\bstep}[3]{\bstepBase{#1}{#2}{#3}{C} }
+\newcommand{\bStep}[3]{#1 \xRightarrow{#2}_C #3}
+
+% Session LTS
+\newcommand{\sstep}[3]{#1 \xrightarrow{#2}   #3}
+
+% remove constraints from C, whenever a constraint has #1 on the RHS
+\newcommand{\removeRHS}[1]{\backslash(\su{\orec{b}{#1}}{#1})} 
+\newcommand{\removeRHSrec}[2]{\backslash(\su{\orecrec{b}{#1}{#2}}{#1})} 
+
+
+\newcommand{\spl}[1]{\keyw{sp}(#1)} % spawn label
+
+% well-stackedness
+\newcommand{\D}[1]{\mathcal{D}\ifthenelse {\equal{#1}{}}{}{_{#1}} }
+\newcommand{\wellstacked}{\mathrel{\Vdash_{\keyw{ws}}}}
+\newcommand{\tupleof}[2]{\widetilde{#1_{\ifthenelse {\equal{#2}{}}{}{#2}} } }
+\newcommand{\deltaof}[1]{#1|_{\Delta}}
+\newcommand{\exprof}[1]{#1|_{e}}
+
+% Simulation LTS (for Preservation Theorem)
+\newcommand{\sysArrowBase}[2]{%
+  \ifthenelse {\equal{#1}{}}
+    {\rightarrow_{#2}       }
+    {\xrightarrow{#1}_{#2}  } 
+}
+\newcommand{\sysArrow}[1]{\sysArrowBase{#1}{C}}
+\newcommand{\SysArrowBase}[2]{\xRightarrow{#1}_{#2}}
+\newcommand{\SysArrow}[1]{\SysArrowBase{#1}{C}}
+\newcommand{\exprArrow}{\rightarrow}
+\newcommand{\sesArrow}[1]{\xrightarrow{#1}}
+\newcommand{\SesArrow}[1]{\xRightarrow{#1}}
+
+% duality
+\newcommand {\dual}[1]{\bowtie_{#1}}
+\newcommand {\singleDualSu}[2]{\atomSu{\duals{#1}{#2}}}
+\newcommand {\duals}[2]{{#1} \bowtie {#2} }
+\newcommand {\suDualBase}[3]{{#1} \duals {#2} {#3} }
+\newcommand {\suDual}[2]{\suDualBase {C}{#1}{#2} }
+
+
+\newcommand {\DC}{\mathcal{D}\mathcal{C}}
+
+\newcommand {\stackopBase}[4]{#1\vDash #2\Downarrow_{#3} #4 }
+\newcommand {\wstBase}[2]{#1\Vdash_{\keyw{ws}} #2}
+\newcommand {\wst}[1]{\wstBase{C}{#1} }
+\newcommand {\wannBase}[1]{\Vdash_{\keyw{wa}} #1}
+\newcommand {\wann}[1]{\wannBase{#1} }
+\newcommand {\stackset}{\mathcal{D}}
+\newcommand {\set}[2]{\{\,#1\,|\,#2\,\}}
+\newcommand {\suType}[2]{#1<:\:#2}
+\newcommand {\wellstackedBase}[2]{#1\Vdash_{\keyw{ws}} #2}
+\newcommand {\tjrNorm}[5]{#1;~#2 \vdash_{\mathsf{n}} #3 : #4
+                                \mathrel{\triangleright} #5}
+\newcommand {\tjrNormAt}[5]{#1;~#2 \vdash_\mathsf{n}^\mathsf{at} #3 : #4
+                                \mathrel{\triangleright} #5}
+\newcommand {\intStep}{\longrightarrow_\mathsf{i}}
+\newcommand {\comStep}{\longrightarrow_\mathsf{c}}
+\newcommand {\comStepW}{\Longrightarrow_\mathsf{c}}
+\newcommand {\dependson}{\rightarrowtriangle}
+
+
+% finiteness proof macros
+\newcommand{\groundifyBase}[2]{\llbracket #1 \rrbracket^\mathsf{g}_{#2} } 
+\newcommand{\groundify}[1]{\groundifyBase {#1} C}
+\newcommand{\blen}[2]{\lvert #1 \rvert_{#2}}
+\newcommand{\execStates}[3]{\llbracket \mc{#1}{#2} \rrbracket_{#3}}
+\newcommand{\execSize}[3]{\lvert \mc{#1}{#2} \rvert_{#3}}
+\newcommand{\bsize}[1]{size({#1})}
+\newcommand{\behavDomain}{\mathcal B}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% Inference macros
+\newcommand{\psiint}{{\psi_{\keyw{in}}} }
+\newcommand{\psiext}{{\psi_{\keyw{ex}}} }
+\newcommand{\regInterpBase}[2]{\llbracket #1 \rrbracket_{#2}}
+\newcommand{\regInterp}[1]{\regInterpBase{#1}{C}}
+\newcommand{\subRegInterp}[2]{\su{\regInterp{#1}}{\regInterp{#2}} }
+\newcommand{\atomSu}[1]{\{#1 \} }
+\newcommand{\singleSub}[1]{C \vdash #1 }
+\newcommand{\singleSu}[2]{\atomSu{\su{#1}{#2} } }
+\newcommand{\singleSuType}[2]{\atomSu{\suType{#1}{#2} } }
+\newcommand{\singleSuReg}[2]{\atomSu{\su{\{#1\}}{#2} } }
+\newcommand{\algoDual}{\c D }
+
+\newcommand{\stackopStatBase}[4]
+            {\mcconf{#1}{#2}\Downarrow_{#3} #4}
+\newcommand{\stackopStat}[3]{\stackopStatBase{#1}{#2}{C}{#3} }
+\newcommand{\stackstepStatArrow}[1]{\rightarrow_{#1}}
+\newcommand{\stackstepStatBase}[5]
+  {\mcconf{#1}{#2} \stackstepStatArrow{#5} \mcconf{#3}{#4}}
+\newcommand{\stackstepStat}[4]{\stackstepStatBase{#1}{#2}{#3}{#4}{C}}
+\newcommand{\stackstepsStatArrow}[1]{\rightarrow^*_{#1}}
+\newcommand{\stackstepsStatBase}[5]
+  {\mcconf{#1}{#2} \stackstepsStatArrow{#5}\mcconf{#3}{#4} }
+\newcommand{\stackstepsStat}[4]{\stackstepsStatBase{#1}{#2}{#3}{#4}{C}}
+
+
+\newcommand{\donearrowSt}[1]{\not\stackstepStatArrow{#1}}
+\newcommand{\donearrowStatBase}[1]{\donearrowSt{#1}\bullet}
+\newcommand{\donearrowStat}[1]{\donearrowStatBase{#1}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% miscellanea
+\newcommand{\condBox}[1]{%
+  \fcolorbox{blue!20}{blue!10}{#1}
+}
+
+%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% while writing the paper for session type inference
+%%%%%%%%%%%%%%%%%%%%
+\newcommand{\lang}{\ma{\textrm{ML}_{\textrm{S}}}}
+
+% syntax
+\newcommand{\TS}{\ma{\mathit{TS}}}
+\newcommand{\TC}{\ma{A}}
+\newcommand{\unitv}{\ma{\mathtt{()}}}
+\newcommand{\hole}[1][\cdot]{\ma{{\left[#1\right]}}}
+
+% math
+\DeclareMathOperator{\fv}{fv}
+\newcommand{\myparagraph}[1]{\noindent\textbf{#1}\quad}
+
+
+%%% Typed configurations and transitions
+\newcommand{\tconf}[3]{\big(\mcconf{#1}{#2,\;#3}\big)}
+\newcommand{\tred}[1][C]{\rightarrow^{#1}}
+\newcommand{\tredCom}[1][C]{\rightarrow^{#1}_\mathsf{c}}
+\newcommand{\tredInt}[1][C]{\rightarrow^{#1}_\mathsf{i}}
+
+
+
+%%%
+\newcommand{\deparrowBase}[1]{\dashrightarrow_{#1}}
+\newcommand{\deparrow}{\deparrowBase C}
+\newcommand{\deparrowLBase}[1]{\dashleftarrow_{#1}}
+\newcommand{\deparrowL}[1]{\deparrowLBase C}
+% \newcommand{\behavDomain}{\mathcal B}
+\newcommand{\constrDomain}{\mathcal C}
+\newcommand{\occursin}{~\mathsf{in}~}
+% \newcommand{\groundifyBase}[2]{\llbracket #1 \rrbracket^\mathsf{g}_{#2} } 
+% \newcommand{\groundify}[1]{\groundifyBase {#1} C}
+\newcommand{\ssucc}{\succ_s}

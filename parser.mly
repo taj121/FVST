@@ -156,6 +156,8 @@ constr:
     {BCon {smlB=b;bigB=beta}}
   | r=REG LINK r1=regionVar
     {RegRel {reg=r;regLab=r1}}
+  | r1=regionVar LINK r=REG
+    {RegRel {reg=r;regLab=r1}}
   | c=CHANNEL LINK s=sessionType 
     {ConRel {chnlA=c; endptA=s}}
   | c=CHANNELEND LINK s=sessionType 
