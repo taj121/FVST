@@ -1,0 +1,295 @@
+%!TEX root = FVST.tex
+\chapter{My Contribution} \label{chapMyWork}
+
+My contributions to this project are based on the second level. These include the development of a text based syntax for the intermediate code (the code produced from the first level), a lexer and parser for this syntax and a program to verify the behaviours produced. 
+
+The combination of lexer and parser converts the input code, which consists of one behaviour and one constraint, into the types defined in OCaml to represent the behaviours and constraints. A tuple of these is then returned and passed into the behaviour checker where the rules from (fig. \ref{rules2}) are be applied to verify that the program communicates correctly. 
+
+One limitation of the checker that is worth noting is that it will not infer types and so these must be explicitly stated in the input code. 
+
+\section{Text Based Syntax} \label{text}
+
+\subsection {Design} 
+The syntax given in the paper can be seen in (fig. \ref{syntaxTypes}). To develop an easy to parse version of this syntax Greek letters have been removed, keywords or individual letters have been chosen to replace them. The final syntax is very similar to that given in (fig. \ref{syntaxTypes}). Substitutions for variables and labels are detailed in table \ref{tabSyntaxSubs}. Keywords and the structure of the input can be found in the grammar detailed in \ref{gram}.
+
+\begin{table}
+\centering
+\begin{tabular}{l l c }
+Type Variables & $\alpha$ & [T][A-Z a-z 1-9]+ \\
+Behaviour Variables &$\beta$ & [B][A-Z a-z 1-9]+ \\
+Session Variables & $\psi$ & [S][A-Z a-z 1-9]+ \\
+Region Variables & $\rho$ & [R][A-Z a-z 1-9]+ \\
+Labels & l & \$[A-Z a-z 1-9]+\$ \\
+channel & c & [C][A-Z a-z 1-9]+  \\
+channelEnd & $\bar{c}$ &[T][A-Z a-z 1-9]+ ['] \\
+\end{tabular}
+\caption{Substitutions to the given syntax}
+\label{tabSyntaxSubs}
+\end{table}
+
+\section{Lexer and Parser}
+
+Initially Camlp4 \cite{camlp4} was considered for this implementation. This is a Pre-Processor-Pretty-Printer for OCaml. However it became clear that this was not the appropriate tool since this is designed to extend the existing syntax of OCaml and not for developing new syntax structures. 
+
+\subsection{Lexer}
+The lexer was designed using OCamlLex which is based on Lex, a lexical analyser generator. This takes a set of regular expressions and corresponding semantic actions and generates a lexical analyser from them. In this case the regular expressions are the keywords, labels, variables, etc. and the associated actions are either tokens that link to the parser or, in the case of the opening \$, calls a second lexing function to deal with labels. 
+
+\subsection{Parser}
+The parser was implemented using Menhir \cite{menhirRef}. This is a parser generator that is closely related to OCamlyacc which in turn is based on yacc. These generate LR(1) parsers which means that the input is parsed from the bottom up and that there is one character look ahead. 
+
+To generate the parser the tokens are declared first. If they consist of a default type this is specified. For example the token $\%token <string> LABEL$ states that LABEL consists of a string. The structure of the accepted input is then specified. With this the code that is to be invoked when this input is encountered is also stated. The structure of the accepted input can be found in \ref{gram}.
+
+\subsection{Challenges}
+The main challenge encountered when designing the lexer and the parser was learning the correct usage of OCamlLex and Menhir. Having never used anything like this before from scratch these took some time to get used to. The tutorials \cite{miniOcaml}\cite{miniOcaml}\cite{menhirBlog}\cite[Chapter 16]{realOcaml} were helpful in gaining an understanding of the syntax and structure. 
+
+Another challenge encountered with the lexer was parsing the end of file. An unknown issue causes the lexer to state that it finds a syntax error at the final character of the input file. While this is misleading to the user and not entirely correct it does not effect the behaviour of the behaviour checker and so has been ignored. 
+
+Finally initially there were some errors with shift/reduce conflicts in the parser. These were caused by not initially including operator precedence for `;' and `,' meaning that the execution order of sequencing of behaviours and constraints was unclear. As well as this there were not initially brackets in the $$rec <behaviourVariable> (<behaviour>)$$ rule which also caused an issue. This was that it was unclear in the case $$rec <behaviourVariable> <behaviour> ; <behaviour>  $$ if the recursive behaviour was in the sequence or if the sequence was the behaviour associated with the recursion. 
+
+\subsection{Grammar} \label{gram}
+
+The grammar was designed with usability in mind. The main entry point for the grammar is shown first. This states that the parser will read a behaviour followed by a constraint followed by the end of file. In the description of the grammar all keywords, brackets etc. are input as they are given here. Anything inside $< >$ is either another type from the grammar or a variable the syntax of which is given in table \ref{tabSyntaxSubs}.
+
+\begin{grammar}
+
+<parse_behaviour> ::= <behaviour> <constraint> EOF
+
+\end{grammar}
+
+\subsubsection{Behaviour}
+
+The behaviour type in the grammar consists of multiple options. The final option, for example, represents the offer of external choice and we can see that it contains a list. This will call to a sub grammar that states that this list consists of comma separated values of another subtype (opt_feild). 
+
+\begin{grammar}
+<behaviour> ::= <behaviourVariable>
+\alt tau
+\alt <behaviour> ; <behaviour>
+\alt chc (<behaviour>,<behaviour>)
+\alt rec <behaviourVariable> (<behaviour>)
+\alt spn (<behaviour>)
+\alt psh (<lable>,<sessionType>)
+\alt <region> ! <behaviourVariable>
+\alt <region> ? <behaviourVariable>
+\alt <region> ! <region>
+\alt <region> ? <lable>
+\alt <region> ! <lable>
+\alt <region> ? optn[<oplist>]
+
+<oplist> ::= ( <lable> ; <behavioiur> ) <opt_feild>
+
+<opt_feild> ::= , ( <lable> ; <behavioiur> )
+\alt $\epsilon$
+
+\end{grammar}
+
+\subsubsection{Constraints}
+
+Constraints are similar to behaviours but also make use of the sub-grammar for bTypes, regions and session types which are given below. 
+
+\begin{grammar}
+
+<constr> ::= <bType> \textless <bType>
+\alt <behaviour> \textless <behaviour>
+\alt <region> $\sim$ <regionVar>
+\alt <channel> $\sim$ <sessionType>
+\alt <channelEnd> $\sim$ <sessionType>
+\alt <contr> , <constr>
+\alt $\epsilon$
+
+\end{grammar}
+
+\subsubsection{Types}
+
+The implementation of types is relatively simple. They can be any of the forms listed below and use the sub-grammar for regions. 
+\begin{grammar}
+
+<bType> ::= unit
+\alt bool 
+\alt int
+\alt pair ( <bType> ; <bType> )
+\alt funct <bType> -\textgreater <bType> - <behaviourVariable>
+\alt ses <region>
+\alt <TVar>
+
+\end{grammar}
+
+\subsubsection {Region variables}
+
+Regions are very simple and either consist of a region variable or a label. 
+
+\begin{grammar}
+
+<regionVar> ::= <lable>
+\alt <region>
+
+\end{grammar}
+
+\subsubsection{Session types}
+
+Session types follow a similar pattern to behaviours.
+
+\begin{grammar}
+
+<sessionType> ::= end
+\alt ! <bType> <sessionType>
+\alt ? <bType> <sessionType>
+\alt ! <sessionType> <sessionType>
+\alt ? <sessionType> <sessionType>
+\alt (+) [<sesOpL>] (<lable> ; <sessionType>)
+\alt + [<sesOpL>] [<sesOpL>]
+\alt <SVar>
+
+<sesOpL> ::= (<lable> ; <sessionType>) <ses_opt_field>
+
+<ses_opt_field> := , (<lable> ; <sessionType>)
+\alt $\epsilon$
+
+\end{grammar}
+
+\section{OCaml Types}
+
+In order for the parser to have the correct types for dealing with behaviours and constraints these first needed to exist. This involved creating new types in OCaml for each of Behaviours, Constraints, Types, Regions and Session types. These main types are built up of subtypes, strings and, in the case of `Tau' and `End' nothing. 
+
+These types take the following form: 
+
+\lstinputlisting[language=Caml, firstline=42, lastline=68]{../Behaviour.ml}
+
+You can clearly see how RecChoice, the external choice type, is made up of the subtype recC which in turn consists of a string and list of (string, behaviour) tuples. The other types are implemented in a similar way. 
+
+As well as implementing the types each type also has a to_string function. This is to allow for the re-printing of the input code as part of the output. 
+
+\subsection{Challenges}
+
+Again the main challenges with implementing this part of the project was the new language. While OCaml has excellent documentation it was not easy to find examples or tutorials to help with implementing such an interlinked system of types. One tutorial that was helpful was \cite{userTypes}.
+
+\section{Behaviour Checker} \label{checker}
+
+The behaviour checker is implementing the rules from (fig. \ref{rules2}). The first step towards implementing these was to store the relevant information in an easily accessible form. In this case that meant storing the relevant constraints. Then the behaviours have to be checked in relation to these constraints and the relevant actions from the rules applied. 
+
+\subsection{Storing the constraints}
+
+The constraints that are relevant to the Behaviour Checker are the region constraints, the behaviour constraints and the type constraints. Each is stored in a slightly different way to account for the fact that the format and usage of each of the constraint types is different. Other constraints are not stored. 
+
+\subsubsection{Behaviour constraints}
+
+These constraints are of the form $$b \subseteq \beta$$ where b is a behaviour and $\beta$ is a behaviour variable. These constraints are used in the Beta and Rec rules. In the Beta rule ($\Delta \models \beta \rightarrow c \Delta \models b$ if $C \vdash b \subseteq \beta$) the constraints are used to replace the behaviour variable beta with each behaviour associated with it. Each of these is then checked against the rules to see if it produces a valid end state consisting of the empty stack and the $\tau$ behaviour.  
+
+In the recursion (Rec) rule the behaviour constraints are used where there are any constraints of which the left hand side matches the current recursion behaviour. If any are found then the left hand side of that rule is replaced with $\tau$. 
+
+The decision was made to store the behaviour constraints as a hash table. The key is the right hand side of the constraint $\beta$ and the value is the left hand side (the behaviour associated with $\beta$). In this way, in the case of either rule, we can search quickly and find all values associated with the key and have them returned as a list. We can then either replace $\beta$ with each value from the list in turn (Beta Rule) or we can search the list to find and replace any instances of the current recursion behaviour (Rec Rule). 
+
+\subsubsection{Functional type constraints}
+
+Type constraints are of the form $$T_1 <: T_2$$ and are used in the Out Rule as well as in endpoint relation checks in the Delegate Rule. They are used according to semantics given in (fig. \ref{funcSubtype}) that state that if the constraint exists then $T_1$ is a functional subtype of $T_2$. If both $T_1$ and $T_2$ are pairs then if the first type of the first pair is a subtype of the first type of the second pair and if the same is true of the second types of both pairs then the first pair is a subtype of the second. It is a similar case for function. 
+
+If both types are of the form $Ses^{\rho}$ then if there exists a region constraint linking the $\rho$'s  they are functional subtypes.
+
+Type constraints are stored as a hash table with the right hand type as the key and the left hand type as the value. Since type constraints are also transitive this means that when checking these constraints first the right hand side of the constraint to be checked is searched for. A list of associated subtypes for this type are returned. Each of these is then checked to see if it matches the left hand side. If not the search is repeated with this new type as the right hand side. This continues until either the left hand side is found or there are no more types to check.
+
+Since type constraints are also reflexive it is  always checked if the two types are equal first.
+
+Type constraints are also used for session sub-typing (fig. \ref{sessSubType}). They are used in this situation when checking if two session types are either outputting confined types or inputting them where the types must be functional subtypes in order for the session types to be related. Checks on session sub-types are performed in the delegation rule.
+
+\begin{figure}
+  \begin{gather*}
+    \irule*{ (T_1 \subseteq T_2) \in C}{\subType{T_1}{T_2}}
+    ~~~
+    \irule*{ C \vdash \seql{\rho}{\rho'} } { \subType{\tses \rho} {\tses {\rho'}} }
+    ~~~
+    \irule*{
+      \coType {T_1'}{T_1} \quad \sub{\beta}{\beta'} \quad \coType{T_2}{T_2'}
+    }{
+      \coType{ \tfun{T_1}{T_2}{\beta} }{ \tfun {T_1'}{T_2'}{\beta'} }
+    }
+    ~~~ \\
+    \\
+    \irule*{
+    }{
+      \coType{T}{T}
+    }
+    ~~~ 
+    \irule*{
+    	C \vdash \coType{T_1}{T_2} \quad \coType{T_2}{T_3}
+    }{
+      \coType{T_1}{T_3}
+    }
+    ~~~ 
+    \irule*{
+    	C \vdash \coType{T_1}{T_2} \quad \coType{T_3}{T_4}
+    }{
+      \coType{\tpair{T_1}{T_3}}{\tpair{T_2}{T_4}}
+    }
+  \end{gather*}
+\caption{Functional Sub-typing}
+\label{funcSubtype}
+\end{figure}
+
+\begin{figure}
+
+  \begin{gather*}
+    \irule*{ 
+    	\coType{T_2}{T_1} \quad  \coType{\eta_1}{\eta_2}
+    }{
+    	\coType{!T_{1}.\eta_1}{!T_{2}.\eta_2}
+    }
+    ~~~
+    \irule*{ 
+    	\coType{T_1}{T_2} \quad \coType{\eta_1}{\eta_2}
+    }{
+    	\coType{?T_{1}.\eta_1}{?T_{2}.\eta_2}
+    }
+    ~~~ \\
+    \\
+    \irule*{ 
+    	m \leq n \quad \forall i \leq \eta.\coType{\eta_i}{\eta_j}
+    }{  
+    	\coType{ \underset{i \in [1,m]}{ \oplus \{L_i:\eta_i\}}}
+    	{\underset{j \in [1,n]}{\oplus\{L_j : \eta_j\}}}
+    }
+    ~~~
+    \irule*{ 
+    	I_1 \subseteq J_i \quad J_1 \cup J_2 \subseteq I_1 \cup I_2 \quad \forall (i\in J_1 \cup J_2).\coType{\eta_i}{\eta_{i}'}
+    }{  
+    	\coType{\underset{i \in (I_1,I_2)}{\& \{L_i : \eta_i\}}}
+    	{\underset{i\in(J_1,J_2)}{\&\{L_i:\eta_{i}'\}}}
+    }
+  \end{gather*}
+\caption{Session Sub-typing }
+\label{sessSubType}
+\end{figure}
+
+\subsubsection{Region constraints}
+
+Region constraints take the form of either $$\rho \sim \rho' \ or\  \rho \sim l$$ and are used in the rules: Out, In, Del, Res, ICh and ECh. They are used in the same way for each of the rules to check if there is a link between a region and a label. The complication arises from the fact that regions can be chained and then linked to a label. For example $\rho_1 \sim \rho_2$, $\rho_2 \sim \rho_3$ and $\rho_3 \sim l1$ tells us that $\rho_1,\rho_2$ and $\rho_3$ are all linked to $l1$.
+
+Due to this region constraints are stored as a list of tuples where each tuple consists of a label and a hash table with region variables as keys and units as the values. In this way when looking up a particular label and region we can simply search for the label in the list and then check the hash table. This is an efficient implementation since the number of labels in any given program is not likely to be excessive. 
+
+Storing the constraints in this way, in a single pass through the constraint list, was challenging. It is achieved by first creating a new tuple for the next constraint to be stored. This consists of either a label or a None and a hash table with either one or two values depending on the structure of the constraint. All other elements from the list that match either of the two values associated with the new constraint are then found and removed from the list. They are merge together with the new element to form a single list element which is then added back to the list. 
+
+\subsection{Behaviour checker function}
+
+The behaviour checker verifies that the input program will in fact communicate correctly. It takes an input of the behaviours produced from the first level (\ref{level1}) and the constraints stored in the method described above. The behaviours are then checked against the rules from (fig. \ref{rules2}) and the appropriate actions taken. 
+
+The parameters to the function are a set of constraints and a list of behaviour tuples of the form $(behaviour, stack, stack\_labels, continuation)$. The stack represents the one described in the rules and the stack labels structure is used to ensure that each label is only ever pushed to the stack once. The continuation is used to keep track of any behaviours that need to be dealt with once the current behaviour is finished with, see (fig. \ref{seq}) for an example. 
+
+The initial function called is a wrapper function that calls to a check step function with the first tuple from the list.The check_step function then takes the current stack and checks to see if the top frame contains the `End' session type (i.e. it applies the end rule) if it does it removes this frame and then it continues to check to see which of the rest of the rules apply. The checks are performed in this order since the End Rule is performed based on the state of the stack while all other rules are performed based on the current behaviour and the state of the stack. 
+
+\begin{figure}
+\includegraphics[scale=0.5]{treeDigBW.png}
+\caption{Application of Sequence Rule}
+\label{seq}
+\end{figure}
+
+\subsection{Results}
+The behaviour checker will output the results of the check. In the case of the check failing it will also print the name of the rule on which the check failed and if it failed due to a failed constraint check. It will not print the location of the error in the source code.
+
+If the check is successful we have shown that the input code follows the correct protocol for the communication channel. We have also shown partial lock freedom due to the well stackness of the program. 
+
+\subsection{Challenges}
+The main challenges encountered in this implementation of the checker was, again, the new language. However this was overcome more quickly when developing this section of the project.
+
+Other challenges encountered included dealing with the different implementations of stack and hash tables in the standard library and the core_kernal library. The stacks in the core_kernel library included functions that made for a nicer implementation but the hash tables were missing the functionality to return lists of all bindings to a key. This was overcome when I realised it was possible to rename the hash table module from the standard library before importing the core_kernel library and so avoid the shadowing of the binding. 
+
+The implementation of the region constraint storage also took quiet some time since it is rather complicated code and pushed my knowledge of the OCaml language to its boundaries. 
+
+
