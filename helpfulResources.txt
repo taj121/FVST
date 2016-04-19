@@ -1,5 +1,0 @@
-https://github.com/ocaml/camlp4/wiki/
-
-http://caml.inria.fr/pub/docs/tutorial-camlp4/index.html
-
-http://stackoverflow.com/questions/9897358/ocaml-menhir-compiling-writing

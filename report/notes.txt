@@ -1,2 +1,0 @@
-in hindesight should have started with parsing session types or types and then moved on to behaviours 
-maybe
