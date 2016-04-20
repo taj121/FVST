@@ -391,10 +391,10 @@ let rec check_reg_const_ses r1 r2 rlist =
 (* type constraint checking function *)
 (* sub super typeCon regCon behaviourCon *)
 let rec check_types t1 t2 bHash rList tHash= 
-	 printf "checking types: " ;
+	(*  printf "checking types: " ;
 	printf "%s" (type_to_string t1);
 	printf " and " ;
-	printf "%s\n" (type_to_string t2); 
+	printf "%s\n" (type_to_string t2);  *)
 	if t1 = t2  (*check for reflexive*)
 		then true 
 		else 
