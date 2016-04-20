@@ -9,13 +9,13 @@ Testing was conducted in stages. Firstly the parser and lexer were tested, then 
 
 \subsection{Lexer and parser}
 
-The testing for the lexer and parser was relatively simple, to_string methods were written for each of the data types and the resulting behaviours and constraints from the parsing were printed out to the console. 
+The testing for the lexer and parser was relatively simple, to_string methods were written for each of the data types and constraint data structures and the resulting behaviours and constraints from the parsing were printed out to the console. 
 
-Initially they were printed in the exact form that they were input. This allowed a side by side comparison of the input and output which allowed for errors to be spotted quickly and easily. 
+Initially they were printed in the exact form that they were input. This allowed a side by side comparison of the input and output which then allowed for errors to be spotted quickly and easily. 
 
 \subsection{Constraint storage}
 
-Testing for the constraint storage was done in a similar way to that of the lexer and parser. Instead of printing the constraints as they were input the function was updated to print them as they were been stored. This allowed for them to be quickly checked against the input to see if they were been stored correctly. 
+Testing for the constraint storage was done in a similar way to that of the lexer and parser. Instead of printing the constraints exactly as they were read in the function was updated to print them as they were been stored. This allowed for them to be quickly checked against the input to see if they were been stored correctly. 
 
 For example in the case of region constraints the input could contain constraints such as: 
 
@@ -38,15 +38,22 @@ It is then easy to check if the regions listed under a particular label are in f
 
 \subsection{Behaviour checker}
 
-The testing for the behaviour checker was the most in depth. A test suit has been developed that includes the examples given in \ref{examplesChapt}. As well as these approximately 20 small programs were written to test the individual rules one at a time. 
+The testing for the behaviour checker was the most in depth. A test suit has been developed that includes the examples given in \ref{examplesChapt}. As well as these over 20 small programs were written to test the individual rules one at a time. 
 
-These small programs were written to test each of the rules implemented for the behaviour checker (fig. \ref{rules2}). A series of behaviours were developed to simulate a simple situation where each rule would pass i.e. where the stack frame and behaviour matched the requirements and all constraints were met. Test were then written where each of the conditions for the rule to pass were broken in turn in order to show that the behaviour checker would fail as expected. 
+These small programs were written to test each of the rules implemented for the behaviour checker (fig. \ref{rules2}). A series of behaviours were developed to simulate a simple situation where each rule would pass i.e. where the stack frame and behaviour matched the rules requirements and all constraints were met. Test were then written where each of the conditions for the rule to pass were broken in turn in order to show that the behaviour checker would fail as expected. 
 
-Since testing that the rules fail correctly involved testing situations where the constraint checks fail these tests also show that the constraint storage and look-up functions as it should.
+Since testing that the rules fail correctly involved testing situations where the constraint checks fail these tests also show that the constraint storage and look-up functions work as they should.
+
+\section{TLS Check}
+\label{bug}
+
+When writing the input code for the TLS example (sec. \ref{tlsexampsec}) the initial output from the first level compiler that had been implemented for the paper \cite{paper1} included a constraint stating that the final receive performed by the client should be receiving an value of type unit. However there was also a constraint stating that the corresponding send from the server should be sending a value of type int. 
+
+It was discovered then that the inference rule for spawn was outdated. It would always infer that the if the final operation in a spawned function was to receive then the final value was of the unit type. This was producing a false negative result from the system. This has been updated so that the system can now allow this type of program to be typed correctly.
 
 \section{Reflection}
 
-The test detailed in the previous section have shown that all components of the program behave as expected. The development of the project in a functional style meant that once the files compiled correctly the behaviour of the program was almost always what was specified. In the main the problems discovered by the tests were my own misunderstandings of the rules or the constraints. The tests made these misunderstandings obvious and so easy to fix. 
+The test detailed in the previous section have shown that all components of the program behave as expected. The development of the project in a functional style meant that once the files compiled correctly the behaviour of the program was almost always what was specified. In the main the problems discovered by the tests were misunderstandings of the rules or the constraints. The tests made these misunderstandings obvious and so they could be found and fixed. 
 
 The test was also invaluable in showing where the error hints from the behaviour checker should display. For example the tests for the ICh rule showed an uncaught Not_found exception instead of displaying an error message. This allowed me to go back to the program, catch the exception and output a more helpful message. 
 

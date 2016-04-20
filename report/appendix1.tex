@@ -5,7 +5,7 @@
 
 \subsection*{Full intermediate code}
 
-The substitutions to run this code through the behaviour checker are given in \ref{subs}. 
+The substitutions to run this code through the behaviour checker are given in table \ref{subs}. 
 
 \begin{lstlisting} 
 tau;tau;tau;spn (B101);tau;spn (B118);tau;spn (B134)
@@ -114,18 +114,12 @@ Behaviour: R132 ? int
 Region Constraints:
  label: l3
  regions:
-	R132
-	R148
-	R131
-	R147
-label: l2
+	R132,R148,R131,R147,abel: l2
  regions:
-	R116
-	R115
+	R116,R115
 label: l1
  regions:
-	R117
-	R114
+	R117,R114
 
 Type Constraints:
  
@@ -136,7 +130,7 @@ check successful!
 
 \subsection*{Full intermeditate code}
 
-The substitutions for this code to be run through the behaviour checker are given in \ref{subs2}.
+The substitutions for this code to be run through the behaviour checker are given in table \ref{subs2}.
 
 \begin{lstlisting}
 tau;tau;tau;spn (B118);tau;spn (B132);tau;spn (B163)
@@ -188,6 +182,7 @@ $l4$ ~ R186
 \end{lstlisting}
 
 \subsection*{Full output from behaviour checker}
+Out from behaviour checker where substitutions are made prior to running.
 
 \begin{lstlisting}
 
@@ -273,26 +268,16 @@ Behaviour: R151 ? int
 Region Constraints:
  label: l4
  regions:
-R154
-R185
-R186
-R155
+R154,R185,R186,R155
 label: l3
  regions:
-R152
-R183
-R184
-R181
-R150
-R153
+R152,R183,R184,R181,R150,R153
 label: l2
  regions:
-R129
-R130
+R129,R130
 label: l1
  regions:
-R128
-R131
+R128,R131
 
 Type Constraints:
  
@@ -306,5 +291,171 @@ out rule
 stack frame incorrect for current behaviour
 ERROR: Failed Check
 
+
+\end{lstlisting}
+
+
+\section*{TLS}
+
+\subsection*{Full intermediate code}
+The substitutions for this code to be run through the behaviour checker are given in table \ref{tLSSubs}.
+
+\begin{lstlisting}
+tau;tau;tau;spn (B182);tau;spn (B210)
+
+Ctsl1 ~ S190,
+Ctsl2' ~ S216,
+tau < B20,
+tau < B61,
+tau < B74,
+tau < B111,
+tau < B124,
+tau < B137,
+tau < B150,
+tau < B177,
+psh ($l1$, S190) < B192,
+psh ($l2$, S216) < B218,
+R201 ! int < B193,
+R206 ! int < B198,
+R207 ! int < B199,
+R228 ! int < B220,
+R229 ! int < B221,
+R230 ! int < B222,
+R231 ! int < B223,
+R234 ! int < B226,
+R202 ? T185 < B194,
+R203 ? T186 < B195,
+R204 ? T187 < B196,
+R205 ? T188 < B197,
+R208 ? T209 < B200,
+R227 ? T213 < B219,
+R232 ? T214 < B224,
+R233 ? T215 < B225,
+tau;tau;B192;tau;tau;tau;B193;tau;tau;B194;tau;tau;B195;tau;tau;B196;tau;tau;B197;tau;tau;tau;B198;tau;tau;tau;B199;tau;tau;B200 < B182,
+tau;tau;B218;tau;tau;B219;tau;tau;tau;B220;tau;tau;tau;B221;tau;tau;tau;B222;tau;tau;tau;B223;tau;tau;B224;tau;tau;B225;tau;tau;tau;B226 < B210,
+$l1$ ~ R201,
+$l1$ ~ R202,
+$l1$ ~ R203,
+$l1$ ~ R204,
+$l1$ ~ R205,
+$l1$ ~ R206,
+$l1$ ~ R207,
+$l1$ ~ R208,
+$l2$ ~ R227,
+$l2$ ~ R228,
+$l2$ ~ R229,
+$l2$ ~ R230,
+$l2$ ~ R231,
+$l2$ ~ R232,
+$l2$ ~ R233,
+$l2$ ~ R234
+
+\end{lstlisting}
+
+
+\subsection*{Full output from behaviour checker}
+Out from behaviour checker where substitutions are made prior to running.
+
+\begin{lstlisting}
+Behaviours:
+Tau; Tau; Tau; Spn(B182); Tau; Spn(B210)
+
+Behaviour constraints:
+Paired: 
+	Beta: B194 
+	Behaviour: R202 ? int
+Paired: 
+	Beta: B200 
+	Behaviour: R208 ? int
+Paired: 
+	Beta: B137 
+	Behaviour: Tau
+Paired: 
+	Beta: B196 
+	Behaviour: R204 ? int
+Paired: 
+	Beta: B219 
+	Behaviour: R227 ? int
+Paired: 
+	Beta: B193 
+	Behaviour: R201 ! int
+Paired: 
+	Beta: B197 
+	Behaviour: R205 ? int
+Paired: 
+	Beta: B198 
+	Behaviour: R206 ! int
+Paired: 
+	Beta: B195 
+	Behaviour: R203 ? int
+Paired: 
+	Beta: B124 
+	Behaviour: Tau
+Paired: 
+	Beta: B177 
+	Behaviour: Tau
+Paired: 
+	Beta: B199 
+	Behaviour: R207 ! int
+Paired: 
+	Beta: B220 
+	Behaviour: R228 ! int
+Paired: 
+	Beta: B61 
+	Behaviour: Tau
+Paired: 
+	Beta: B192 
+	Behaviour: Psh(l1, ! int ? int ? int ? int ? int ! int ! int ? int end)
+Paired: 
+	Beta: B226 
+	Behaviour: R234 ! int
+Paired: 
+	Beta: B74 
+	Behaviour: Tau
+Paired: 
+	Beta: B111 
+	Behaviour: Tau
+Paired: 
+	Beta: B225 
+	Behaviour: R233 ? int
+Paired: 
+	Beta: B20 
+	Behaviour: Tau
+Paired: 
+	Beta: B223 
+	Behaviour: R231 ! int
+Paired: 
+	Beta: B150 
+	Behaviour: Tau
+Paired: 
+	Beta: B224 
+	Behaviour: R232 ? int
+Paired: 
+	Beta: B182 
+	Behaviour: Tau; Tau; B192; Tau; Tau; Tau; B193; Tau; Tau; B194; Tau; Tau; B195; Tau; Tau; B196; Tau; Tau; B197; Tau; Tau; Tau; B198; Tau; Tau; Tau; B199; Tau; Tau; B200
+Paired: 
+	Beta: B218 
+	Behaviour: Psh(l2, ? int ! int ! int ! int ! int ? int ? int ! int end)
+Paired: 
+	Beta: B221 
+	Behaviour: R229 ! int
+Paired: 
+	Beta: B222 
+	Behaviour: R230 ! int
+Paired: 
+	Beta: B210 
+	Behaviour: Tau; Tau; B218; Tau; Tau; B219; Tau; Tau; Tau; B220; Tau; Tau; Tau; B221; Tau; Tau; Tau; B222; Tau; Tau; Tau; B223; Tau; Tau; B224; Tau; Tau; B225; Tau; Tau; Tau; B226
+Region Constraints:
+ label: l2
+ regions:
+R228,R230,R231,R229,R234,R232,R227,R233
+label: l1
+ regions:
+R205,R201,R204,R207,R202,R203,R206,R208
+
+Type Constraints:
+ 
+
+check successful!
 
 \end{lstlisting}

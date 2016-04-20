@@ -1,7 +1,26 @@
 %!TEX root = FVST.tex
 \chapter{Conclusion}
 
-The objectives of this project were to first develop an understanding of Session types and behaviours specifically related to the work done in (Spacasassi \& Koutavas)\cite{paper1} and to implement the design for a behaviour checker detailed in said paper. This has been done in the fashion detailed in this report. The early chapters of this report detail the depth of my understanding of session types and behaviours as well as my understanding of the paper \cite{paper1}. The implementation of the behaviour checker is complete, its behaviour has been detailed in \ref{examplesChapt}, and has been tested in the fashion detailed in \ref{chaptest}. 
+The objectives of this project were to first develop an understanding of Session types and behaviours specifically related to the work done in (Spacasassi \& Koutavas)\cite{paper1} and to implement the design for a behaviour checker detailed in said paper. This has been done in the fashion detailed in this report. The early chapters of this report detail the depth of my understanding of session types and behaviours as well as my understanding of the paper \cite{paper1}. The implementation of the behaviour checker is complete and is detailed in chapter \ref{chapMyWork}, examples of its use have been detailed in chapter \ref{examplesChapt}, and its testing has been described in chapter \ref{chaptest}. 
 
-In conclusion the objectives of this project have been met. 
+\section{Evaluation}
+
+In the end I feel that the correct choice was made in terms of the language and tools used in this project. Though Menhir and OCamlLex were the second choice for the creation of the parser they were far more suited to the project then the initial choice, Camlp4, would have been. 
+
+\section{Future Developments}
+
+Future improvements to this project could include extending the behaviour checker implemented to include the inference algorithms. As well as this a true implementation of error messages could be added. 
+
+\section{Achievements}
+
+Over the course of this project I have increased my knowledge of session types and of how this relatively new technology works. Since this technology is currently at a research stage it is not something I had come across previously and so was both interesting and challenging to learn about.
+
+As well as gaining the skills to write complex code in OCaml a language with which I was not previously familiar. I have also learned to use OCamlLex and Menhir to create a parser. 
+
+The testing of my implementation of the behaviour checker also uncovered a weakness in the previously implemented first level of the system, which is detailed in section \ref{bug}. Feedback on this, when given to the authors of the paper \cite{paper1}, allowed them to make the type system more programmer friendly by reducing the number of programs that would produce false negatives in the system.
+
+
+\chapter*{Code Repository}
+
+The source code and tests for this project can be found at \url{https://github.com/taj121/FVST}.
 

@@ -5,12 +5,11 @@
 The aims of this project are to investigate the formal verification of session types, specifically in relation to the paper Type-Based Analysis for Session Inference \cite{paper1}. Also to implement a behaviour checker based on the designs described in this paper using OCaml, Menhir and OCamllex. 
 
 \section{Summary of Report}
-% TODO
 In this report first, in this chapter, a brief background to the area is given. The following chapter then gives an overview and explanation of the system proposed in the paper Type-Based Analysis for Session Inference \cite{paper1}. The third chapter details the implementation completed over the course of this project. The final chapters cover some detailed examples of how programs are dealt with in this system and an evaluation of the system. An outline of the system can be seen in (fig. \ref{picSysOver}).
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.5]{flowPaper.png}
+\includegraphics[scale=0.65]{flowPaper.png}
 \caption{System Overview}
 \label{picSysOver}
 \end{figure}
@@ -20,11 +19,12 @@ The modern world is growing increasingly dependent on distributed systems, chang
 
 Modern programming languages support data types. These allow us to use verification techniques to show that the program will run as expected on all forms of input. A similar system of types could be used for communication over distributed systems. Ideally a type system for communication would be embedded into languages in a similar fashion to the data type systems of modern languages.
 
-This is the system that is proposed with session types. These types can specify the style of communication expected (in general terms send or receive) as well as the type of data that is expected. 
+This is the system that is proposed with session types. These types can specify the style of communication expected (in general terms send or receive) as well as the type of data that is expected. A detailed article on the importance of implementation of this style of system can be found in the BETTY-EU-Research magazine article \cite{ariticle}.
 
 \subsection{Motivating example}
+\label{introExample}
 
-Here a simple example of a swap system is given and a short discussion of how it would interact with this system. A more in depth discussion of the use of this system to confirm that this program works as expected can be found in \ref{examplesChapt}. 
+A simple example of a swap system is given here and a short discussion of how it would interact with this system. A more in depth discussion of the use of this system to confirm that this program works as expected can be found in chapter \ref{examplesChapt}. 
 
 \begin{minipage}{.45\textwidth}
 \begin{lstlisting}[backgroundcolor=\color{white},numbers=none]
@@ -49,28 +49,41 @@ in spawn (fn _ => swap 1);
 \vspace{2em}
 \end{minipage}
 
-Here there are three processes, two swap processes and one coordinator. The coordinator accepts two connections on the swp channel. After accepting each connection it receives a value over it. Finally these values are swapped and sent over the connections. In the swap function a connection is requested on the swp channel and a value is sent over it. A value is then received on this connection. 
+Here there are two swap processes and one coordinator process. The coordinator accepts two connections on the swp channel. After accepting each connection it receives a value over it. Finally these values are swapped and sent over the connections. In the swap function a connection is requested on the swp channel and a value is sent over it. A value is then received on this connection. 
 
-In its current state this program is typable and can communicate since the swap processes will both send integers that will then be sent to the alternate process. In fact the system proposed in (Spacasassi \& Koutavas) \cite{paper1} can infer the session types of the connections established in this example. Both p1 and p2 would have the type $?Int.!Int.end$ and p would be of the form $!Int.?Int.end$. In this syntax the $!$'s represent values being sent and the $?$'s ones received. 
+In its current state this program is typable and can communicate since the swap processes will both send integers that will then be sent to the alternate process. In fact the system proposed in (Spacasassi \& Koutavas) \cite{paper1} can infer the session types of the connections established in this example. Both p1 and p2 would have the type $?Int.!Int.end$ and p would be of the form $!Int.?Int.end$. In this syntax the $!$'s represent values being sent and the $?$'s values received. 
 
-We can see however that the swap processes will not be able to deduce which connection they will get when they request a connection. This means that the use of p1 and p2 must be the same. If this were not the case and say a value was sent on p2 before receiving on it then this program could not work. If this were the case the system discussed in this report would spot that this was a problem when the behaviour checker was run since the connection protocols would not match with the behaviours of the code. 
+We can see however that the swap processes will not be able to deduce which connection they will get when they request a connection. This means that the use of p1 and p2 must be the same. If this were not the case and say a value was sent on p2 first then this program could not work. If this were the case the system discussed in this report would spot that this was a problem when the behaviour checker was run since the connection protocols would not match with the behaviours of the code. 
 
-In another example of a case where this program would not work would be if this were the order of communications in the coordinator: 
+An example of a program that would fail would be if we were to replace the above swap function with this one:
+
 \begin{lstlisting}
-val p1 = acc-swp ()
-val p2 = acc-swp ()
-val x1 = recv p1
-val x2 = recv p2
-send p2 x1; 
-send p1 x2; 
+let fun swap(x) =
+  let val p = req-swp ()
+  in recv p; send p x 
+in spawn (fn _ => swap 1);
+   spawn (fn _ => swap 2);
 \end{lstlisting}
-In this case the reason for the error would be due to the poor interleaving of the stack. The system proposed requires that the most recently opened connection be finished before any more communications are made on previous connections. In this case since the two connections are opened first and then an attempt is made to receive on each of them in turn this program would be rejected. 
+
+In this case the protocol of p would be $?int.!int.end$ which is the same as that of p1 and p2. It is clear that these protocols are not compatible. The behaviour checker described in this report will reject this version of the program as been incorrect due to this. 
+
+% An example of a case where this program would not work would be if this were the order of communications in the coordinator: 
+% \begin{lstlisting}
+% val p1 = acc-swp ()
+% val p2 = acc-swp ()
+% val x1 = recv p1
+% val x2 = recv p2
+% send p2 x1; 
+% send p1 x2; 
+% \end{lstlisting}
+% In this case the reason for the error would be due to the poor interleaving of the stack. The system proposed requires that the most recently opened connection be finished before any more communications are made on previous connections. This then ensures deadlock freedom and that session types are dual for each open pair of endpoints. In this case since the two connections are opened first and then an attempt is made to receive on each of them in turn this program would be rejected. 
 
 \section{Current Work}
 This area is currently been researched by multiple groups. However it is currently not used in real world systems to any great extent. To date systems have been developed for applying session type disciplines to functional languages, object oriented languages and operating systems. 
 
 \section{Background}
-Traditional type systems embedded into programming languages focus on the computations and what they should produce. Session type disciplines aim for embedded session types that can describe the sequence of messages as well as the type of the messages transmitted on communication channels. Then, since session types will describe the protocols of channels, verification techniques can be used to ensure that processes will abide by these protocols. 
+%TODO bulk  up
+Traditional type systems embedded into programming languages focus on the computations and what they should produce. These systems will quickly inform a programmer if an attempt is made to apply some operation to a nonsensical data type. This level of guidance does not currently exist for communication protocols. While languages may help with the format of messages ensuring that the ordering is correct is left to rely on manual testing. Session type disciplines aim for embedded session types that can describe the sequence of messages as well as the type of the messages transmitted on communication channels. Then, since session types will describe the protocols of channels, verification techniques can be used to ensure that processes will abide by these protocols and more guidance can be given to programmers writing programs for distributed systems.
 
 \subsection{Main session type approaches}
 The main approaches to session types, according to (H\"{u}ttle et al.) \cite{foundBTypes} are detailed in the following section.

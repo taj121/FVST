@@ -1,11 +1,11 @@
 %!TEX root = FVST.tex
 \chapter{System Examples} \label{examplesChapt}
 
-In this chapter some sample programs are shown and the process through which they are run is explained. 
+In this chapter some sample programs are shown and the process through which they are run through both levels of the system is explained. 
 
 \section{Simple Swap Service}
 
-The examples given in the paper \cite{paper1} include an example for a simple swap service which is also discussed briefly in the introduction to this paper. It consists of two clients and a coordinator. The clients send values to the coordinator who then returns to client one the value client two and vice versa.
+The examples given in the paper \cite{paper1} include an example for a simple swap service which is also discussed briefly in the introduction to this report. It consists of two clients and a coordinator. The clients send values to the coordinator who then returns to client one the value sent by client two and vice versa.
 
 \subsection{Input code}
 
@@ -38,9 +38,9 @@ In the swap processes a connection is requested on the swp channel using req-swp
 
 The endpoints used by the coordinator, received from calling acc-swp (), are used according the session type $?T.!T.end$. This means that on this connection a value of type $T$ is received, then a value of the same type is sent then the connection ends. 
 
-The endpoint used by the swap function, received from the call to req-swp (), is used according to the session type $!Int.?T'.end$. In this case an int is received, a value of some type $T'$ is sent and then the connection is terminated. 
+The endpoint used by the swap function, received from the call to req-swp (), is used according to the session type $!Int.?T'.end$. In this case an int is sent, a value of some type $T'$ is received and then the connection is terminated. 
 
-From examining these session types and the above code it is clear that types $T$ and $T'$ must be the same. This is due to the fact that the values sent by the coordinator are then received by the swap functions. Furthermore both of these types must be of the type $int$ since the values received by the coordinator are sent by the swap functions and these values are integers (1 and 2).
+From examining these session types and the above code it is clear that types $T$ and $T'$ must be the same, due to the fact that the values sent by the coordinator are the ones that are then received by the swap functions. Furthermore both of these types must be of the type $int$ since the values received by the coordinator are sent by the swap functions and these values are integers (1 and 2).
 
 In this case, the programs can communicate and are typable when $T=T'=Int$. The inference algorithms proposed in (Spacasassi \& Koutavas)\cite{paper1} can infer these session types from the code given. 
 
@@ -49,18 +49,17 @@ In this case, the programs can communicate and are typable when $T=T'=Int$. The 
 The first level of the system will produce code detailing the behaviour of the given input code and the constraints relevant to it. A simplified version of this can be seen here and the full version in the appendix. 
 
 % \begin{figure}
+\begin{lstlisting}
 Behaviours:
-\begin{lstlisting}
-spn (B101);
-spn (psh ($l3$, S126);R131 ! int;R132 ? T125);
-spn (psh ($l3$, S126);R147 ! int;R148 ? T141)
-\end{lstlisting}
+spn(B101);
+spn(psh($l3$, S126);R131 ! int;R132 ? T125);
+spn(psh($l3$, S126);R147 ! int;R148 ? T141)
+
 Constraints:
-\begin{lstlisting}
 Cswap1' ~ S105,
 Cswap2' ~ S106,
 Cswap3 ~ S126,
-rec B101(psh ($l1$, S105);R114 ? T103 ;psh ($l2$, S106);R115 ? T104;R116 ! T103;R117 ! T104;B101) < B101,
+rec B101(psh($l1$, S105);R114 ? T103 ;psh($l2$, S106);R115 ? T104;R116 ! T103;R117 ! T104;B101) < B101,
 $l1$ ~ R114,
 $l1$ ~ R117,
 $l2$ ~ R115,
@@ -74,18 +73,18 @@ $l3$ ~ R148
 % \label{simpleInter}
 % \end{figure}
 
-This code is given in the syntax developed by me for this project (see \ref{text}). In this case the first spawn of behaviour variable B101 is referencing the spawning of the coordinator in the input code. Behaviour variable B101 then references the behaviour of the coordinator. The second and third spawns reference the spawns of the swaps. 
+This code is given in the syntax developed by me for this project (see \ref{text}). In this case the first spawn of behaviour variable B101 is referencing the spawning of the coordinator in the input code. Behaviour variable B101 then references the behaviour of the coordinator. The remaining two spawns reference the spawns of the swap functions.  
 
 In the constraints we can first see the three channel constraints. These are referring to the endpoints returned from the calls to acc-swp and req-swp. The next constraint is a behaviour constraint. This is what gives us the link between the behaviour variable B101 and the actual behaviour of the coordinator. Finally the last constraints are the region constraints. These either link regions to other regions or labels to regions. The labels here are static approximations of the locations of the endpoints in the code. In this case $l1$ refers to the location in the coordinator function where acc-swp is called to generate the connection for endpoint p1. $l2$ references the location of p2 and $l3$ references the call to req-swp in the spawn function. 
 
-Since the behaviour checker does not deal with inference we must manually apply some substitutions before we can run this code through the it. This involves replacing the session variables with the actual session endpoint types and the type variables with the actual types. These substitutions are detailed in table \ref{subs}. 
+Since the behaviour checker implementation does not deal with inference we must manually apply some substitutions before we can run this code through the it. This involves replacing the session variables with the actual session endpoint types and the type variables with the actual types. These substitutions are detailed in table \ref{subs}. 
 
 \begin{table}
 \centering
 \begin{tabular}{l |c}
 S105 & \multirow{2}{*}{?int !int end} \\
-S106 & \\ \hline
-S126 & !int ?int end \\ \hline
+S106 & \\ 
+S126 & !int ?int end \\ 
 T125 & \multirow{4}{*}{int} \\
 T141 & \\ 
 T103 & \\
@@ -97,24 +96,24 @@ T104 & \\
 
 \subsection{Behaviour check}
 
-The intermediate code with substitutions can then be run through the behaviour checker detailed in \ref{checker}. Here the steps which would be taken to check the simplified code are outlined. 
+The intermediate code with substitutions can then be run through the behaviour checker detailed in (sec. \ref{checker}). Here the steps which would be taken to check the simplified code are outlined. 
 
-First the code is run through the parser and lexical analyser. The resulting constraints are then passed into the function that deals with their internal storage. The simplified output from running this example, which includes the printing of the internal storage of the constraints, can be seen below. It can clearly be seen here how the internal storage allows for efficient look ups, particularly with respect to region constraints. The stored constraints and the behaviours are then passed to the behaviour checker. 
+First the code is run through the parser and lexical analyser. The resulting constraints are then passed into the function that deals with their internal storage (see sec. \ref{secConStore}). The simplified output from running this example, which includes the printing of the internal storage of the constraints, can be seen below. It can clearly be seen here how the internal storage allows for efficient look ups, particularly with respect to region constraints. The stored constraints and the behaviours are then passed to the behaviour checker. 
 
 The first behaviour is a sequence. Once the rule is applied to deal with this the next behaviour to look at is the $spn(B101)$. At this stage the stack is empty. This behaviour matches the rule SPAWN from (fig. \ref{rules2}). This then calls the check function again with the behaviour tau and the result is anded with the result of a call to the check functions where the behaviour is the body of the spawn ($B101$). 
 
-The rules then continue to be applied in such a fashion until a state is reached where the stack is empty, the continuation is empty and the behaviour is tau. In this case the check function returns true. Alternately if a state is reached where no rule can be applied false is returned along with a message detailing where in the rules the error state was reached. A detailed diagram of how the simplified code would be dealt with in the behaviour checker can be found in (fig. \ref{path}).
+The rules then continue to be applied in this fashion until a state is reached where the stack is empty, the continuation is empty and the behaviour is tau. In this case the check function returns true. Alternately if a state other than this is reached where no rule can be applied false is returned along with a message detailing in which rule the error state was reached. A detailed diagram of how the simplified code would be dealt with in the behaviour checker can be found in (fig. \ref{path}).
 
 % \begin{figure}
 \begin{lstlisting}
 Behaviours:
-Spn( B101 );
-Spn( Psh( l3, ! int ? int end ); R131 ! int; R132 ? int);
-Spn( Psh( l3, ! int ? int end ); R147 ! int; R148 ? int)
+Spn(B101);
+Spn(Psh(l3, ! int ? int end ); R131 ! int; R132 ? int);
+Spn(Psh(l3, ! int ? int end ); R147 ! int; R148 ? int)
 
 Paired: 
 	Beta: B101 
-	Behaviour: rec B101 (Psh( l1, ? int ! int end ); R114 ? int; Psh( l2, ? int ! int end ); R115 ? int; R116 ! int; R117 ! int; B101)
+	Behaviour: rec B101 (Psh(l1, ? int ! int end ); R114 ? int; Psh(l2, ? int ! int end ); R115 ? int; R116 ! int; R117 ! int; B101)
 
 Region Constraints:
  label: l3
@@ -134,13 +133,13 @@ check successful!
 % \end{figure}
 
 \begin{figure}
-\includegraphics[scale = 0.5]{swap1Behaviour1.png}
+\includegraphics[scale = 0.55]{swap1Behaviour1.png}
 \caption{Simple Swap Path Taken Through Behaviour Check, Main Dig.}
 \label{path}
 \end{figure}
 
 \begin{figure}
-\includegraphics[scale = 0.5]{swap1Behaviour2.png}
+\includegraphics[scale = 0.55]{swap1Behaviour2.png}
 \caption{Simple Swap Path Taken Through Behaviour Check, Sub Dig.}
 \label{path2}
 \end{figure}
@@ -148,15 +147,15 @@ check successful!
 \FloatBarrier
 \section{Swap Delegation}
 
-This example is given in the paper (Spacasassi \& Koutavas)\cite{paper1}. Here it has been altered and extended to show how incorrect code would be dealt with by the behaviour checker. 
+This example is based on one that is given in the paper (Spacasassi \& Koutavas)\cite{paper1}. Here it has been altered and extended to show how incorrect code would be dealt with by the behaviour checker. 
 
-In this example the coordinator function delegates the exchange to the clients. In the previous example the coordinator function is a bottleneck when there are large exchange values, the delegation in this example avoids this. 
+In this example the coordinator function delegates the exchange to the clients. In the previous example the coordinator function acts as a bottleneck when there are large exchange values, the delegation in this example avoids this. 
 
 \subsection{Input code}
 
 Here the swap function connects to the coordinator using req-swp as before but now it offers two choices; SWAP and LEAD. If SWAP is selected by the coordinator then the function receives on the endpoint p then sends the value x over p. 
 
-Otherwise if LEAD is selected the function resumes the endpoint q. This endpoint is received over p. A value is the received on q and the value passed in to the function is then sent over q. 
+Otherwise if LEAD is selected the function resumes the endpoint q, which is received over p. A value is the received on q and the value passed in to the function is then sent over q. 
 
 The coordinator accepts two connections on the swp channel and gets the two endpoints p1 and p2. It then selects SWAP on p1 and LEAD on p2. Then p1 is sent over p2 and the function recurs. 
 
@@ -197,12 +196,10 @@ A simplified version of the output from the first level of the system is given h
 % \begin{figure}
 \begin{lstlisting}
 Behaviours:
-spn (B118);
-spn (psh ($l3$, S142);R150? optn [($SWAP$ ; R152 ! int;R151 ? T160), ($LEAD$ ; R153 ? $l4$;R154 ? T157;R155 ! int)]);
-spn (psh ($l3$, S142);R181? optn [($SWAP$ ; R183 ! int;R182 ? T191), ($LEAD$ ; R184 ? $l4$ ;R185 ? T188;R186 ! int)])
+spn(B118);
+spn(psh($l3$, S142);R150? optn [($SWAP$ ; R152 ! int;R151 ? T160), ($LEAD$ ; R153 ? $l4$;R154 ? T157;R155 ! int)]);
+spn(psh($l3$, S142);R181? optn [($SWAP$ ; R183 ! int;R182 ? T191), ($LEAD$ ; R184 ? $l4$ ;R185 ? T188;R186 ! int)])
 
-\end{lstlisting}
-\begin{lstlisting}
 Constraints:
 unit <  ses R151,
 unit <  ses R182,
@@ -235,8 +232,8 @@ Again substitutions must be made before this code can be given to the behaviour 
 \centering
 \begin{tabular}{l |c}
 S120 & \multirow{2}{*}{$(+) [($SWAP$; ? int ! int end ), ($LEAD$; ! ? int ! int end end)]$} \\
-S121 & \\ \hline
-S142 & $+ [($SWAP$; ? int ? int end), ($LEAD$; ? ? int ! int end end)] [\ ]$ \\ \hline
+S121 & \\ 
+S142 & $+ [($SWAP$; ? int ! int end), ($LEAD$; ? ? int ! int end end)] [\ ]$ \\ 
 T160 & \multirow{4}{*}{int} \\
 T191 & \\ 
 T157 & \\
@@ -248,41 +245,31 @@ T188 & \\
 
 \subsection{Behaviour check}
 
-As you can see from the code given below the behaviour checker has recognised that the input code cannot communicate correctly. The error given is `$$out rule stack frame incorrect for current behaviour$$'. This tells us that the checker ran into problems when it was trying to verify a behaviour of the type $\rho!T$. We also know, from looking up the rules, that the stack frame did not match the expected form $(l; !T\eta)$. From these we can deduce that the checker ran into the error when attempting to check the swap option against the current stack frame since the option is attempting to send a value while the stack frame is expecting it to attempt to receive one 
+As you can see from the code given below the behaviour checker has recognised that the input code cannot communicate correctly. The error given is `out rule stack frame incorrect for current behaviour'. This tells us that the checker ran into problems when it was trying to verify a behaviour of the type $\rho!T$. We also know, from looking up the rules, that the stack frame did not match the expected form $(l; !T\eta)$. From these we can deduce that the checker ran into the error when attempting to check the swap option against the current stack frame since the option is attempting to send a value while the stack frame is expecting it to attempt to receive one. 
 
 % \begin{figure}
 \begin{lstlisting}
 Behaviours:
-   Spn( B118 );
-   Spn( Psh( l3, +[ (SWAP;? int ? int end ), (LEAD;? ? int ! int end end ) ][]) ; R150 ? optn [(SWAP; R152 ! int ; R151 ? int) (LEAD;  R153 ? l4 ;   R154 ? int ; R155 ! int) ] );  
-   Spn( Psh( l3, +[ (SWAP;? int ? int end ), (LEAD;? ? int ! int end end ) ][]  ); R181 ? optn [(SWAP; R183 ! int; R182 ? int) (LEAD;  R184 ? l4 ; R185 ? int; R186 ! int) ] )
+   Spn(B118);
+   Spn(Psh(l3, +[(SWAP;? int ? int end ),(LEAD;? ? int ! int end end)][]); R150 ? optn [(SWAP; R152 ! int ; R151 ? int)(LEAD; R153 ? l4; R154 ? int; R155 ! int)]);  
+   Spn( Psh( l3, +[(SWAP;? int ? int end ),(LEAD;? ? int ! int end end)][]  ); R181 ? optn [(SWAP; R183 ! int; R182 ? int)(LEAD;  R184 ? l4 ; R185 ? int; R186 ! int)])
 Behaviour constraints:
 Beta: B118 
-Behaviour: rec B118 (Psh(l1, (+)[ (SWAP;? int ! int end ), (LEAD;! ? int ! int end end )]) ; R128 ! SWAP; Psh(l2, (+)[ (SWAP;? int ! int end ), (LEAD;! ? int ! int end end )]); R129 ! LEAD; R130 ! R131;B118)
+Behaviour: rec B118 (Psh(l1, (+)[ (SWAP;? int ! int end ), (LEAD;! ? int ! int end end)]) ; R128 ! SWAP; Psh(l2, (+)[ (SWAP;? int ! int end ), (LEAD;! ? int ! int end end )]); R129 ! LEAD; R130 ! R131;B118)
 
 Region Constraints:
  label: l4
  regions:
-R154
-R185
-R186
-R155
+R154, R185, R186, R155
 label: l3
  regions:
-R152
-R183
-R184
-R181
-R150
-R153
+R152, R183, R184, R181, R150, R153
 label: l2
  regions:
-R129
-R130
+R129, R130
 label: l1
  regions:
-R128
-R131
+R128, R131
 
 Type Constraints:
 Paired: 
@@ -302,38 +289,124 @@ ERROR: Failed Check
 
 \FloatBarrier
 \section{TLS}
+\label{tlsexampsec}
 
 A very simple implementation of the Transport Layer Security (TLS) handshake has been detailed here to show how it would operate under this system. Again the simplified version of the output from the two layers has been shown here and the full version has been included in the appendix. 
 
 \subsection{Input code}
 
-Here we see a very simple version of the TLS handshake implemented in the version of $ML_s$ accepted by the first level. In this implementation we have a client and a server. The client establishes a connection on the tls channel and sends a number, this represents the client hello message. It then receives four values on this connection. These represent the server hello,server certificate, the server exchange key and the server hello done messages. The client finally sends the client exchange key and the change cipher spec. The communication ends when the client receives the value representing the change cipher spec message from the server. 
+Here we see a very simple version of the TLS handshake implemented in the version of $ML_s$ accepted by the first level. In this implementation we have a client and a server. The client establishes a connection on the tls channel and sends a number, this represents the client hello message. It then receives four values on this connection. These represent the server hello, server certificate, server exchange key and the server hello done messages. The client finally sends the client exchange key and the change cipher spec. The communication ends when the client receives the value representing the change cipher spec message from the server. 
 
-The communications on the server side are the complements of those made by the client. Since all values are represented as integers we can conclude that the session types of these endpoints should  be (FILL ME IN) %TODO
+The communications on the server side are the complements of those made by the client. Since all values are represented as integers we can conclude that the session types of these endpoints should  be $!int.?int.?int.?int.?int.!int.!int.?int$ and $?int.!int.!int.!int.!int.?int.?int.!int$ for the client and server respectively. 
 
-\begin{lstlisting}
+
+\begin{minipage}{.45\textwidth}
+\begin{lstlisting}[backgroundcolor=\color{white},numbers=none]
+let client = fun z =>
+  (let p1 = req-tsl () in
+    ((send (p1, 1));
+     (recv p1);
+     (recv p1);
+     (recv p1);
+     (recv p1);
+     (send (p1, 1));
+     (send (p1, 2));
+     (recv p1)
+     )) in
 \end{lstlisting}
+\end{minipage}
+\hfill
+\begin{minipage}{.45\textwidth}
+\begin{lstlisting}[backgroundcolor=\color{white},numbers=none]
+ let server = fun z =>
+   ( let p2 = acc-tsl () in
+    (recv p2);
+     (send (p2, 3));
+     (send (p2, 3));
+     (send (p2, 3));
+     (send (p2, 3));
+     (recv p2);
+     (recv p2);
+     (send (p2, 3))
+       )
+   in (spawn (client) );
+ (spawn (server))
+\end{lstlisting}
+\end{minipage}
 
 \subsection{Intermediate code}
 Here we have taken the output from the first level and simplified it. Again the substitutions detailed in table \ref{tLSSubs} must be made before this code can be run through the behaviour checker. 
 
+
+\begin{lstlisting}
+Behaviours:
+spn(psh($l1$, S190);R201 ! int;R202 ? T185;R203 ? T186;R204 ? T187 ;R205 ? T188;R206 ! int;R207 ! int;R208 ? T209);
+spn(psh($l2$, S216);R227 ? T213;R228 ! int;R229 ! int;R230 ! int;R231 ! int;R232 ? T214;R233 ? T215;R234 ! int)
+
+Constraints:
+Ctsl1 ~ S190,
+Ctsl2' ~ S216,
+$l1$ ~ R201,
+$l1$ ~ R202,
+$l1$ ~ R203,
+$l1$ ~ R204,
+$l1$ ~ R205,
+$l1$ ~ R206,
+$l1$ ~ R207,
+$l1$ ~ R208,
+$l2$ ~ R227,
+$l2$ ~ R228,
+$l2$ ~ R229,
+$l2$ ~ R230,
+$l2$ ~ R231,
+$l2$ ~ R232,
+$l2$ ~ R233,
+$l2$ ~ R234
+\end{lstlisting}
+
 \begin{table}
 \centering
-\begin{tabular}{l c}
-to & fill \\
+\begin{tabular}{l | c}
+S190 &  $!int.?int.?int.?int.?int.!int.!int.?int$  \\
+S216 & $?int.!int.!int.!int.!int.?int.?int.!int$ \\ 
+T185 & \multirow{8}{*}{int} \\
+T186 & \\ 
+T187 & \\
+T188 & \\ 
+T209 & \\ 
+T213 & \\ 
+T214 & \\ 
+T215 & \\ 
 \end{tabular}
 \caption{TLS Substitutions}
 \label{tLSSubs}
 \end{table}
 
-\begin{lstlisting}
-\end{lstlisting}
 
 \subsection{Behaviour check}
 
 As you can see from the output below the behaviour checker shows that this communication is valid when the given substitutions are made. 
 
 \begin{lstlisting}
+Behaviours:
+Spn(Psh(l1, ! int ? int ? int ? int ? int ! int ! int ? int end); R201 ! int; R202 ? int; R203 ? int; R204 ? int; R205 ? int; R206 ! int; R207 ! int; R208 ? int); 
+Spn(Psh(l2, ? int ! int ! int ! int ! int ? int ? int ! int end); R227 ? int; R228 ! int; R229 ! int; R230 ! int; R231 ! int; R232 ? int; R233 ? int; R234 ! int)
+
+Behaviour constraints:
+
+Region Constraints:
+ label: l2
+ regions:
+R228,R230,R231,R229,R234,R232,R227,R233
+label: l1
+ regions:
+R205,R201,R204,R207,R202,R203,R206,R208
+
+Type Constraints:
+ 
+
+check successful!
+
 \end{lstlisting}
 
 The code given here is the simplified version. 
