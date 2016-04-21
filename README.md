@@ -6,7 +6,7 @@ Full details of the motivation behind this project can be found in the report.
 Ocaml 
 
 <pre>
-sudo apt-get install ocaml ocaml-native-compilers ocaml-doc tuareg-mode ocaml-findlib oasis libpre-ocaml-dev 
+sudo apt-get install ocaml ocaml-native-compilers ocaml-doc tuareg-mode ocaml-findlib oasis libpcre-ocaml-dev 
 </pre>
 
 ##Running instructions
