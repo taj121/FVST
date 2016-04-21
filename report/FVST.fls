@@ -154,6 +154,8 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
 INPUT FVST.aux
 INPUT FVST.aux
+INPUT acknowledgments.aux
+INPUT acknowledgments.aux
 INPUT abstract.aux
 INPUT abstract.aux
 INPUT intro.aux
@@ -168,6 +170,8 @@ INPUT evaluation.aux
 INPUT evaluation.aux
 INPUT conclusion.aux
 INPUT conclusion.aux
+INPUT code.aux
+INPUT code.aux
 INPUT appendix1.aux
 INPUT appendix1.aux
 OUTPUT FVST.aux
@@ -196,14 +200,14 @@ OUTPUT FVST.out
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr17.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map
-OUTPUT abstract.aux
-INPUT abstract.tex
-INPUT abstract.tex
+OUTPUT acknowledgments.aux
+INPUT acknowledgments.tex
+INPUT acknowledgments.tex
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr17.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
-INPUT FVST.toc
-INPUT FVST.toc
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmcsc10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmcsc10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmsl12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr8.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr6.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm
@@ -233,6 +237,12 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
+OUTPUT abstract.aux
+INPUT abstract.tex
+INPUT abstract.tex
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
+INPUT FVST.toc
+INPUT FVST.toc
 OUTPUT FVST.toc
 OUTPUT intro.aux
 INPUT intro.tex
@@ -251,7 +261,6 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/stmaryrd/stmary10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/txfonts/txtt.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmsl12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmti12.tfm
 OUTPUT paper.aux
 INPUT paper.tex
@@ -331,6 +340,9 @@ INPUT evaluation.tex
 OUTPUT conclusion.aux
 INPUT conclusion.tex
 INPUT conclusion.tex
+OUTPUT code.aux
+INPUT code.tex
+INPUT code.tex
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmtt12.tfm
 OUTPUT appendix1.aux
 INPUT appendix1.tex
@@ -338,6 +350,8 @@ INPUT appendix1.tex
 INPUT FVST.bbl
 INPUT FVST.bbl
 INPUT FVST.aux
+INPUT acknowledgments.aux
+INPUT acknowledgments.aux
 INPUT abstract.aux
 INPUT abstract.aux
 INPUT intro.aux
@@ -352,6 +366,8 @@ INPUT evaluation.aux
 INPUT evaluation.aux
 INPUT conclusion.aux
 INPUT conclusion.aux
+INPUT code.aux
+INPUT code.aux
 INPUT appendix1.aux
 INPUT appendix1.aux
 INPUT ./FVST.out

@@ -95,7 +95,7 @@
 %\phdthesis                         %% use either, the default is \phdthesis.
 \bachalorsthesis
 
-\thesisdraft                       %% Uncomment this if you want a draft
+% \thesisdraft                       %% Uncomment this if you want a draft
                                      %% version; this will print a timestamp
                                      %% on each page of your thesis.
 
@@ -187,7 +187,7 @@
 
 %\thesisdedicationpage                             %% Generate the dedication page.
 
-% \include{acknowledgments}
+\include{acknowledgments}
 
 \include{abstract}
 
@@ -204,7 +204,8 @@
   \include{example}  
   \include{evaluation}  
   \include{conclusion} 
-
+\addcontentsline{toc}{chapter}{Code Repository}
+  \include{code}
 
 
 \addcontentsline {toc}{chapter}{Appendices}       %% Force Appendices to appear in contents
@@ -220,5 +221,6 @@
 \bibliographystyle{ieeetr}
 \bibliography{thesis} 
 
+\addcontentsline{toc}{chapter}{DVD}
 
 \end{document}                                    %% END THE DOCUMENT

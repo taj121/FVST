@@ -89,7 +89,7 @@ The behaviour type in the grammar consists of multiple options. The final option
 
 \subsubsection{Constraints}
 
-Constraints are similar to behaviours but also make use of the sub-grammar for bTypes, regions and session types which are given below. 
+Constraints are similar to behaviours but make use of the sub-grammar for bTypes, regions and session types which are given below. Empty constraints are also valid.
 
 \begin{grammar}
 
@@ -153,7 +153,7 @@ Session types follow a similar pattern to behaviours.
 
 \section{OCaml Types}
 
-In order for the parser to have the correct types for dealing with behaviours and constraints types for these first needed to exist. This involved creating new types in OCaml for each of Behaviours, Constraints, Types, Regions and Session types. These main types are built up of subtypes, strings and, in the case of `Tau' and `End' nothing. 
+In order for the parser to have the correct types for dealing with behaviours and constraints types for these first needed to exist. This involved creating new types in OCaml for each of Behaviours, Constraints, Types, Regions and Session types. These main types are built up of subtypes, strings and, in the case of `$Tau$' and `$End$' nothing. 
 
 As an example the type for behaviours takes the following form: 
 
@@ -161,7 +161,7 @@ As an example the type for behaviours takes the following form:
 
 It can be seen here how RecChoice, the external choice type, is made up of the subtype recC which in turn consists of a string and list of (string, behaviour) tuples. The other types are implemented in a similar way. 
 
-As well as implementing the types each type also has a to_string function. This is to allow for the re-printing of the input code as part of the output. 
+As well as implementing the types each type also has a $to\_string$ function. This is to allow for the re-printing of the input code as part of the output. 
 
 \subsection{Challenges}
 
@@ -190,15 +190,13 @@ Type constraints are of the form $$T_1 <: T_2$$ and are used in the Out Rule as 
 
 If both types are of the form $Ses^{\rho}$ then if there exists a region constraint linking the $\rho$'s  they are functional subtypes.
 
-Type constraints are stored as a hash table with the right hand type as the key and the left hand type as the value. Since type constraints are also transitive this means that when checking these constraints first the right hand side of the constraint to be checked is searched for. A list of associated subtypes for this type are returned. Each of these is then checked to see if it matches the left hand side. If not the search is repeated with this new type as the right hand side. This continues until either the left hand side is found or there are no more types to check.
+Type constraints are stored as a hash table with the right hand type as the key and the left hand type as the value. Since type constraints are also transitive this means that when checking these constraints first the right hand side of the constraint to be checked is searched for. A list of associated subtypes for this type are returned. Each of these is then checked to see if it matches the left hand side. If not the search is repeated with this new type as the right hand side. This continues until either the left hand side is found or there are no more types to check. Type constraints are also reflexive and so it is always checked if the two types are equal first.
 
-Since type constraints are also reflexive it is  always checked if the two types are equal first.
+Type constraints are used in session sub-typing (fig. \ref{sessSubType}) as well. They are used in this situation when checking if two session types are either outputting or inputting confined types where the types must be functional subtypes in order for the session types to be related. Checks on session sub-types are performed in the delegation rule.
 
-Type constraints are also used for session sub-typing (fig. \ref{sessSubType}). They are used in this situation when checking if two session types are either outputting confined types or inputting them where the types must be functional subtypes in order for the session types to be related. Checks on session sub-types are performed in the delegation rule.
+Other session types that need to be checked to see if they are subtypes when delegating are internal and external choice types. For internal choice one choice is a subtype of another choice if the number of options in the list in the sub-type is less than or equal to the number of options in the super-type and if for all options in the second list the corresponding session type in the first list is a subtype of the session type.
 
-Other session types that need to be checked to see if they are subtypes are internal and external choice types. For internal choice one choice is a subtype of another choice if the number of options in the list in the sub-type is less than or equal to the number of options in the super-type and if for all options in the second list the corresponding session type in the first list is a subtype of the session type.
-
-For external choice one choice is a sub-type of another if the first list (values that the choice must be able to accept) of the sub-type is a subset of the first list of the super-type and if the union of the lists of the super-type is a subset of the union of the lists of the sub-type. As well as this for all elements of either list of the super-type the corresponding session type of the sub-type must itself be a sub-type of the session type of that element. 
+For external choice one choice is a sub-type of another if the first list (values that the choice must be able to accept, the second list consists of values it may accept) of the sub-type is a subset of the first list of the super-type and if the union of the lists of the super-type is a subset of the union of the lists of the sub-type. As well as this for all elements of either list of the super-type the corresponding session type of the sub-type must itself be a sub-type of the session type of that element. 
 
 \begin{figure}
   \begin{gather*}
@@ -282,7 +280,7 @@ The behaviour checker verifies that the input program will in fact communicate c
 
 The parameters to the function are a set of constraints and a list of behaviour tuples of the form $(behaviour,\; stack,\; stack\_labels,\; continuation)$. The stack represents the one described in the rules and the stack labels structure is used to ensure that each label is only ever pushed to the stack once. The continuation is used to keep track of any behaviours that need to be dealt with once the current behaviour is finished with, see (fig. \ref{seq}) for an example. 
 
-The initial function called is a wrapper function that calls to a check step function with the first tuple from the list. The check_step function then takes the current stack and checks to see if the top frame contains the `End' session type (i.e. it checks if the end rule applies) if it does it removes this frame and then it continues to check to see which, if any, of the rest of the rules apply. The checks are performed in this order since the End Rule is performed based on the state of the stack while all other rules are performed based on the current behaviour as well as the state of the stack. 
+The initial function called is a wrapper function that calls to a check step function with the first tuple from the list. The check_step function then takes the current stack and checks to see if the top frame contains the `End' session type (i.e. it checks if the end rule applies) if it does it removes this frame and then it continues to check to see which, if any, of the rest of the rules apply. The checks are performed in this order since the End Rule is performed based only on the state of the stack while all other rules are performed based on the current behaviour as well as the state of the stack. 
 
 \begin{figure}
 \includegraphics[scale=0.6]{treeDigBW.png}
@@ -298,7 +296,7 @@ If the check is successful it has shown that the input code follows the correct 
 \subsection{Challenges}
 The main technical challenge encountered in this implementation of the checker was, again, the new language. However this was overcome more quickly when developing this section of the project due to the experience gained with the language in implementing the previous sections of the project. 
 
-Other technical difficulties that were encountered included dealing with the different implementations of stack and hash tables in the standard library and the core_kernal library. The stacks in the core_kernel library \cite{janest} included functions (such as exists and top) that made for a nicer implementation but the hash tables were missing the functionality to return lists of all bindings to a key which was necessary for the constraint checks. This was overcome when I realised it was possible to rename the hash table module from the standard library before importing the core_kernel library and so avoid the shadowing of the binding. 
+Other technical difficulties that were encountered included dealing with the different implementations of stack and hash tables in the standard library and the core_kernal library. The stacks in the core_kernel library \cite{janest} included functions (such as exists and top) that made for a nicer implementation of the checker but the hash tables were missing the functionality to return lists of all bindings to a key which was necessary for the constraint checks. This was overcome by realising that it was possible to rename the hash table module from the standard library before importing the core_kernel library and so avoid the shadowing of the binding. 
 
 The implementation of the region constraint storage also took quite some time since it is rather complicated code and pushed my knowledge of the OCaml language. 
 

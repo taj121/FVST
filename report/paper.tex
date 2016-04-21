@@ -18,7 +18,7 @@ The two levels of the system only interact through behaviours. This allows for t
 
 This system, since it is run at compile time, is forced to over-approximate the runtime behaviour of the program. This, combined with the fact that it will not return false positives implies that it is possible for the system to reject a program that would in fact communicate correctly. 
 
-The behaviour checker implemented as part of this project is an implementation of the second level of this system (without inference). The first level of this system was implemented by the authors of the paper. 
+The behaviour checker implemented as part of this project is an implementation of the second level of this system (without inference). The implementation of the first level of this system was developed by the authors of the paper. 
 
 \section{The First Level} \label{level1}
 
@@ -87,21 +87,21 @@ In the system designed in this paper \cite{paper1} an $ML_s$ expression can have
 
 Polymorphism is extended with type schemas. These are of the form $\forall(\overrightarrow{\gamma}:C_0).T$ where $\gamma$ is a list made up of some combination of type ($\alpha$), behaviour ($\beta$), region ($\rho$) and session ($\psi$) variables and $C_0$ represents the constraint environment that imposes constraints on the quantified variables. 
 
+Labels ($l$) are static compile time approximations of the runtime channel endpoint locations. Since the system described here is run at compile time and over-approximates the runtime behaviours. 
+
 \subsection{Syntax of types, behaviours and constraints}
 
-Of the types detailed in \ref{syntaxTypes} behaviours and constraints are the most relevant to the implementation discussed in this report ( see chapter \ref{chapMyWork}). Behaviours can take several straightforward forms; a behaviour variable ($\beta$), the behaviour with no effect($\tau$), a sequence of behaviours ($b;b$) or a choice in behaviours ($b \oplus b$). They can also take more complicated forms including $rec_\beta b$ for recursive behaviour. In this case, and in the case of $spawn \quad b$, the body of the recursion must be confined (it must not affect endpoints that are already open and it must consume all endpoints it opens). Behaviour can also input or output types ($\rho!T, \rho?T$), delegate and resume endpoints ($\rho!\rho, \rho!l$), select from an internal choice $\rho ! L_i$ and offer external choice $\underset{i \in I}{\&}\{\rho?L_i ; b_i\}$.
+Of the types detailed in \ref{syntaxTypes} behaviours and constraints are the most relevant to the implementation discussed in this report (see chapter \ref{chapMyWork}). Behaviours can take several straightforward forms; a behaviour variable ($\beta$), the behaviour with no effect ($\tau$), a sequence of behaviours ($b;b$) or a choice in behaviours ($b \oplus b$). They can also take more complicated forms including $rec_\beta b$ for recursive behaviour. In this case, and in the case of $spawn \ b$, the body of the recursion must be confined (it must not affect endpoints that are already open and it must consume all endpoints it opens). Behaviour can also input or output types ($\rho!T, \rho?T$), delegate and resume endpoints ($\rho!\rho, \rho!l$), select from an internal choice $\rho ! L_i$ and offer external choice $\underset{i \in I}{\&}\{\rho?L_i ; b_i\}$.
 
 Constraints can specify that types are subtypes of another type ($T\subseteq T$), or that they are confined ($cfd(T)$) which means that values of this type have no communication effect. They also specify which behaviours behaviour variables can act as ($b\subseteq \beta$). Region constraints ($\rho \sim r$) link region variables to other region variables or to locations. Channel constraints ($c\sim\eta, \bar{c}\sim\eta$) specify the link between channels and their endpoints. The duality constraint ($\eta \bowtie \eta$) states that two endpoints are complementary. Sets of constraints can also be specified ($C,C$). 
-
-Labels ($l$) are static compile time approximations of the runtime channel endpoint locations. Since the system described here is run at compile time it has to over-approximate the runtime behaviours. 
 
 
 \subsubsection{Type schemas, locations and region variables} 
 \label{secTs}
 
-Through the constraint environment ($C$) region constraints specify links between region variables ($\rho$) and other region variables or labels. These region constraints are produced during pre-processing and they identify the textual source of endpoints. The labels $l$ specify the locations in the input code at which endpoints are generated.
+Through the constraint environment ($C$) region constraints specify links between region variables ($\rho$) and other region variables or labels. These region constraints are produced during pre-processing and they identify the textual source of endpoints. The labels $l$ approximate the locations in the input code at which endpoints are generated.
 
-For example if a connection on the private channel c is requested ($req-c^l$) then l is the location in the code it is called from. This means that if this were to be called in, for example, a for loop we would have multiple instances of endpoints related to l. This is a limitation of this system. 
+For example if a connection on the private channel c is requested ($req-c^l$) then l is the location in the code it is called from. This means that if this were to be called in, for example, a for loop we would have multiple instances of endpoints related to l which is a limitation of this system. 
 
 If we have an expression with type $Ses^\rho$ which evaluates to $p^l$ then a region constraint must exist to link $l$ to $\rho$. This would take the form $C\vdash \rho  \sim l$ which is to say that $\rho$ and $l$ are linked under constraint environment $C$. This tells us that $p$ was generated from the location in the code referenced by $l$.
 
@@ -121,7 +121,7 @@ If we were to look up this location we would find one of $req-c^l, acc-c^l$ or $
 \label{ts}
 \end{figure}
 
-The type schemas of these primitives are given in (fig. \ref{ts}). In $req-c^l$, for example, a new session is started on the static endpoint $l$. In order for it to be type-able $C$ must contain its effect which is $push(l:\psi) \subseteq \beta$. In the stack frame $\psi$ is the session variable that represents the session type of endpoint $l$. This representation is used since session types are only considered in the second level. $C$ must also record that the region variable $\rho$ is linked to $l$ and that the `request' endpoint of $c$ has session type $\psi$. 
+The type schemas of these primitives are given in (fig. \ref{ts}). In the type schema for $req-c^l$, for example, a new session is started on the static endpoint $l$. In order for it to be type-able $C$ must contain its effect which is $push(l:\psi) \subseteq \beta$. In the stack frame $\psi$ is the session variable that represents the session type of endpoint $l$. This representation is used since session types are only considered in the second level. $C$ must also record that the region variable $\rho$ is linked to $l$ and that the `request' endpoint of $c$ has session type $\psi$. 
 
 The remaining type schemas are read in a similar way. 
 
@@ -287,7 +287,7 @@ TConst types primitive functions such as $req-c^l$ (see sec. \ref{secTs}).
 
 \section{The Second Level} \label{level2}
 
-At this level session types are considered. Theses take the form: $$ \eta ::= end \;|\; !T.\eta \;|\; ?T.\eta \;|\; !\eta.\eta \;|\; ?\eta.\eta \;|\; \underset{i \in I}{\oplus}\{L_i : \eta_i\}\;|\; \underset{i \in (I_1,I_2)}{\&}\{L_i : \eta_i\} \;|\; \psi $$ Either communication on the endpoint is finished ($end$) or more communications are going to take place. These include sending or receiving a confined type ($!T.\eta,?T.\eta$), delegating by sending one endpoint over another ($!\eta.\eta $) or resuming an endpoint ($?\eta.\eta$). Non deterministic selection involves selecting a label $L_i$, selected by the selection behaviour from a list $I$, and then following the selected session type $\eta_i$. External choice ($\underset{i \in (I_1,I_2)}{\&}\{L_i : \eta_i\}$) is also supported.
+At this level session types are considered. Theses take the form: $$ \eta ::= end \;|\; !T.\eta \;|\; ?T.\eta \;|\; !\eta.\eta \;|\; ?\eta.\eta \;|\; \underset{i \in I}{\oplus}\{L_i : \eta_i\}\;|\; \underset{i \in (I_1,I_2)}{\&}\{L_i : \eta_i\} \;|\; \psi $$ This states that either communication on the endpoint is finished ($end$) or more communications are going to take place. These include sending or receiving a confined type ($!T.\eta,?T.\eta$), delegating by sending one endpoint over another ($!\eta.\eta $) or resuming an endpoint ($?\eta.\eta$). Non deterministic selection involves selecting a label $L_i$, selected by the selection behaviour from a list $I$, and then following the selected session type $\eta_i$. External choice ($\underset{i \in (I_1,I_2)}{\&}\{L_i : \eta_i\}$) is also supported where the list $I_1$ constists of options that the process must be able to accept and $I_2$ the ones it may accept.
 
 
 \begin{figure}
@@ -433,13 +433,11 @@ At this level session types are considered. Theses take the form: $$ \eta ::= en
 
 \subsection{Abstract interpretation semantics}
 
-In these semantics (fig. \ref{rules2}) $\Delta$ represents the stack which consists of stack frames made up of a label and a session type, $c$ represents the channel, $C$ is the set of constraints. A behaviour and the current stack considered to see if they match one of the rules. These rules then describe what actions are to be taken. 
+In these semantics (fig. \ref{rules2}) $\Delta$ represents the stack which consists of stack frames made up of a label and a session type, $c$ represents the channel, $C$ is the set of constraints. A behaviour and the current stack considered to see if they match one of the rules. These rules then describe what actions are to be taken. The stack mentioned here is used to avoid deadlock between the processes when this would be due to cyclic dependencies as is the case in the erroneous example discussed in the introduction (see \ref{introExample}).
 
-The stack, mentioned above, is used to avoid deadlock between the processes when this would be due to cyclic dependencies as is the case in the erroneous example discussed in the introduction (see \ref{introExample}).
+For example the REC Rule states that if the current behaviour is a recursive one then we must check that the behaviour associated with that recursion will follow these rules, starting with an empty stack, to end in a state with the empty stack and the behaviour $\tau$. Another constraint is that any behaviour constraints in the constraint environment of the form $rec_{\beta}b \subseteq \beta$ must be replaced with $\tau \subseteq \beta$ when checking the body of the recursion. This ensures that recursive behaviour is confined, which is necessary for this system. If these constraints are met then the next behaviour to be checked is $\tau$ with the stack remaining unchanged.  
 
-For example the REC Rule states that if the current behaviour is recursion then we must check that the behaviour associated with that recursion will follow these rules, starting with an empty stack, to end in a state with the empty stack and the behaviour $\tau$. Another constraint is that any behaviour constraints in the constraint environment of the form $rec_{\beta}b \subseteq \beta$ must be replaced with $\tau \subseteq \beta$ when checking the body of the recursion. If these constraints are met then the next behaviour to be checked is $\tau$ with the stack remaining unchanged. This ensures that recursive behaviour is confined, which is necessary for this system. 
-
-As for the other rules END removes a finished stack frame. BETA looks up behaviour variables and subs in the behaviours associated with them in the constraint environment. PLUS chooses a branch. PUSH adds a new frame to the stack given that the label has not previously been pushed to the stack. OUT and IN reduce the frame at the top of the stack. DEL and RES are used to transfer endpoints. RES must be applied to a one frame stack to ensure that there are no two endpoints of the same session pushed to the same stack (this is to avoid deadlock). ICH offers internal choice of session types. ECH offers external choice. SPN ensures that spawned processes are confined. 
+As for the other rules END removes a finished stack frame. BETA looks up behaviour variables and subs in the behaviours associated with them in the constraint environment. PLUS chooses a branch. PUSH adds a new frame to the stack given that the label has not previously been pushed to the stack. OUT and IN reduce the frame at the top of the stack. DEL and RES are used to transfer endpoints. RES must be applied to a one frame stack to ensure that there are no two endpoints of the same session pushed to the same stack (this is to avoid deadlock). ICH deals with internal choice of session types. ECH deals with external choice. SPN ensures that spawned processes are confined. 
 
 \section{Inference Algorithm}
 

@@ -32,13 +32,13 @@ in spawn (fn _ => swap 1);
 \vspace{2em}
 \end{minipage} 
 
-In this code the coordinator accepts two connects on the channel swp using acc-swp (). This gives it two endpoints, p1 and p2. After accepting each connection it receives a value over that connection. Finally the received values are sent over the alternate endpoint. 
+In this code the coordinator accepts two connects on the channel swp using acc-swp (). This gives it two endpoints, $p1$ and $p2$. After accepting each connection it receives a value over that connection. Finally the received values are sent over the alternate endpoint. 
 
-In the swap processes a connection is requested on the swp channel using req-swp (), giving the endpoint p. A value, in this case either 1 or 2, is then sent over this endpoint and finally some other value is received over p. 
+In the swap processes a connection is requested on the swp channel using req-swp (), giving the endpoint $p$. A value, in this case either 1 or 2, is then sent over this endpoint and finally some other value is received over $p$. 
 
 The endpoints used by the coordinator, received from calling acc-swp (), are used according the session type $?T.!T.end$. This means that on this connection a value of type $T$ is received, then a value of the same type is sent then the connection ends. 
 
-The endpoint used by the swap function, received from the call to req-swp (), is used according to the session type $!Int.?T'.end$. In this case an int is sent, a value of some type $T'$ is received and then the connection is terminated. 
+The endpoint used by the swap function, received from the call to req-swp (), is used according to the session type $!Int.?T'.end$. In this case an $int$ is sent, a value of some type $T'$ is received and then the connection is terminated. 
 
 From examining these session types and the above code it is clear that types $T$ and $T'$ must be the same, due to the fact that the values sent by the coordinator are the ones that are then received by the swap functions. Furthermore both of these types must be of the type $int$ since the values received by the coordinator are sent by the swap functions and these values are integers (1 and 2).
 
@@ -73,22 +73,23 @@ $l3$ ~ R148
 % \label{simpleInter}
 % \end{figure}
 
-This code is given in the syntax developed by me for this project (see \ref{text}). In this case the first spawn of behaviour variable B101 is referencing the spawning of the coordinator in the input code. Behaviour variable B101 then references the behaviour of the coordinator. The remaining two spawns reference the spawns of the swap functions.  
+This code is given in the syntax developed by me for this project (see \ref{text}). In this case the first spawn of behaviour variable $B101$ is referencing the spawning of the coordinator in the input code. Behaviour variable $B101$ then references the behaviour of the coordinator. The remaining two spawns reference the spawns of the swap functions.  
 
-In the constraints we can first see the three channel constraints. These are referring to the endpoints returned from the calls to acc-swp and req-swp. The next constraint is a behaviour constraint. This is what gives us the link between the behaviour variable B101 and the actual behaviour of the coordinator. Finally the last constraints are the region constraints. These either link regions to other regions or labels to regions. The labels here are static approximations of the locations of the endpoints in the code. In this case $l1$ refers to the location in the coordinator function where acc-swp is called to generate the connection for endpoint p1. $l2$ references the location of p2 and $l3$ references the call to req-swp in the spawn function. 
+In the constraints we can first see the three channel constraints. These are referring to the endpoints returned from the calls to $acc-swp$ and $req-swp$. The next constraint is a behaviour constraint. This is what gives us the link between the behaviour variable $B101$ and the actual behaviour of the coordinator. Finally the last constraints are the region constraints. These either link regions to other regions or labels to regions. The labels here are static approximations of the locations of the endpoints in the code. In this case $l1$ refers to the location in the coordinator function where $acc-swp$ is called to generate the connection for endpoint $p1$. $l2$ references the location of $p2$ and $l3$ references the call to $req-swp$ in the spawn function. 
 
 Since the behaviour checker implementation does not deal with inference we must manually apply some substitutions before we can run this code through the it. This involves replacing the session variables with the actual session endpoint types and the type variables with the actual types. These substitutions are detailed in table \ref{subs}. 
 
 \begin{table}
 \centering
-\begin{tabular}{l |c}
+\begin{tabular}{|l |c|}
+\hline
 S105 & \multirow{2}{*}{?int !int end} \\
-S106 & \\ 
-S126 & !int ?int end \\ 
+S106 & \\ \hline
+S126 & !int ?int end \\ \hline
 T125 & \multirow{4}{*}{int} \\
 T141 & \\ 
 T103 & \\
-T104 & \\ 
+T104 & \\ \hline
 \end{tabular}
 \caption{Manual Substitutions for Simple Swap}
 \label{subs}
@@ -102,7 +103,7 @@ First the code is run through the parser and lexical analyser. The resulting con
 
 The first behaviour is a sequence. Once the rule is applied to deal with this the next behaviour to look at is the $spn(B101)$. At this stage the stack is empty. This behaviour matches the rule SPAWN from (fig. \ref{rules2}). This then calls the check function again with the behaviour tau and the result is anded with the result of a call to the check functions where the behaviour is the body of the spawn ($B101$). 
 
-The rules then continue to be applied in this fashion until a state is reached where the stack is empty, the continuation is empty and the behaviour is tau. In this case the check function returns true. Alternately if a state other than this is reached where no rule can be applied false is returned along with a message detailing in which rule the error state was reached. A detailed diagram of how the simplified code would be dealt with in the behaviour checker can be found in (fig. \ref{path}).
+The rules then continue to be applied in this fashion until a state is reached where the stack is empty, the continuation is empty and the behaviour is tau. In this case the check function returns true. Alternately if a state other than this is reached where no rule can be applied false is returned along with a message detailing in which rule the error state was reached. A detailed diagram of how the simplified code would be dealt with in the behaviour checker can be found in (fig. \ref{path} \& fig. \ref{path2}).
 
 % \begin{figure}
 \begin{lstlisting}
@@ -153,11 +154,11 @@ In this example the coordinator function delegates the exchange to the clients. 
 
 \subsection{Input code}
 
-Here the swap function connects to the coordinator using req-swp as before but now it offers two choices; SWAP and LEAD. If SWAP is selected by the coordinator then the function receives on the endpoint p then sends the value x over p. 
+Here the swap function connects to the coordinator using $req-swp$ as before but now it offers two choices; $SWAP$ and $LEAD$. If $SWAP$ is selected by the coordinator then the function receives on the endpoint $p$ then sends the value $x$ over $p$. 
 
-Otherwise if LEAD is selected the function resumes the endpoint q, which is received over p. A value is the received on q and the value passed in to the function is then sent over q. 
+Otherwise if $LEAD$ is selected the function resumes the endpoint $q$, which is received over $p$. A value is the received on $q$ and the value passed in to the function is then sent over $q$. 
 
-The coordinator accepts two connections on the swp channel and gets the two endpoints p1 and p2. It then selects SWAP on p1 and LEAD on p2. Then p1 is sent over p2 and the function recurs. 
+The coordinator accepts two connections on the $swp$ channel and gets the two endpoints $p1$ and $p2$. It then selects $SWAP$ on $p1$ and $LEAD$ on $p2$. Then $p1$ is sent over $p2$ and the function recurs. 
 
 \begin{minipage}{.45\textwidth}
 \begin{lstlisting}[backgroundcolor=\color{white},numbers=none]
@@ -183,16 +184,31 @@ let fun swap(x) =
 \end{lstlisting}
 \end{minipage}
 
-When this coordinator function is analysed in isolation the inference algorithms will infer that the endpoints p1 and p2 have the type $\eta_{i, i \in (p1,p2)} = (\oplus \{(SWAP : \eta'), (LEAD : \eta'. end) \})$. When swap is analysed they will infer that $\eta_p = \Sigma\{(SWAP : ?T_1 .!T_2. end), (LEAD : ? \eta_q . end)\}$ and $\eta_q = ?T_2.!T_1.end$. 
+When this coordinator function is analysed in isolation the inference algorithms will infer that the endpoints $p1$ and $p2$ have the type $\eta_{i, i \in (p1,p2)} = (\oplus \{(SWAP : \eta'), (LEAD : \eta'. end) \})$. When swap is analysed they will infer that $\eta_p = \Sigma\{(SWAP : ?T_1 .!T_2. end), (LEAD : ? \eta_q . end)\}$ and $\eta_q = ?T_2.!T_1.end$. 
 
 When the coordinator is looked at in isolation then $\eta'$ can be any endpoint. However due to duality $\eta'$ must be equal to $\eta_q$ in this case. Also $T_1 = T_2$ must be true.
 
-The deliberate error in this code is that in the swap function when SWAP is selected a value is received then a value is sent. When LEAD is selected the same pattern is followed. This will produce a deadlock where both instances of swap are waiting on the other to send a value. 
+The deliberate error in this code is that in the swap function when $SWAP$ is selected a value is received then a value is sent. When $LEAD$ is selected the same pattern is followed. This will produce a deadlock where both instances of swap are waiting on the other to send a value. 
 
 \subsection{Intermediate code}
 
 A simplified version of the output from the first level of the system is given here. 
 
+\begin{table}
+\centering
+\begin{tabular}{|l |c|}
+\hline
+S120 & \multirow{2}{*}{$(+) [($SWAP$; ? int ! int end ), ($LEAD$; ! ? int ! int end end)]$} \\
+S121 & \\ \hline
+S142 & $+ [($SWAP$; ? int ! int end), ($LEAD$; ? ? int ! int end end)] [\ ]$ \\ \hline
+T160 & \multirow{4}{*}{int} \\
+T191 & \\ 
+T157 & \\
+T188 & \\ \hline
+\end{tabular}
+\caption{Manual Substitutions for Delegated Swap}
+\label{subs2}
+\end{table}
 % \begin{figure}
 \begin{lstlisting}
 Behaviours:
@@ -228,20 +244,6 @@ $l4$ ~ R186
 
 Again substitutions must be made before this code can be given to the behaviour checker. These are detailed in table \ref{subs2}.
 
-\begin{table}
-\centering
-\begin{tabular}{l |c}
-S120 & \multirow{2}{*}{$(+) [($SWAP$; ? int ! int end ), ($LEAD$; ! ? int ! int end end)]$} \\
-S121 & \\ 
-S142 & $+ [($SWAP$; ? int ! int end), ($LEAD$; ? ? int ! int end end)] [\ ]$ \\ 
-T160 & \multirow{4}{*}{int} \\
-T191 & \\ 
-T157 & \\
-T188 & \\ 
-\end{tabular}
-\caption{Manual Substitutions for Delegated Swap}
-\label{subs2}
-\end{table}
 
 \subsection{Behaviour check}
 
@@ -295,7 +297,7 @@ A very simple implementation of the Transport Layer Security (TLS) handshake has
 
 \subsection{Input code}
 
-Here we see a very simple version of the TLS handshake implemented in the version of $ML_s$ accepted by the first level. In this implementation we have a client and a server. The client establishes a connection on the tls channel and sends a number, this represents the client hello message. It then receives four values on this connection. These represent the server hello, server certificate, server exchange key and the server hello done messages. The client finally sends the client exchange key and the change cipher spec. The communication ends when the client receives the value representing the change cipher spec message from the server. 
+Here we see a very simple version of the TLS handshake implemented in the version of $ML_s$ accepted by the first level. In this implementation we have a client and a server. The client establishes a connection on the $tls$ channel and sends a number, this represents the client hello message. It then receives four values on this connection. These represent the server hello, server certificate, server exchange key and the server hello done messages. The client finally sends the client exchange key and the change cipher spec. The communication ends when the client receives the value representing the change cipher spec message from the server. 
 
 The communications on the server side are the complements of those made by the client. Since all values are represented as integers we can conclude that the session types of these endpoints should  be $!int.?int.?int.?int.?int.!int.!int.?int$ and $?int.!int.!int.!int.!int.?int.?int.!int$ for the client and server respectively. 
 
@@ -338,6 +340,25 @@ let client = fun z =>
 Here we have taken the output from the first level and simplified it. Again the substitutions detailed in table \ref{tLSSubs} must be made before this code can be run through the behaviour checker. 
 
 
+\begin{table}
+\centering
+\begin{tabular}{|l | c|}
+\hline
+S190 &  $!int.?int.?int.?int.?int.!int.!int.?int$  \\ \hline
+S216 & $?int.!int.!int.!int.!int.?int.?int.!int$ \\  \hline
+T185 & \multirow{8}{*}{int} \\
+T186 & \\ 
+T187 & \\
+T188 & \\ 
+T209 & \\ 
+T213 & \\ 
+T214 & \\ 
+T215 & \\ \hline
+\end{tabular}
+\caption{TLS Substitutions}
+\label{tLSSubs}
+\end{table}
+
 \begin{lstlisting}
 Behaviours:
 spn(psh($l1$, S190);R201 ! int;R202 ? T185;R203 ? T186;R204 ? T187 ;R205 ? T188;R206 ! int;R207 ! int;R208 ? T209);
@@ -364,23 +385,6 @@ $l2$ ~ R233,
 $l2$ ~ R234
 \end{lstlisting}
 
-\begin{table}
-\centering
-\begin{tabular}{l | c}
-S190 &  $!int.?int.?int.?int.?int.!int.!int.?int$  \\
-S216 & $?int.!int.!int.!int.!int.?int.?int.!int$ \\ 
-T185 & \multirow{8}{*}{int} \\
-T186 & \\ 
-T187 & \\
-T188 & \\ 
-T209 & \\ 
-T213 & \\ 
-T214 & \\ 
-T215 & \\ 
-\end{tabular}
-\caption{TLS Substitutions}
-\label{tLSSubs}
-\end{table}
 
 
 \subsection{Behaviour check}
