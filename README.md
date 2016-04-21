@@ -4,10 +4,7 @@ Full details of the motivation behind this project can be found in the report.
 
 ##Pre Requisits 
 Ocaml 
-
-<pre>
-sudo apt-get install ocaml ocaml-native-compilers ocaml-doc tuareg-mode ocaml-findlib oasis libpcre-ocaml-dev 
-</pre>
+menhir 
 
 ##Running instructions
 <pre>
