@@ -5,6 +5,10 @@ Full details of the motivation behind this project can be found in the report.
 ##Pre Requisits 
 Ocaml 
 
+<pre>
+sudo apt-get install ocaml ocaml-native-compilers ocaml-doc tuareg-mode ocaml-findlib oasis libpre-ocaml-dev 
+</pre>
+
 ##Running instructions
 <pre>
  ocamlbuild -use-menhir -tag thread -use-ocamlfind -quiet -pkg core main.native
@@ -13,6 +17,15 @@ then
 <pre>
  ./main.native tests/<testname.ml>
 </pre>
+
+##Code
+The main.ml file contains the code to run the project. This calls the relevant methods from the parser.mly and lexer.mll (the parser and lexer files) as well as the Behaviour.ml file. 
+
+All code for the parser is in the parser.mly file. 
+
+All code for the lexer is in the lexer.mll file.
+
+The Behaviour.ml file contains the type declarations, the to_string methods, the constraint storage functions and the behaviour checker functions.
 
 ##Tests
 
